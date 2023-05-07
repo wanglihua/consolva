@@ -1,4 +1,5 @@
 using NHibernate;
+using NLog;
 using shunda.Core.Service;
 using shunda.Domain;
 using shunda.Domain.Express;
@@ -12,6 +13,10 @@ namespace shunda.Service.Message;
 /// </summary>
 [Service(ServiceType.Scoped)]
 public class CustomerMessageClientUrlService {
+    private static readonly Logger log = LogManager.GetCurrentClassLogger();
+
+    private static readonly string DEFAULT_URL_TITLE = "查看消息关联页面";
+
     private readonly ISession session;
     private readonly CustomerMessageAccountChangeService customerMessageAccountChangeService;
     private readonly CustomerMessageCouponFollowService customerMessageCouponFollowService;
@@ -71,41 +76,41 @@ public class CustomerMessageClientUrlService {
         this.customerMessageTransferedService = customerMessageTransferedService;
     }
 
-    public string GetUrl(CustomerMessageInfo customerMessage) {
+    public (string url, string urlTitle) GetUrl(CustomerMessageInfo customerMessage) {
         return GetUrl(TerminalType.WechatApp, customerMessage);
     }
 
-    public string GetUrl(TerminalType terminalType, CustomerMessageInfo customerMessage) {
+    public (string url, string urlTitle) GetUrl(TerminalType terminalType, CustomerMessageInfo customerMessage) {
         if (terminalType != TerminalType.WechatApp) {
-            return string.Empty;
+            return (string.Empty, DEFAULT_URL_TITLE);
         }
 
         CustomerMessageType messageType = customerMessage.Type;
         int relatedId = customerMessage.RelatedId;
 
         if (messageType == CustomerMessageType.AccountChange) {
-            return customerMessageAccountChangeService.GetUrl();
+            return (customerMessageAccountChangeService.GetUrl(), "查看我的余额");
         }
 
         if (messageType == CustomerMessageType.CouponFollow) {
-            return customerMessageCouponFollowService.GetUrl();
+            return (customerMessageCouponFollowService.GetUrl(), "查看我的优惠券");
         }
 
         if (messageType == CustomerMessageType.ExpressCheckin) {
             int expressId = relatedId;
-            return customerMessageExpressCheckinService.GetUrl(expressId);
+            return (customerMessageExpressCheckinService.GetUrl(expressId), "查看快递单");
         }
 
         if (messageType == CustomerMessageType.ExpressExpectEnter) {
             int expressId = relatedId;
-            return customerMessageExpressExpectEnterService.GetUrl(expressId);
+            return (customerMessageExpressExpectEnterService.GetUrl(expressId), "查看快递单");
         }
 
         if (messageType == CustomerMessageType.ExpressPhotoCheckin) {
             int expressPhotoId = relatedId;
             var expressPhoto = session.Get<ExpressPhotoInfo>(expressPhotoId);
             if (expressPhoto == null) {
-                return string.Empty;
+                return (string.Empty, DEFAULT_URL_TITLE);
             }
 
             string trackingNo = expressPhoto.TrackingNo;
@@ -114,17 +119,17 @@ public class CustomerMessageClientUrlService {
                 .Take(1)
                 .SingleOrDefault();
             if (express == null) {
-                return string.Empty;
+                return (string.Empty, DEFAULT_URL_TITLE);
             }
 
-            return customerMessageExpressPhotoCheckinService.GetUrl(express.Id);
+            return (customerMessageExpressPhotoCheckinService.GetUrl(express.Id), "查看快递单");
         }
 
         if (messageType == CustomerMessageType.ExpressPhotoSign) {
             int expressPhotoId = relatedId;
             var expressPhoto = session.Get<ExpressPhotoInfo>(expressPhotoId);
             if (expressPhoto == null) {
-                return string.Empty;
+                return (string.Empty, DEFAULT_URL_TITLE);
             }
 
             string trackingNo = expressPhoto.TrackingNo;
@@ -133,62 +138,62 @@ public class CustomerMessageClientUrlService {
                 .Take(1)
                 .SingleOrDefault();
             if (express == null) {
-                return string.Empty;
+                return (string.Empty, DEFAULT_URL_TITLE);
             }
 
-            return customerMessageExpressPhotoSignService.GetUrl(express.Id);
+            return (customerMessageExpressPhotoSignService.GetUrl(express.Id), "查看快递单");
         }
 
         if (messageType == CustomerMessageType.HelpMeMakeMoney) {
-            return customerMessageHelpMeMakeMoneyService.GetUrl();
+            return (customerMessageHelpMeMakeMoneyService.GetUrl(), DEFAULT_URL_TITLE);
         }
 
         if (messageType == CustomerMessageType.InternationalExpressStateUpdate) {
             int orderId = relatedId;
-            return customerMessageInternationalExpressStateUpdateService.GetUrl(orderId);
+            return (customerMessageInternationalExpressStateUpdateService.GetUrl(orderId), "查看订单详细");
         }
 
         if (messageType == CustomerMessageType.InternationalExpressTrackingNo) {
             int orderId = relatedId;
-            return customerMessageInternationalExpressTrackingNoService.GetUrl(orderId);
+            return (customerMessageInternationalExpressTrackingNoService.GetUrl(orderId), "查看订单详细");
         }
 
         if (messageType == CustomerMessageType.MoneyEarned) {
-            return customerMessageMoneyEarnedService.GetUrl();
+            return (customerMessageMoneyEarnedService.GetUrl(), "查看我的积分");
         }
 
         if (messageType == CustomerMessageType.NewClaim) {
-            return customerMessageNewClaimService.GetUrl();
+            return (customerMessageNewClaimService.GetUrl(), "查看申领件");
         }
 
         if (messageType == CustomerMessageType.CustomerNoOrder) {
-            return customerMessageNoOrderService.GetUrl();
+            return (customerMessageNoOrderService.GetUrl(), DEFAULT_URL_TITLE);
         }
 
         if (messageType == CustomerMessageType.OrderDelivered) {
             int orderId = relatedId;
-            return customerMessageOrderDeliveredService.GetUrl(orderId);
+            return (customerMessageOrderDeliveredService.GetUrl(orderId), DEFAULT_URL_TITLE);
         }
 
         if (messageType == CustomerMessageType.OrderPhotoShip) {
             int orderId = relatedId;
-            return customerMessageOrderPhotoShipService.GetUrl(orderId);
+            return (customerMessageOrderPhotoShipService.GetUrl(orderId), "查看订单详细");
         }
 
         if (messageType == CustomerMessageType.Packed) {
             int orderId = relatedId;
-            return customerMessagePackedService.GetUrl(orderId);
+            return (customerMessagePackedService.GetUrl(orderId), "查看订单详细");
         }
 
         if (messageType == CustomerMessageType.ScoreChange) {
-            return customerMessageScoreChangeService.GetUrl();
+            return (customerMessageScoreChangeService.GetUrl(), "查看我的积分");
         }
 
         if (messageType == CustomerMessageType.Transfered) {
             int orderId = relatedId;
-            return customerMessageTransferedService.GetUrl(orderId);
+            return (customerMessageTransferedService.GetUrl(orderId), "查看订单详细");
         }
 
-        return string.Empty;
+        return (string.Empty, DEFAULT_URL_TITLE);
     }
 }

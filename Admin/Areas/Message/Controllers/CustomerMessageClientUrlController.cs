@@ -22,23 +22,18 @@ namespace shunda.Admin.Areas.Message.Controllers;
 [Obsolete]
 [MessageArea]
 [AdminAuth(PassRes.CustomerMessage.MessageSetting)]
-public class CustomerMessageClientUrlController : Controller
-{
+public class CustomerMessageClientUrlController : Controller {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
-    private readonly CustomerMessageClientUrlService customerMessageClientUrlService;
 
-    public CustomerMessageClientUrlController(ISession session, CustomerMessageClientUrlService customerMessageClientUrlService)
-    {
+    public CustomerMessageClientUrlController(ISession session) {
         this.session = session;
-        this.customerMessageClientUrlService = customerMessageClientUrlService;
     }
 
     [HttpGet]
     [Route("/admin/message/customer/message/client/url")]
-    public IActionResult Index()
-    {
+    public IActionResult Index() {
         CustomerMessageClientUrlIndexModel model = new CustomerMessageClientUrlIndexModel();
 
         model.MessageTypeList = CustomerMessageType.GetList();
@@ -49,8 +44,7 @@ public class CustomerMessageClientUrlController : Controller
 
     [HttpPost]
     [Route("/admin/message/customer/message/client/url/list")]
-    public IActionResult List(CustomerMessageClientUrlListQueryParam queryParam)
-    {
+    public IActionResult List(CustomerMessageClientUrlListQueryParam queryParam) {
         int totalCount = GetQueryOver(queryParam)
             // .Select(Projections.Count<CustomerMessageClientUrlInfo>(e => customerMessageClientUrlAlias!.Id))
             .Select(Projections.RowCount())
@@ -59,12 +53,9 @@ public class CustomerMessageClientUrlController : Controller
         ListPager listPager = new ListPager(queryParam, totalCount);
 
         var listQuery = GetQueryOver(queryParam);
-        if (listPager.IsAscending)
-        {
+        if (listPager.IsAscending) {
             listQuery = listQuery.OrderBy(Projections.Property(listPager.SortField)).Asc;
-        }
-        else
-        {
+        } else {
             listQuery = listQuery.OrderBy(Projections.Property(listPager.SortField)).Desc;
         }
 
@@ -92,8 +83,7 @@ public class CustomerMessageClientUrlController : Controller
     private CustomerMessageClientUrlInfo? customerMessageClientUrlAlias = null;
 
     [NonAction]
-    private IQueryOver<CustomerMessageClientUrlInfo, CustomerMessageClientUrlInfo> GetQueryOver(CustomerMessageClientUrlListQueryParam queryParam)
-    {
+    private IQueryOver<CustomerMessageClientUrlInfo, CustomerMessageClientUrlInfo> GetQueryOver(CustomerMessageClientUrlListQueryParam queryParam) {
         var query = session.QueryOver<CustomerMessageClientUrlInfo>(() => customerMessageClientUrlAlias!);
 
         return query;
@@ -101,10 +91,8 @@ public class CustomerMessageClientUrlController : Controller
 
     [HttpPost]
     [Route("/admin/message/customer/message/client/url/detail")]
-    public IActionResult Detail(IdParam param)
-    {
-        if (!ModelState.IsValid)
-        {
+    public IActionResult Detail(IdParam param) {
+        if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
         }
 
@@ -112,15 +100,11 @@ public class CustomerMessageClientUrlController : Controller
 
         CustomerMessageClientUrlInfo? customerMessageClientUrl;
 
-        if (id <= 0)
-        {
+        if (id <= 0) {
             customerMessageClientUrl = new CustomerMessageClientUrlInfo();
-        }
-        else
-        {
+        } else {
             customerMessageClientUrl = session.Get<CustomerMessageClientUrlInfo>(id);
-            if (customerMessageClientUrl == null)
-            {
+            if (customerMessageClientUrl == null) {
                 throw new ValidationException($"指定的 客户消息客户端URL#{id} 不存在！");
             }
         }
@@ -144,10 +128,8 @@ public class CustomerMessageClientUrlController : Controller
     [HttpPost]
     [Route("/admin/message/customer/message/client/url/save")]
     [Transactional]
-    public IActionResult Save(CustomerMessageClientUrlSaveModel model)
-    {
-        if (!ModelState.IsValid)
-        {
+    public IActionResult Save(CustomerMessageClientUrlSaveModel model) {
+        if (!ModelState.IsValid) {
             throw new ValidationException(ValidationUtil.GetErrorMessages(this.ModelState));
         }
 
@@ -157,15 +139,11 @@ public class CustomerMessageClientUrlController : Controller
 
         CustomerMessageClientUrlInfo customerMessageClientUrl;
 
-        if (isCreate)
-        {
+        if (isCreate) {
             customerMessageClientUrl = new CustomerMessageClientUrlInfo();
-        }
-        else
-        {
+        } else {
             customerMessageClientUrl = session.Get<CustomerMessageClientUrlInfo>(customerMessageClientUrlId);
-            if (customerMessageClientUrl == null)
-            {
+            if (customerMessageClientUrl == null) {
                 throw new ValidationException($"指定的 客户消息客户端URL#{customerMessageClientUrlId} 不存在！");
             }
         }
@@ -174,18 +152,14 @@ public class CustomerMessageClientUrlController : Controller
         customerMessageClientUrl.TerminalType = model.TerminalType;
         customerMessageClientUrl.ClientUrl = model.ClientUrl;
 
-        if (isCreate)
-        {
+        if (isCreate) {
             session.Save(customerMessageClientUrl);
-        }
-        else
-        {
+        } else {
             session.Update(customerMessageClientUrl);
         }
 
         session.Flush();
 
-        customerMessageClientUrlService.MakeCacheExpire();
 
         return Json(new JsonResultData {
             Success = true,
@@ -196,21 +170,17 @@ public class CustomerMessageClientUrlController : Controller
     [HttpPost]
     [Route("/admin/message/customer/message/client/url/delete")]
     [Transactional]
-    public IActionResult Delete(IdListParam param)
-    {
+    public IActionResult Delete(IdListParam param) {
         param.Validate("请选择要删除的客户消息客户端URL！");
 
         var idList = param.IdList;
 
-        foreach (int id in idList)
-        {
+        foreach (int id in idList) {
             CustomerMessageClientUrlInfo customerMessageClientUrl = session.Load<CustomerMessageClientUrlInfo>(id);
             session.Delete(customerMessageClientUrl);
         }
 
         session.Flush();
-
-        customerMessageClientUrlService.MakeCacheExpire();
 
         return Json(new JsonResultData {
             Success = true,

@@ -51,9 +51,7 @@ public class CustomerMessageDetailController : Controller {
         string orderCode = customerMessage.Order?.Code ?? string.Empty;
         string sendTime = customerMessage.SendTime.ToString("yyyy-MM-dd HH:mm");
         string content = customerMessage.Content;
-        string url = customerMessageClientUrlService.GetUrl(customerMessage);
-        string urlTitle = string.Empty;
-
+        (string url, string urlTitle) = customerMessageClientUrlService.GetUrl(customerMessage);
 
         return Json(new JsonResultData {
             Success = true,
