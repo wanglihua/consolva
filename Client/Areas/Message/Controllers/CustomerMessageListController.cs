@@ -9,6 +9,7 @@ using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Message.Controllers;
 
+[MessageArea]
 public class CustomerMessageListController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
