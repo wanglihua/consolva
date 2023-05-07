@@ -22,6 +22,10 @@ public class CustomerMessageClientUrlService {
     private readonly CustomerMessageHelpMeMakeMoneyService customerMessageHelpMeMakeMoneyService;
     private readonly CustomerMessageInternationalExpressStateUpdateService customerMessageInternationalExpressStateUpdateService;
     private readonly CustomerMessageInternationalExpressTrackingNoService customerMessageInternationalExpressTrackingNoService;
+    private readonly CustomerMessageMoneyEarnedService customerMessageMoneyEarnedService;
+    private readonly CustomerMessageNewClaimService customerMessageNewClaimService;
+    private readonly CustomerMessageNoOrderService customerMessageNoOrderService;
+    private readonly CustomerMessageOrderDeliveredService customerMessageOrderDeliveredService;
 
     public CustomerMessageClientUrlService(
         ISession session,
@@ -33,7 +37,11 @@ public class CustomerMessageClientUrlService {
         CustomerMessageExpressPhotoSignService customerMessageExpressPhotoSignService,
         CustomerMessageHelpMeMakeMoneyService customerMessageHelpMeMakeMoneyService,
         CustomerMessageInternationalExpressStateUpdateService customerMessageInternationalExpressStateUpdateService,
-        CustomerMessageInternationalExpressTrackingNoService customerMessageInternationalExpressTrackingNoService
+        CustomerMessageInternationalExpressTrackingNoService customerMessageInternationalExpressTrackingNoService,
+        CustomerMessageMoneyEarnedService customerMessageMoneyEarnedService,
+        CustomerMessageNewClaimService customerMessageNewClaimService,
+        CustomerMessageNoOrderService customerMessageNoOrderService,
+        CustomerMessageOrderDeliveredService customerMessageOrderDeliveredService
     ) {
         this.session = session;
         this.customerMessageAccountChangeService = customerMessageAccountChangeService;
@@ -45,6 +53,10 @@ public class CustomerMessageClientUrlService {
         this.customerMessageHelpMeMakeMoneyService = customerMessageHelpMeMakeMoneyService;
         this.customerMessageInternationalExpressStateUpdateService = customerMessageInternationalExpressStateUpdateService;
         this.customerMessageInternationalExpressTrackingNoService = customerMessageInternationalExpressTrackingNoService;
+        this.customerMessageMoneyEarnedService = customerMessageMoneyEarnedService;
+        this.customerMessageNewClaimService = customerMessageNewClaimService;
+        this.customerMessageNoOrderService = customerMessageNoOrderService;
+        this.customerMessageOrderDeliveredService = customerMessageOrderDeliveredService;
     }
 
     public string GetUrl(CustomerMessageInfo customerMessage) {
@@ -127,6 +139,23 @@ public class CustomerMessageClientUrlService {
         if (messageType == CustomerMessageType.InternationalExpressTrackingNo) {
             int orderId = relatedId;
             return customerMessageInternationalExpressTrackingNoService.GetUrl(orderId);
+        }
+
+        if (messageType == CustomerMessageType.MoneyEarned) {
+            return customerMessageMoneyEarnedService.GetUrl();
+        }
+
+        if (messageType == CustomerMessageType.NewClaim) {
+            return customerMessageNewClaimService.GetUrl();
+        }
+
+        if (messageType == CustomerMessageType.CustomerNoOrder) {
+            return customerMessageNoOrderService.GetUrl();
+        }
+
+        if (messageType == CustomerMessageType.OrderDelivered) {
+            int orderId = relatedId;
+            return customerMessageOrderDeliveredService.GetUrl(orderId);
         }
 
         return string.Empty;
