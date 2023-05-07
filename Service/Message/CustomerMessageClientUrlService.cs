@@ -26,6 +26,8 @@ public class CustomerMessageClientUrlService {
     private readonly CustomerMessageNewClaimService customerMessageNewClaimService;
     private readonly CustomerMessageNoOrderService customerMessageNoOrderService;
     private readonly CustomerMessageOrderDeliveredService customerMessageOrderDeliveredService;
+    private readonly CustomerMessageOrderPhotoShipService customerMessageOrderPhotoShipService;
+    private readonly CustomerMessagePackedService customerMessagePackedService;
 
     public CustomerMessageClientUrlService(
         ISession session,
@@ -41,7 +43,9 @@ public class CustomerMessageClientUrlService {
         CustomerMessageMoneyEarnedService customerMessageMoneyEarnedService,
         CustomerMessageNewClaimService customerMessageNewClaimService,
         CustomerMessageNoOrderService customerMessageNoOrderService,
-        CustomerMessageOrderDeliveredService customerMessageOrderDeliveredService
+        CustomerMessageOrderDeliveredService customerMessageOrderDeliveredService,
+        CustomerMessageOrderPhotoShipService customerMessageOrderPhotoShipService,
+        CustomerMessagePackedService customerMessagePackedService
     ) {
         this.session = session;
         this.customerMessageAccountChangeService = customerMessageAccountChangeService;
@@ -57,6 +61,8 @@ public class CustomerMessageClientUrlService {
         this.customerMessageNewClaimService = customerMessageNewClaimService;
         this.customerMessageNoOrderService = customerMessageNoOrderService;
         this.customerMessageOrderDeliveredService = customerMessageOrderDeliveredService;
+        this.customerMessageOrderPhotoShipService = customerMessageOrderPhotoShipService;
+        this.customerMessagePackedService = customerMessagePackedService;
     }
 
     public string GetUrl(CustomerMessageInfo customerMessage) {
@@ -156,6 +162,16 @@ public class CustomerMessageClientUrlService {
         if (messageType == CustomerMessageType.OrderDelivered) {
             int orderId = relatedId;
             return customerMessageOrderDeliveredService.GetUrl(orderId);
+        }
+
+        if (messageType == CustomerMessageType.OrderPhotoShip) {
+            int orderId = relatedId;
+            return customerMessageOrderPhotoShipService.GetUrl(orderId);
+        }
+
+        if (messageType == CustomerMessageType.Packed) {
+            int orderId = relatedId;
+            return customerMessagePackedService.GetUrl(orderId);
         }
 
         return string.Empty;
