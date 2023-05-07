@@ -77,16 +77,27 @@ public class CustomerMessageNoOrderService {
             if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend)) {
                 clientShouldSend = customerMessageCommonService.CustomerShouldSend(customer.Id, messageType);
             }
-            
+
             if (clientShouldSend && (setting.WechatSend || setting.SmsSend)) {
                 messageStatus = CustomerMessageStatus.Success;
             }
 
             string processUser = CustomerMessageCommonService.ShundaSecretary;
 
+            if (string.IsNullOrWhiteSpace(message1) == false) {
+                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.CycleTiming, customer, null, message1, messageStatus, setting, processUser);
+            }
+
+            if (string.IsNullOrWhiteSpace(message2) == false) {
+                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.CycleTiming, customer, null, message2, messageStatus, setting, processUser);
+            }
+
+            if (string.IsNullOrWhiteSpace(message3) == false) {
+                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.CycleTiming, customer, null, message3, messageStatus, setting, processUser);
+            }
+
             if (clientShouldSend) {
                 if (setting.WechatSend) {
-                    messageStatus = CustomerMessageStatus.Success;
                     string url = GetUrl();
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
@@ -103,24 +114,9 @@ public class CustomerMessageNoOrderService {
                 }
 
                 if (setting.SmsSend) {
-                    messageStatus = CustomerMessageStatus.Success;
                     customerMessageCommonService.SendSms(customer.Mobile, setting.SmsMessageTemplate);
                 }
             }
-
-            if (string.IsNullOrWhiteSpace(message1) == false) {
-                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.CycleTiming, customer, null, message1, messageStatus, setting, processUser);
-            }
-
-            if (string.IsNullOrWhiteSpace(message2) == false) {
-                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.CycleTiming, customer, null, message2, messageStatus, setting, processUser);
-            }
-
-            if (string.IsNullOrWhiteSpace(message3) == false) {
-                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.CycleTiming, customer, null, message3, messageStatus, setting, processUser);
-            }
-
-            session.Flush();
         }
     }
 }

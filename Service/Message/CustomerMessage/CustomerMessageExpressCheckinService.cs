@@ -100,9 +100,20 @@ public class CustomerMessageExpressCheckinService {
 
             string processUser = CustomerMessageCommonService.ShundaSecretary;
 
+            if (string.IsNullOrWhiteSpace(message1) == false) {
+                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message1, messageStatus, setting, processUser);
+            }
+
+            if (string.IsNullOrWhiteSpace(message2) == false) {
+                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message2, messageStatus, setting, processUser);
+            }
+
+            if (string.IsNullOrWhiteSpace(message3) == false) {
+                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message3, messageStatus, setting, processUser);
+            }            
+
             if (clientShouldSend) {
                 if (setting.WechatSend) {
-                    messageStatus = CustomerMessageStatus.Success;
                     string customerCode = customerCodeService.GetCustomerCode(customer.Id);
                     string url = GetUrl(express.Id);
 
@@ -120,24 +131,9 @@ public class CustomerMessageExpressCheckinService {
                 }
 
                 if (setting.SmsSend) {
-                    messageStatus = CustomerMessageStatus.Success;
                     customerMessageCommonService.SendSms(customer.Mobile, setting.SmsMessageTemplate);
                 }
             }
-
-            if (string.IsNullOrWhiteSpace(message1) == false) {
-                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message1, messageStatus, setting, processUser);
-            }
-
-            if (string.IsNullOrWhiteSpace(message2) == false) {
-                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message2, messageStatus, setting, processUser);
-            }
-
-            if (string.IsNullOrWhiteSpace(message3) == false) {
-                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message3, messageStatus, setting, processUser);
-            }
-
-            session.Flush();
         }
     }
 }
