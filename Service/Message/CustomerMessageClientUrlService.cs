@@ -19,6 +19,9 @@ public class CustomerMessageClientUrlService {
     private readonly CustomerMessageExpressExpectEnterService customerMessageExpressExpectEnterService;
     private readonly CustomerMessageExpressPhotoCheckinService customerMessageExpressPhotoCheckinService;
     private readonly CustomerMessageExpressPhotoSignService customerMessageExpressPhotoSignService;
+    private readonly CustomerMessageHelpMeMakeMoneyService customerMessageHelpMeMakeMoneyService;
+    private readonly CustomerMessageInternationalExpressStateUpdateService customerMessageInternationalExpressStateUpdateService;
+    private readonly CustomerMessageInternationalExpressTrackingNoService customerMessageInternationalExpressTrackingNoService;
 
     public CustomerMessageClientUrlService(
         ISession session,
@@ -27,7 +30,10 @@ public class CustomerMessageClientUrlService {
         CustomerMessageExpressCheckinService customerMessageExpressCheckinService,
         CustomerMessageExpressExpectEnterService customerMessageExpressExpectEnterService,
         CustomerMessageExpressPhotoCheckinService customerMessageExpressPhotoCheckinService,
-        CustomerMessageExpressPhotoSignService customerMessageExpressPhotoSignService
+        CustomerMessageExpressPhotoSignService customerMessageExpressPhotoSignService,
+        CustomerMessageHelpMeMakeMoneyService customerMessageHelpMeMakeMoneyService,
+        CustomerMessageInternationalExpressStateUpdateService customerMessageInternationalExpressStateUpdateService,
+        CustomerMessageInternationalExpressTrackingNoService customerMessageInternationalExpressTrackingNoService
     ) {
         this.session = session;
         this.customerMessageAccountChangeService = customerMessageAccountChangeService;
@@ -36,6 +42,9 @@ public class CustomerMessageClientUrlService {
         this.customerMessageExpressExpectEnterService = customerMessageExpressExpectEnterService;
         this.customerMessageExpressPhotoCheckinService = customerMessageExpressPhotoCheckinService;
         this.customerMessageExpressPhotoSignService = customerMessageExpressPhotoSignService;
+        this.customerMessageHelpMeMakeMoneyService = customerMessageHelpMeMakeMoneyService;
+        this.customerMessageInternationalExpressStateUpdateService = customerMessageInternationalExpressStateUpdateService;
+        this.customerMessageInternationalExpressTrackingNoService = customerMessageInternationalExpressTrackingNoService;
     }
 
     public string GetUrl(CustomerMessageInfo customerMessage) {
@@ -86,7 +95,7 @@ public class CustomerMessageClientUrlService {
 
             return customerMessageExpressPhotoCheckinService.GetUrl(express.Id);
         }
-        
+
         if (messageType == CustomerMessageType.ExpressPhotoSign) {
             int expressPhotoId = relatedId;
             var expressPhoto = session.Get<ExpressPhotoInfo>(expressPhotoId);
@@ -104,7 +113,21 @@ public class CustomerMessageClientUrlService {
             }
 
             return customerMessageExpressPhotoSignService.GetUrl(express.Id);
-        }        
+        }
+
+        if (messageType == CustomerMessageType.HelpMeMakeMoney) {
+            return customerMessageHelpMeMakeMoneyService.GetUrl();
+        }
+
+        if (messageType == CustomerMessageType.InternationalExpressStateUpdate) {
+            int orderId = relatedId;
+            return customerMessageInternationalExpressStateUpdateService.GetUrl(orderId);
+        }
+
+        if (messageType == CustomerMessageType.InternationalExpressTrackingNo) {
+            int orderId = relatedId;
+            return customerMessageInternationalExpressTrackingNoService.GetUrl(orderId);
+        }
 
         return string.Empty;
     }
