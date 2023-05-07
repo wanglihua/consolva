@@ -94,6 +94,10 @@ public class CustomerMessageExpressCheckinService {
                 clientShouldSend = customerMessageCommonService.CustomerShouldSend(customer.Id, messageType);
             }
 
+            if (clientShouldSend && (setting.WechatSend || setting.SmsSend)) {
+                messageStatus = CustomerMessageStatus.Success;
+            }
+
             string processUser = CustomerMessageCommonService.ShundaSecretary;
 
             if (clientShouldSend) {

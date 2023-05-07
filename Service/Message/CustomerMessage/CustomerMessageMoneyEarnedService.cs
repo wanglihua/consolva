@@ -92,6 +92,10 @@ public class CustomerMessageMoneyEarnedService {
             if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend)) {
                 clientShouldSend = customerMessageCommonService.CustomerShouldSend(customer.Id, messageType);
             }
+            
+            if (clientShouldSend && (setting.WechatSend || setting.SmsSend)) {
+                messageStatus = CustomerMessageStatus.Success;
+            }
 
             string processUser = CustomerMessageCommonService.ShundaSecretary;
 

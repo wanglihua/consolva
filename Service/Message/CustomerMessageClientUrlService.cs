@@ -76,6 +76,14 @@ public class CustomerMessageClientUrlService {
         this.customerMessageTransferedService = customerMessageTransferedService;
     }
 
+    /// <summary>
+    /// 这个做成静态成员
+    /// 否则就依赖循环了
+    /// </summary>
+    public static string GetMessageDetailUrl(int messageId) {
+        return $"pages/message/message_detail?messageId={messageId}";
+    }
+
     public (string url, string urlTitle) GetUrl(CustomerMessageInfo customerMessage) {
         return GetUrl(TerminalType.WechatApp, customerMessage);
     }
