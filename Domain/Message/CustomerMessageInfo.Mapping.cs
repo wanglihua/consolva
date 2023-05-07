@@ -51,6 +51,15 @@ public class CustomerMessageInfoMapping : EntityNoUpdateMapping<CustomerMessageI
                 map.Fetch(FetchKind.Select);
             }
         );
+        
+        Property(
+            x => x.RelatedId,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("related_Id");
+                map.NotNullable(true);
+            }
+        );
 
         Property(
             x => x.Content,
