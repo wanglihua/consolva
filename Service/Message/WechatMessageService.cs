@@ -90,13 +90,13 @@ public class WechatMessageService {
         string url = param.Url;
         object data = param.Data;
 
-        try {
-            string dataJson = JsonConvert.SerializeObject(data);
-            log.Error($"发送模板消息参数记录，openid: {openId}, templateId: {templateId}, data: {dataJson}");
-        }
-        catch (Exception exp) {
-            log.Error(exp);
-        }
+        // try {
+        //     string dataJson = JsonConvert.SerializeObject(data);
+        //     log.Error($"发送模板消息参数记录，openid: {openId}, templateId: {templateId}, data: {dataJson}");
+        // }
+        // catch (Exception exp) {
+        //     log.Error(exp);
+        // }
 
         try {
             var miniProgram = new TemplateModel_MiniProgram {

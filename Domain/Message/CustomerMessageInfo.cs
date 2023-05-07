@@ -40,6 +40,11 @@ public class CustomerMessageInfo : EntityNoUpdate
     /// </summary>
     [JsonProperty("order")]
     public virtual LogisticsOrderInfo? Order { get; set; } = null;
+    
+    /// <summary>
+    /// 消息关联ID
+    /// </summary>
+    public virtual int RelatedId { get; set; }
 
     /// <summary>
     /// 消息内容，非空
