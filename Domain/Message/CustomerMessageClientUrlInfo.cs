@@ -9,6 +9,7 @@ namespace shunda.Domain.Message;
 /// 客户消息客户端URL
 /// 这个现在基本上不用了
 /// </summary>
+[Obsolete]
 public class CustomerMessageClientUrlInfo : Entity
 {
     /// <summary>

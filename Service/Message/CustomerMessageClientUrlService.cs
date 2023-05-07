@@ -1,53 +1,66 @@
-using Microsoft.Extensions.Caching.Memory;
+using NHibernate;
 using shunda.Core.Service;
 using shunda.Domain;
 using shunda.Domain.Message;
-using ISession = NHibernate.ISession;
+using shunda.Service.Message.CustomerMessage;
 
 namespace shunda.Service.Message;
 
 /// <summary>
 /// 客户消息客户端URL 服务类
 /// </summary>
-[Obsolete]
 [Service(ServiceType.Scoped)]
 public class CustomerMessageClientUrlService {
     private readonly ISession session;
-    private IMemoryCache memoryCache;
+    private readonly CustomerMessageAccountChangeService customerMessageAccountChangeService;
+    private readonly CustomerMessageCouponFollowService customerMessageCouponFollowService;
+    private readonly CustomerMessageExpressCheckinService customerMessageExpressCheckinService;
+    private readonly CustomerMessageExpressExpectEnterService customerMessageExpressExpectEnterService;
 
-    public CustomerMessageClientUrlService(ISession session, IMemoryCache memoryCache) {
+    public CustomerMessageClientUrlService(
+        ISession session,
+        CustomerMessageAccountChangeService customerMessageAccountChangeService,
+        CustomerMessageCouponFollowService customerMessageCouponFollowService,
+        CustomerMessageExpressCheckinService customerMessageExpressCheckinService,
+        CustomerMessageExpressExpectEnterService customerMessageExpressExpectEnterService
+    ) {
         this.session = session;
-        this.memoryCache = memoryCache;
+        this.customerMessageAccountChangeService = customerMessageAccountChangeService;
+        this.customerMessageCouponFollowService = customerMessageCouponFollowService;
+        this.customerMessageExpressCheckinService = customerMessageExpressCheckinService;
+        this.customerMessageExpressExpectEnterService = customerMessageExpressExpectEnterService;
     }
 
-    private static string CACHE_KEY = "CUSTOMER_MESSAGE_CLIENT_URL";
+    public string GetUrl(CustomerMessageInfo customerMessage) {
+        return GetUrl(TerminalType.WechatApp, customerMessage);
+    }
 
-    [Obsolete]
-    public string GetUrl(TerminalType terminalType, CustomerMessageType messageType) {
-        if (memoryCache.TryGetValue(CACHE_KEY, out IList<CustomerMessageClientUrlInfo> messageUrlList) == false) {
-            messageUrlList = session.Query<CustomerMessageClientUrlInfo>().ToList();
-            memoryCache.Set(CACHE_KEY, messageUrlList, TimeSpan.FromMinutes(5)); // 5 分钟是否合适，消息频繁发送的时候会有收益
-        }
-
-        var messageUrl = messageUrlList
-            .Where(e => e.TerminalType == terminalType && e.MessageType == messageType)
-            .Take(1)
-            .SingleOrDefault();
-
-        if (messageUrl == null) {
+    public string GetUrl(TerminalType terminalType, CustomerMessageInfo customerMessage) {
+        if (terminalType != TerminalType.WechatApp) {
             return string.Empty;
         }
 
-        return messageUrl.ClientUrl;
-    }
+        CustomerMessageType messageType = customerMessage.Type;
+        int relatedId = customerMessage.RelatedId;
 
-    /// <summary>
-    /// 使缓存失效，这个只能对当前应用实例有效。
-    /// 可能不同的功能部分，会被部署成不同的应用实例。
-    /// </summary>
-    public void MakeCacheExpire() {
-        memoryCache.Remove(CACHE_KEY);
-    }
+        if (messageType == CustomerMessageType.AccountChange) {
+            return customerMessageAccountChangeService.GetUrl();
+        }
 
-    // todo 加上可能的模板参数替换方式的URL类型
+        if (messageType == CustomerMessageType.CouponFollow) {
+            return customerMessageCouponFollowService.GetUrl();
+        }
+
+        if (messageType == CustomerMessageType.ExpressCheckin) {
+            int expressId = relatedId;
+            return customerMessageExpressCheckinService.GetUrl(expressId);
+        }
+
+        if (messageType == CustomerMessageType.ExpressExpectEnter) {
+            int expressId = relatedId;
+            return customerMessageExpressExpectEnterService.GetUrl(expressId);
+        }
+
+        return string.Empty;
+    }
 }

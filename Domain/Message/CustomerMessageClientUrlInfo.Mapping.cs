@@ -4,6 +4,7 @@ using NHibernate.Mapping.ByCode;
 
 namespace shunda.Domain.Message;
 
+[Obsolete]
 public class CustomerMessageClientUrlInfoMapping : EntityMapping<CustomerMessageClientUrlInfo>
 {
     public CustomerMessageClientUrlInfoMapping()
