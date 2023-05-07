@@ -75,6 +75,8 @@ public class CustomerMessageExpressExpectEnterService {
             return;
         }
 
+        int expressId = express.Id;
+
         string customerCode = customerCodeService.GetCustomerCode(customer.Id);
         string trackingNo = express.TrackingNo;
 
@@ -99,22 +101,21 @@ public class CustomerMessageExpressExpectEnterService {
 
             int message1Id = 0;
             if (string.IsNullOrWhiteSpace(message1) == false) {
-                message1Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message1, messageStatus, setting, processUser);
+                message1Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, expressId, message1, messageStatus, setting, processUser);
             }
 
             int message2Id = 0;
             if (string.IsNullOrWhiteSpace(message2) == false) {
-                message2Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message2, messageStatus, setting, processUser);
+                message2Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, expressId, message2, messageStatus, setting, processUser);
             }
 
             int message3Id = 0;
             if (string.IsNullOrWhiteSpace(message3) == false) {
-                message3Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message3, messageStatus, setting, processUser);
+                message3Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, expressId, message3, messageStatus, setting, processUser);
             }
 
             if (clientShouldSend) {
                 if (setting.WechatSend) {
-
                     if (string.IsNullOrWhiteSpace(message1) == false) {
                         string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message1Id);
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "【预报到货】通知", customerCode, message1, processUser, url);

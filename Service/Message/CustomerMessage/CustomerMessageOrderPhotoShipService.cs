@@ -76,6 +76,7 @@ public class CustomerMessageOrderPhotoShipService {
             throw new ValidationException("消息发送指定的订单不能为空！");
         }
 
+        int orderId = order.Id;
         string orderCode = order.Code;
 
         if (customer.Status == CustomerStatus.Frozen) {
@@ -103,17 +104,17 @@ public class CustomerMessageOrderPhotoShipService {
 
             int message1Id = 0;
             if (string.IsNullOrWhiteSpace(message1) == false) {
-                message1Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message1, messageStatus, setting, processUser);
+                message1Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, orderId, message1, messageStatus, setting, processUser);
             }
 
             int message2Id = 0;
             if (string.IsNullOrWhiteSpace(message2) == false) {
-                message2Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message2, messageStatus, setting, processUser);
+                message2Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, orderId, message2, messageStatus, setting, processUser);
             }
 
             int message3Id = 0;
             if (string.IsNullOrWhiteSpace(message3) == false) {
-                message3Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message3, messageStatus, setting, processUser);
+                message3Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, orderId, message3, messageStatus, setting, processUser);
             }
 
             if (clientShouldSend) {

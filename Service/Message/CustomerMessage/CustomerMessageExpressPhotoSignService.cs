@@ -126,17 +126,17 @@ public class CustomerMessageExpressPhotoSignService {
 
             int message1Id = 0;
             if (string.IsNullOrWhiteSpace(message1) == false) {
-                message1Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message1, messageStatus, setting, processUser);
+                message1Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, expressPhoto.Id, message1, messageStatus, setting, processUser);
             }
 
             int message2Id = 0;
             if (string.IsNullOrWhiteSpace(message2) == false) {
-                message2Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message2, messageStatus, setting, processUser);
+                message2Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, expressPhoto.Id, message2, messageStatus, setting, processUser);
             }
 
             int message3Id = 0;
             if (string.IsNullOrWhiteSpace(message3) == false) {
-                message3Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message3, messageStatus, setting, processUser);
+                message3Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, expressPhoto.Id, message3, messageStatus, setting, processUser);
             }
 
             if (clientShouldSend) {

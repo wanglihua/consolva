@@ -92,6 +92,7 @@ public class CustomerMessageOrderDeliveredService {
             }
 
             string customerCode = customerCodeService.GetCustomerCode(customer.Id);
+            int orderId = order.Id;
             string orderCode = order.Code;
 
             string message1 = TransferMessage(setting.WechatMessageTemplate1, orderCode);
@@ -113,17 +114,17 @@ public class CustomerMessageOrderDeliveredService {
 
             int message1Id = 0;
             if (string.IsNullOrWhiteSpace(message1) == false) {
-                message1Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, order, message1, messageStatus, setting, processUser);
+                message1Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, order, orderId, message1, messageStatus, setting, processUser);
             }
 
             int message2Id = 0;
             if (string.IsNullOrWhiteSpace(message2) == false) {
-                message2Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, order, message2, messageStatus, setting, processUser);
+                message2Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, order, orderId, message2, messageStatus, setting, processUser);
             }
 
             int message3Id = 0;
             if (string.IsNullOrWhiteSpace(message3) == false) {
-                message3Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, order, message3, messageStatus, setting, processUser);
+                message3Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, order, orderId, message3, messageStatus, setting, processUser);
             }
 
             if (clientShouldSend) {

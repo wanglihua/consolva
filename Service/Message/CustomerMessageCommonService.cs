@@ -94,7 +94,7 @@ public class CustomerMessageCommonService {
         }
     }
 
-    public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, LogisticsOrderInfo? order, string message, CustomerMessageStatus messageStatus, CustomerMessageRealTimeSendSettingInfo setting, string sender) {
+    public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, LogisticsOrderInfo? order, int relatedId, string message, CustomerMessageStatus messageStatus, CustomerMessageRealTimeSendSettingInfo setting, string sender) {
         CustomerMessageInfo customerMessage = new CustomerMessageInfo();
         customerMessage.SendType = sendType;
         customerMessage.Type = setting.Type;
@@ -107,6 +107,8 @@ public class CustomerMessageCommonService {
         } else {
             customerMessage.Order = null;
         }
+
+        customerMessage.RelatedId = relatedId;
 
         customerMessage.Content = message;
         customerMessage.SmsSend = setting.SmsSend;
@@ -121,7 +123,7 @@ public class CustomerMessageCommonService {
         return customerMessage.Id;
     }
 
-    public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, LogisticsOrderInfo? order, string message, CustomerMessageStatus messageStatus, CustomerMessageCycleTimingSendSettingInfo setting, string sender) {
+    public int SaveCustomerMessage(CustomerMessageSendType sendType, CustomerInfo customer, LogisticsOrderInfo? order, int relatedId, string message, CustomerMessageStatus messageStatus, CustomerMessageCycleTimingSendSettingInfo setting, string sender) {
         CustomerMessageInfo customerMessage = new CustomerMessageInfo();
         customerMessage.SendType = sendType;
         customerMessage.Type = setting.Type;
@@ -134,6 +136,8 @@ public class CustomerMessageCommonService {
         } else {
             customerMessage.Order = null;
         }
+
+        customerMessage.RelatedId = relatedId;
 
         customerMessage.Content = message;
         customerMessage.SmsSend = setting.SmsSend;
