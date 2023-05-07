@@ -99,7 +99,7 @@ public class CustomerMessageTransferedService {
             if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend)) {
                 clientShouldSend = customerMessageCommonService.CustomerShouldSend(customer.Id, messageType);
             }
-            
+
             if (clientShouldSend && (setting.WechatSend || setting.SmsSend)) {
                 messageStatus = CustomerMessageStatus.Success;
             }
@@ -124,17 +124,19 @@ public class CustomerMessageTransferedService {
             if (clientShouldSend) {
                 if (setting.WechatSend) {
                     string customerCode = customerCodeService.GetCustomerCode(customer.Id);
-                    string url = GetUrl(order.Id);
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
+                        string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message1Id);
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageType.Name, orderCode, customerCode, message1, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message2) == false) {
+                        string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message2Id);
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageType.Name, orderCode, customerCode, message2, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message3) == false) {
+                        string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message3Id);
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageType.Name, orderCode, customerCode, message3, processUser, url);
                     }
                 }
@@ -143,7 +145,6 @@ public class CustomerMessageTransferedService {
                     customerMessageCommonService.SendSms(customer.Mobile, TransferMessage(setting.SmsMessageTemplate, orderCode));
                 }
             }
-
         }
     }
 }

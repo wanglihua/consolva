@@ -128,17 +128,18 @@ public class CustomerMessageOrderDeliveredService {
 
             if (clientShouldSend) {
                 if (setting.WechatSend) {
-                    string url = GetUrl(order.Id);
-
                     if (string.IsNullOrWhiteSpace(message1) == false) {
+                        string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message1Id);
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageType.Name, orderCode, customerCode, message1, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message2) == false) {
+                        string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message2Id);
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageType.Name, orderCode, customerCode, message2, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message3) == false) {
+                        string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message3Id);
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageType.Name, orderCode, customerCode, message3, processUser, url);
                     }
                 }

@@ -116,18 +116,20 @@ public class CustomerMessageAccountChangeService {
 
             if (clientShouldSend) {
                 if (setting.WechatSend) {
-                    string url = GetUrl();
                     string messageTitle = "账户余额变动提醒";
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
+                        string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message1Id);
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", messageTitle, customerCode, message1, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message2) == false) {
+                        string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message2Id);
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", messageTitle, customerCode, message2, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message3) == false) {
+                        string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message3Id);
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", messageTitle, customerCode, message3, processUser, url);
                     }
                 }

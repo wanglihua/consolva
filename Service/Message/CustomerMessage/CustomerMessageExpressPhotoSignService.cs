@@ -68,11 +68,10 @@ public class CustomerMessageExpressPhotoSignService {
 
     public void SendMessage(ExpressPhotoInfo expressPhoto, string addUserName = "") {
         var customer = expressPhoto.Customer;
-        var express = expressPhoto.Express; // 这个主要用户获取快递详细URL
 
         string trackingNo = expressPhoto.TrackingNo;
         if (customer == null) {
-            express = session.Query<ExpressInfo>()
+            var express = session.Query<ExpressInfo>()
                 .Where(e => e.TrackingNo == trackingNo)
                 .Take(1)
                 .SingleOrDefault();
@@ -115,7 +114,7 @@ public class CustomerMessageExpressPhotoSignService {
             if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend)) {
                 clientShouldSend = customerMessageCommonService.CustomerShouldSend(customer.Id, messageType);
             }
-            
+
             if (clientShouldSend && (setting.WechatSend || setting.SmsSend)) {
                 messageStatus = CustomerMessageStatus.Success;
             }
@@ -143,20 +142,19 @@ public class CustomerMessageExpressPhotoSignService {
             if (clientShouldSend) {
                 if (setting.WechatSend) {
                     string customerCode = customerCodeService.GetCustomerCode(customer.Id);
-                    string url = string.Empty;
-                    if (express != null) {
-                        url = GetUrl(express.Id);
-                    }
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
+                        string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message1Id);
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "快递单签收图片推送", customerCode, message1, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message2) == false) {
+                        string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message2Id);
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "快递单签收图片推送", customerCode, message2, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message3) == false) {
+                        string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message3Id);
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "快递单签收图片推送", customerCode, message3, processUser, url);
                     }
                 }

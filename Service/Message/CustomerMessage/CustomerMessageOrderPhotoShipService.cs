@@ -119,17 +119,19 @@ public class CustomerMessageOrderPhotoShipService {
             if (clientShouldSend) {
                 if (setting.WechatSend) {
                     string customerCode = customerCodeService.GetCustomerCode(customer.Id);
-                    string url = GetUrl(order.Id);
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
+                        string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message1Id);
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "订单发货图片推送", customerCode, message1, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message2) == false) {
+                        string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message2Id);
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "订单发货图片推送", customerCode, message2, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message3) == false) {
+                        string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message3Id);
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "订单发货图片推送", customerCode, message3, processUser, url);
                     }
                 }

@@ -68,11 +68,10 @@ public class CustomerMessageExpressPhotoCheckinService {
 
     public void SendMessage(ExpressPhotoInfo expressPhoto) {
         var customer = expressPhoto.Customer;
-        var express = expressPhoto.Express; // 这个主要用户获取快递详细URL
 
         string trackingNo = expressPhoto.TrackingNo;
         if (customer == null) {
-            express = session.Query<ExpressInfo>()
+            var express = session.Query<ExpressInfo>()
                 .Where(e => e.TrackingNo == trackingNo)
                 .Take(1)
                 .SingleOrDefault();
@@ -140,20 +139,19 @@ public class CustomerMessageExpressPhotoCheckinService {
             if (clientShouldSend) {
                 if (setting.WechatSend) {
                     string customerCode = customerCodeService.GetCustomerCode(customer.Id);
-                    string url = string.Empty;
-                    if (express != null) {
-                        url = GetUrl(express.Id);
-                    }
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
+                        string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message1Id);
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "快递单入库图片推送", customerCode, message1, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message2) == false) {
+                        string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message2Id);
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "快递单入库图片推送", customerCode, message2, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message3) == false) {
+                        string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message3Id);
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", "快递单入库图片推送", customerCode, message3, processUser, url);
                     }
                 }

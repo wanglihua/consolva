@@ -91,7 +91,7 @@ public class CustomerMessageScoreChangeService {
             if (setting.ClientCustomizable && (setting.WechatSend || setting.SmsSend)) {
                 clientShouldSend = customerMessageCommonService.CustomerShouldSend(customer.Id, messageType);
             }
-            
+
             if (clientShouldSend && (setting.WechatSend || setting.SmsSend)) {
                 messageStatus = CustomerMessageStatus.Success;
             }
@@ -115,18 +115,20 @@ public class CustomerMessageScoreChangeService {
 
             if (clientShouldSend) {
                 if (setting.WechatSend) {
-                    string url = GetUrl();
                     string messageTitle = "积分变动提醒";
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
+                        string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message1Id);
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", messageTitle, customerCode, message1, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message2) == false) {
+                        string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message2Id);
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", messageTitle, customerCode, message2, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message3) == false) {
+                        string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message3Id);
                         customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, "", messageTitle, customerCode, message3, processUser, url);
                     }
                 }
