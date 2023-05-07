@@ -65,7 +65,7 @@ public class CustomerMessageAccountChangeService {
         return message;
     }
 
-    private string GetUrl() {
+    public string GetUrl() {
         return "pages/customer/customer_account/customer_account";
     }
 

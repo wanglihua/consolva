@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using shunda.Client.Areas.Message.Models.CustomerMessage;
+using shunda.Client.Areas.Message.Models.CustomerMessageList;
 using shunda.Client.Services;
 using shunda.Core.Hibernate;
 using shunda.Core.Web;
@@ -9,12 +9,12 @@ using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Message.Controllers;
 
-public class CustomerMessageController : Controller {
+public class CustomerMessageListController : Controller {
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
     private readonly CustomerMessageClientViewRecordService customerMessageClientViewRecordService;
 
-    public CustomerMessageController(ISession session,
+    public CustomerMessageListController(ISession session,
         LoginCustomerService loginCustomerService,
         CustomerMessageClientViewRecordService customerMessageClientViewRecordService) {
         this.session = session;

@@ -60,7 +60,7 @@ public class CustomerMessageCouponFollowService {
         return message;
     }
 
-    private string GetUrl() {
+    public string GetUrl() {
         return "pages/coupon/coupon_mine";
     }
 

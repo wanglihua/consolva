@@ -64,7 +64,7 @@ public class CustomerMessageScoreChangeService {
         return message;
     }
 
-    private string GetUrl() {
+    public string GetUrl() {
         return "pages/customer/customer_score/customer_score";
     }
 

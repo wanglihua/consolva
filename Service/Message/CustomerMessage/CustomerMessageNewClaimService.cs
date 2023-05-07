@@ -47,7 +47,7 @@ public class CustomerMessageNewClaimService {
         }
     }
 
-    private string GetUrl() {
+    public string GetUrl() {
         return "pages/express/express_claim/express_claim_list";
     }
 

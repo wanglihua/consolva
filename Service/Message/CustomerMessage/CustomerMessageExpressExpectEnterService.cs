@@ -62,7 +62,7 @@ public class CustomerMessageExpressExpectEnterService {
         return message;
     }
 
-    private string GetUrl(int expressId) {
+    public string GetUrl(int expressId) {
         return $"pages/express/express_checkin/express_checkin_detail?id={expressId}";
     }
 

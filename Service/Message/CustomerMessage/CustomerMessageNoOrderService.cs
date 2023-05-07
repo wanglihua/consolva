@@ -50,7 +50,7 @@ public class CustomerMessageNoOrderService {
         }
     }
 
-    private string GetUrl() {
+    public string GetUrl() {
         return "pages/home/home_index";
     }
 

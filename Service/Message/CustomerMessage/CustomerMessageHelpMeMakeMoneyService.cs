@@ -52,7 +52,7 @@ public class CustomerMessageHelpMeMakeMoneyService {
         }
     }
 
-    private string GetUrl() {
+    public string GetUrl() {
         // todo 这个应该改成是客户推广的页面
         return "pages/home/home_index";
     }

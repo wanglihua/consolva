@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace shunda.Client.Areas.Message.Models.CustomerMessage;
+namespace shunda.Client.Areas.Message.Models.CustomerMessageList;
 
 public class CustomerMessageListParam
 {

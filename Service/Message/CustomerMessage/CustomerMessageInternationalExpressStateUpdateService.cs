@@ -66,7 +66,7 @@ public class CustomerMessageInternationalExpressStateUpdateService {
         return message;
     }
 
-    private string GetUrl(int orderId) {
+    public string GetUrl(int orderId) {
         return $"pages/order/order_detail?id={orderId}";
     }
 
