@@ -28,6 +28,8 @@ public class CustomerMessageClientUrlService {
     private readonly CustomerMessageOrderDeliveredService customerMessageOrderDeliveredService;
     private readonly CustomerMessageOrderPhotoShipService customerMessageOrderPhotoShipService;
     private readonly CustomerMessagePackedService customerMessagePackedService;
+    private readonly CustomerMessageScoreChangeService customerMessageScoreChangeService;
+    private readonly CustomerMessageTransferedService customerMessageTransferedService;
 
     public CustomerMessageClientUrlService(
         ISession session,
@@ -45,7 +47,9 @@ public class CustomerMessageClientUrlService {
         CustomerMessageNoOrderService customerMessageNoOrderService,
         CustomerMessageOrderDeliveredService customerMessageOrderDeliveredService,
         CustomerMessageOrderPhotoShipService customerMessageOrderPhotoShipService,
-        CustomerMessagePackedService customerMessagePackedService
+        CustomerMessagePackedService customerMessagePackedService,
+        CustomerMessageScoreChangeService customerMessageScoreChangeService,
+        CustomerMessageTransferedService customerMessageTransferedService
     ) {
         this.session = session;
         this.customerMessageAccountChangeService = customerMessageAccountChangeService;
@@ -63,6 +67,8 @@ public class CustomerMessageClientUrlService {
         this.customerMessageOrderDeliveredService = customerMessageOrderDeliveredService;
         this.customerMessageOrderPhotoShipService = customerMessageOrderPhotoShipService;
         this.customerMessagePackedService = customerMessagePackedService;
+        this.customerMessageScoreChangeService = customerMessageScoreChangeService;
+        this.customerMessageTransferedService = customerMessageTransferedService;
     }
 
     public string GetUrl(CustomerMessageInfo customerMessage) {
@@ -172,6 +178,15 @@ public class CustomerMessageClientUrlService {
         if (messageType == CustomerMessageType.Packed) {
             int orderId = relatedId;
             return customerMessagePackedService.GetUrl(orderId);
+        }
+
+        if (messageType == CustomerMessageType.ScoreChange) {
+            return customerMessageScoreChangeService.GetUrl();
+        }
+
+        if (messageType == CustomerMessageType.Transfered) {
+            int orderId = relatedId;
+            return customerMessageTransferedService.GetUrl(orderId);
         }
 
         return string.Empty;
