@@ -100,16 +100,19 @@ public class CustomerMessageExpressCheckinService {
 
             string processUser = CustomerMessageCommonService.ShundaSecretary;
 
+            int message1Id = 0;
             if (string.IsNullOrWhiteSpace(message1) == false) {
-                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message1, messageStatus, setting, processUser);
+                message1Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message1, messageStatus, setting, processUser);
             }
 
+            int message2Id = 0;
             if (string.IsNullOrWhiteSpace(message2) == false) {
-                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message2, messageStatus, setting, processUser);
+                message2Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message2, messageStatus, setting, processUser);
             }
 
+            int message3Id = 0;
             if (string.IsNullOrWhiteSpace(message3) == false) {
-                customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message3, messageStatus, setting, processUser);
+                message3Id = customerMessageCommonService.SaveCustomerMessage(CustomerMessageSendType.RealTime, customer, null, message3, messageStatus, setting, processUser);
             }            
 
             if (clientShouldSend) {
