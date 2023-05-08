@@ -125,7 +125,7 @@ public class LogisticsOrderFirstModeController : Controller {
 
         if (queryParam.OrderIdQuery != null) {
             int orderIdQuery = queryParam.OrderIdQuery ?? 0;
-            query = query.Where(e => e.Order.Id == orderIdQuery);
+            query = query.Where(e => e.OrderId == orderIdQuery);
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.FirstModeNameQuery) == false) {

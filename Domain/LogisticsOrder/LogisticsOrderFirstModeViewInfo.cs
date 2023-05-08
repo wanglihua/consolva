@@ -16,8 +16,8 @@ public class LogisticsOrderFirstModeViewInfo : Entity {
     /// 物流订单，非空
     /// </summary>
     [Required(ErrorMessage = "物流订单不能为空！")]
-    [JsonProperty("order")]
-    public virtual LogisticsOrderInfo Order { get; set; } = new();
+    [JsonProperty("orderId")]
+    public virtual int OrderId { get; set; }
 
     /// <summary>
     /// 订单编号，非空

@@ -12,14 +12,12 @@ public class LogisticsOrderFirstModeViewInfoMapping : EntityMapping<LogisticsOrd
 
         Mutable(false);
 
-        ManyToOne(
-            x => x.Order,
+        Property(
+            x => x.OrderId,
             map => {
-                map.Class(typeof(LogisticsOrderInfo));
+                map.Type(NHibernateUtil.Int32);
                 map.Column("order_id");
                 map.NotNullable(true);
-                map.Cascade(Cascade.None);
-                map.Fetch(FetchKind.Select);
             }
         );
 
