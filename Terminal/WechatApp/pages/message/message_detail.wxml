@@ -11,4 +11,12 @@
     </block>
 
     <van-cell title="消息内容" label="{{ content }}" border="{{ false }}" custom-class="item"/>
+
+    <block wx:if="{{ url && url !== '' }}">
+        <van-cell-group custom-class="detail-buttons" border="{{false}}">
+            <van-cell border="{{false}}">
+                <van-button type="info" class-prefix="iconfont" icon="detail-entry" block bind:click="onOpenPageClick">{{ urlTitle }}</van-button>
+            </van-cell>
+        </van-cell-group>
+    </block>
 </view>
