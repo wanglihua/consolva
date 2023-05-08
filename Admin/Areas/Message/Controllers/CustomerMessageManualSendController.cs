@@ -4,6 +4,7 @@ using NLog;
 using shunda.Admin.Areas.Message.Models.CustomerMessageManualSend;
 using shunda.Admin.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
@@ -127,8 +128,26 @@ public class CustomerMessageManualSendController : Controller {
                 }
                 */
 
-                string customerCode = customerCodeService.GetCustomerCode(customer.Id);
-                wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "手动推送", customerCode, model.RemarkMessage, loginUserName, url: "pages/home/home_index");
+
+                Transactional.Wrap(session, () => {
+                    CustomerMessageInfo customerMessage = new CustomerMessageInfo();
+                    customerMessage.SendType = CustomerMessageSendType.Manual;
+                    customerMessage.Type = CustomerMessageType.Manual;
+                    customerMessage.Customer = customer;
+                    customerMessage.Content = model.RemarkMessage;
+                    customerMessage.SmsSend = false;
+                    customerMessage.WechatSend = true;
+                    customerMessage.SendTime = DateTime.Now;
+                    customerMessage.Status = CustomerMessageStatus.Success;
+
+                    session.Save(customerMessage);
+                    session.Flush();
+
+                    string url = CustomerMessageClientUrlService.GetMessageDetailUrl(customerMessage.Id);
+
+                    string customerCode = customerCodeService.GetCustomerCode(customer.Id);
+                    wechatMessageService.SendOrderNoticeTemplateMessage(customer, "", "手动推送", customerCode, model.RemarkMessage, loginUserName, url);
+                });
 
                 if (customerIdList.Contains(customer.Id) == false) {
                     weiXinSuccessCustomerList.Add(checkinCode);
@@ -166,16 +185,31 @@ public class CustomerMessageManualSendController : Controller {
                     continue;
                 }
 
-                SendSmsResult result = smsService.SendSms(customer.Mobile, model.RemarkMessage);
-                if (customerIdList.Contains(customer.Id) == false) {
-                    customerIdList.Add(customer.Id);
-                }
+                Transactional.Wrap(session, () => {
+                    SendSmsResult result = smsService.SendSms(customer.Mobile, model.RemarkMessage);
+                    if (customerIdList.Contains(customer.Id) == false) {
+                        customerIdList.Add(customer.Id);
+                    }
 
-                if (result.Code == SendSmsResult.CodeSuccess) {
-                    smsSuccessCustomerList.Add(customerIdStr);
-                } else {
-                    smsFailCustomerList.Add(customerIdStr);
-                }
+                    if (result.Code == SendSmsResult.CodeSuccess) {
+                        CustomerMessageInfo customerMessage = new CustomerMessageInfo();
+                        customerMessage.SendType = CustomerMessageSendType.Manual;
+                        customerMessage.Type = CustomerMessageType.Manual;
+                        customerMessage.Customer = customer;
+                        customerMessage.Content = model.RemarkMessage;
+                        customerMessage.SmsSend = true;
+                        customerMessage.WechatSend = false;
+                        customerMessage.SendTime = DateTime.Now;
+                        customerMessage.Status = CustomerMessageStatus.Success;
+
+                        session.Save(customerMessage);
+                        session.Flush();
+
+                        smsSuccessCustomerList.Add(customerIdStr);
+                    } else {
+                        smsFailCustomerList.Add(customerIdStr);
+                    }
+                });
             }
         }
 
