@@ -81,7 +81,7 @@ public class CustomerMessageClientUrlService {
     /// 否则就依赖循环了
     /// </summary>
     public static string GetMessageDetailUrl(int messageId) {
-        return $"pages/message/message_detail?messageId={messageId}";
+        return $"pages/message/message_detail?id={messageId}";
     }
 
     public (string url, string urlTitle) GetUrl(CustomerMessageInfo customerMessage) {

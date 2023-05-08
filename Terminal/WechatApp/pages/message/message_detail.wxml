@@ -1,0 +1,14 @@
+<header/>
+<view class="container">
+    <van-cell-group title="消息详情"/>
+    <van-cell title="{{ type }}" border="{{ false }}" custom-class="item-header" title-class="item-header-title" value-class="item-header-value"/>
+    <van-cell title="消息类型" value="{{ type }}" border="{{ false }}" custom-class="item"/>
+    <van-cell title="发送时间" value="{{ sendTime }}" border="{{ false }}" custom-class="item"/>
+    <van-cell title="客户ID" value="{{ customerCode }}" border="{{ false }}" custom-class="item"/>
+
+    <block wx:if="{{ orderCode && orderCode !== '' }}">
+        <van-cell title="订单编号" value="{{ orderCode }}" border="{{ false }}" custom-class="item"/>
+    </block>
+
+    <van-cell title="消息内容" label="{{ content }}" border="{{ false }}" custom-class="item"/>
+</view>
