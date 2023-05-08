@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using shunda.Core;
+using shunda.Domain.Fee;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsTrack;
 
@@ -80,6 +81,12 @@ public class LogisticsOrderFirstModeViewInfo : Entity {
     /// 跟踪子状态
     /// </summary>
     public virtual SeventeenTrackNumberTrackSubStatus TrackSubStatus { get; set; } = SeventeenTrackNumberTrackSubStatus.None;
+    
+    /// <summary>
+    /// 支付状态，非空
+    /// </summary>
+    [ModelBinder(typeof(PayStatusModelBinder))]
+    public virtual PayStatus PayStatus { get; set; } = PayStatus.None;    
 
     #region Cache
 

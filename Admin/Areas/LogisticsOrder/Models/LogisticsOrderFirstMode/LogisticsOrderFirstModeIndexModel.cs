@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using shunda.Domain.Fee;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsTrack;
 
@@ -16,4 +17,7 @@ public class LogisticsOrderFirstModeIndexModel {
 
     [BindNever]
     public IList<SeventeenTrackNumberTrackStatus> TrackStatusList { get; set; } = new List<SeventeenTrackNumberTrackStatus>();
+
+    [BindNever]
+    public IList<PayStatus> PayStatusList { get; set; } = new List<PayStatus>();
 }

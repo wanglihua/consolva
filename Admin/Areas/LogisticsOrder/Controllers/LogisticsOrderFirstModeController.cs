@@ -10,6 +10,7 @@ using NHibernate.Criterion;
 using NHibernate.SqlCommand;
 using NLog;
 using shunda.Admin.Services;
+using shunda.Domain.Fee;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsTrack;
 using shunda.Domain.Pass.PassRes;
@@ -61,6 +62,11 @@ public class LogisticsOrderFirstModeController : Controller {
         model.FirstTypeList = LogisticsModeType.GetList();
         model.ChannelList = LogisticsModeChannel.GetList();
         model.TrackStatusList = SeventeenTrackNumberTrackStatus.GetList();
+        model.PayStatusList = new List<PayStatus>() {
+            PayStatus.Paid,
+            PayStatus.NotPaid,
+            PayStatus.PartPaid,
+        };
 
         return View("LogisticsOrderFirstModeIndex", model);
     }
@@ -126,6 +132,11 @@ public class LogisticsOrderFirstModeController : Controller {
         if (queryParam.OrderIdQuery != null) {
             int orderIdQuery = queryParam.OrderIdQuery ?? 0;
             query = query.Where(e => e.OrderId == orderIdQuery);
+        }
+
+        if (queryParam.PayStatusQuery != null && queryParam.PayStatusQuery != PayStatus.None) {
+            PayStatus payStatusQuery = queryParam.PayStatusQuery;
+            query = query.Where(e => e.PayStatus == payStatusQuery);
         }
 
         if (string.IsNullOrWhiteSpace(queryParam.FirstModeNameQuery) == false) {

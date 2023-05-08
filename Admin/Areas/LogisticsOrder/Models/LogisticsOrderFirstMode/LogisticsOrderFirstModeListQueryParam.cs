@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Core;
+using shunda.Domain.Fee;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsTrack;
 
@@ -11,6 +12,9 @@ public class LogisticsOrderFirstModeListQueryParam : ListQueryParam {
 
     [BindNever]
     public int? OrderIdQuery { get; set; }
+
+    [ModelBinder(typeof(PayStatusModelBinder))]
+    public virtual PayStatus? PayStatusQuery { get; set; }
 
     public string? FirstModeNameQuery { get; set; }
 

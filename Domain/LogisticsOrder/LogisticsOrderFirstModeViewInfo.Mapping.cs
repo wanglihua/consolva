@@ -1,6 +1,7 @@
 using shunda.Core;
 using NHibernate;
 using NHibernate.Mapping.ByCode;
+using shunda.Domain.Fee;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsTrack;
 
@@ -111,6 +112,15 @@ public class LogisticsOrderFirstModeViewInfoMapping : EntityMapping<LogisticsOrd
             map => {
                 map.Type<SeventeenTrackNumberTrackSubStatusHibernateType>();
                 map.Column("track_sub_status");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.PayStatus,
+            map => {
+                map.Type<PayStatusHibernateType>();
+                map.Column("pay_status_id");
                 map.NotNullable(true);
             }
         );

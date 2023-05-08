@@ -31,6 +31,14 @@
 <div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
 
     <label for="orderCodeQuery">订单编号</label>&nbsp;<input id="orderCodeQuery" autocomplete="off" style="width: 150px; height: 30px;" placeholder="订单编号查询"/>&nbsp;
+    
+    <label for="payStatusQuery">订单支付状态</label>&nbsp;
+    <select id="payStatusQuery" style="width: 120px; height: 30px;">
+        <option value="0">支付状态查询</option>
+        @foreach (var status in Model.PayStatusList) {
+            <option value="@status.Id">@status.Name</option>
+        }
+    </select>&nbsp;    
 
     <label for="firstModeNameQuery">物流方式</label>&nbsp;<input id="firstModeNameQuery" autocomplete="off" style="width: 120px; height: 30px;" placeholder="物流方式模糊查询"/>&nbsp;
 
@@ -109,6 +117,7 @@
             type: "POST",
             data: {
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.OrderCodeQuery))": $("#orderCodeQuery").val(),
+                "@(nameof(LogisticsOrderFirstModeListQueryParam.PayStatusQuery))": $("#payStatusQuery").val(),
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.FirstModeNameQuery))": $("#firstModeNameQuery").val(),
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.GoodsTypeQuery))": $("#goodsTypeQuery").val(),
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.TrackStatusQuery))": $("#trackStatusQuery").val(),
