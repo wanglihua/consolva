@@ -67,7 +67,7 @@ public class CustomerMessageInternationalExpressStateUpdateService {
     }
 
     public string GetUrl(int orderId) {
-        return $"pages/order/order_detail?id={orderId}";
+        return $"/pages/order/order_detail?id={orderId}";
     }
 
     public void SendMessage(CustomerInfo customer, LogisticsOrderInfo order, string trackingNo, string trackingContent) {

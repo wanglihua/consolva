@@ -61,7 +61,7 @@ public class CustomerMessageCouponFollowService {
     }
 
     public string GetUrl() {
-        return "pages/coupon/coupon_mine";
+        return "/pages/coupon/coupon_mine";
     }
 
     public void SendMessage(CustomerInfo customer) {

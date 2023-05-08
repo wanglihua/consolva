@@ -64,7 +64,7 @@ public class CustomerMessageMoneyEarnedService {
     }
 
     public string GetUrl() {
-        return "pages/customer/customer_score/customer_score";
+        return "/pages/customer/customer_score/customer_score";
     }
 
     /// <summary>

@@ -63,7 +63,7 @@ public class CustomerMessageExpressPhotoSignService {
     }
 
     public string GetUrl(int expressId) {
-        return $"pages/express/express_checkin/express_checkin_detail?id={expressId}";
+        return $"/pages/express/express_checkin/express_checkin_detail?id={expressId}";
     }
 
     public void SendMessage(ExpressPhotoInfo expressPhoto, string addUserName = "") {

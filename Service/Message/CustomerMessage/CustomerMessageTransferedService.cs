@@ -65,7 +65,7 @@ public class CustomerMessageTransferedService {
     }
 
     public string GetUrl(int orderId) {
-        return $"pages/order/order_detail?id={orderId}";
+        return $"/pages/order/order_detail?id={orderId}";
     }
 
     /// <summary>

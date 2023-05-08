@@ -66,7 +66,7 @@ public class CustomerMessageAccountChangeService {
     }
 
     public string GetUrl() {
-        return "pages/customer/customer_account/customer_account";
+        return "/pages/customer/customer_account/customer_account";
     }
 
     public void SendMessage(CustomerInfo customer, string changeReason, decimal accountChangeAmount, decimal accountBeforeAmount, decimal accountAfterAmount) {

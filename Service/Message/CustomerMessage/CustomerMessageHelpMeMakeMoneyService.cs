@@ -54,7 +54,7 @@ public class CustomerMessageHelpMeMakeMoneyService {
 
     public string GetUrl() {
         // todo 这个应该改成是客户推广的页面
-        return "pages/home/home_index";
+        return "/pages/home/home_index";
     }
 
     public void SendMessage(CustomerInfo customer) {

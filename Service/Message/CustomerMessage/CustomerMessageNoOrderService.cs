@@ -51,7 +51,7 @@ public class CustomerMessageNoOrderService {
     }
 
     public string GetUrl() {
-        return "pages/home/home_index";
+        return "/pages/home/home_index";
     }
 
     public void SendMessage(CustomerInfo customer) {

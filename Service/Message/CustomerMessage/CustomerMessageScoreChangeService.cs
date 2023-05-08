@@ -65,7 +65,7 @@ public class CustomerMessageScoreChangeService {
     }
 
     public string GetUrl() {
-        return "pages/customer/customer_score/customer_score";
+        return "/pages/customer/customer_score/customer_score";
     }
 
     public void SendMessage(CustomerInfo customer, string changeReason, decimal accountChangeAmount, decimal accountBeforeAmount, decimal accountAfterAmount) {

@@ -63,7 +63,7 @@ public class CustomerMessageExpressCheckinService {
     }
 
     public string GetUrl(int expressId) {
-        return $"pages/express/express_checkin/express_checkin_detail?id={expressId}";
+        return $"/pages/express/express_checkin/express_checkin_detail?id={expressId}";
     }
 
     public void SendMessage(CustomerInfo customer, ExpressInfo express) {
