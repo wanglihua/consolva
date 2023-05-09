@@ -160,7 +160,7 @@ public class CustomerMessageCommonService {
     /// <param name="customerCode">customerCode</param>
     /// <param name="sender">sender</param>
     /// <param name="url"></param>
-    public void SendOrderNoticeTemplateMessage(CustomerInfo customer, string orderCode, string customerCode, string sender, string url = "") {
+    public void SendOrderNoticeTemplateMessage(CustomerInfo customer, string orderCode, string customerCode, string sender, string url) {
         orderCode = orderCode + ",点击查看详情";
         wechatMessageService.SendOrderNoticeTemplateMessage(customer, string.Empty, orderCode, customerCode, string.Empty, sender, url);
     }

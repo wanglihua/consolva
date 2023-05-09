@@ -3,7 +3,8 @@ using NLog;
 using shunda.Core.Hibernate;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
-using shunda.Service.Coupon;
+using shunda.Domain.LogisticsOrder;
+using shunda.Service.Message.CustomerMessage;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Controllers;
@@ -13,28 +14,34 @@ public class TestController : Controller {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
-    private readonly CouponFollowService couponFollowService;
+    private readonly CustomerMessageInternationalExpressTrackingNoService customerMessageInternationalExpressTrackingNoService;
+    private readonly CustomerMessageInternationalExpressStateUpdateService customerMessageInternationalExpressStateUpdateService;
+    private readonly CustomerMessageCouponFollowService customerMessageCouponFollowService;
 
     public TestController(
         ISession session,
-        CouponFollowService couponFollowService
+        CustomerMessageInternationalExpressTrackingNoService customerMessageInternationalExpressTrackingNoService,
+        CustomerMessageInternationalExpressStateUpdateService customerMessageInternationalExpressStateUpdateService,
+        CustomerMessageCouponFollowService customerMessageCouponFollowService
     ) {
         this.session = session;
-        this.couponFollowService = couponFollowService;
+        this.customerMessageInternationalExpressTrackingNoService = customerMessageInternationalExpressTrackingNoService;
+        this.customerMessageInternationalExpressStateUpdateService = customerMessageInternationalExpressStateUpdateService;
+        this.customerMessageCouponFollowService = customerMessageCouponFollowService;
     }
 
     [HttpGet]
     [Route("/admin/test")]
     [Transactional]
     public IActionResult Index() {
-        var customerList = session.Query<CustomerInfo>()
-            .ToList();
+        // 189
+        // int orderId = 189;
+        // var order = session.Get<LogisticsOrderInfo>(orderId);
 
-        foreach (var customer in customerList) {
-            couponFollowService.NewFollow(customer.Id);
-        }
+        // customerMessageInternationalExpressTrackingNoService.SendMessage(order.Customer, order, "测试单号", "测试信息内容", "测试单号查询网址");
+        // customerMessageInternationalExpressStateUpdateService.SendMessage(order.Customer, order, "测试单号", "测试单号更新内容");
 
-        session.Flush();
+        customerMessageCouponFollowService.SendMessage(session.Get<CustomerInfo>(1));
 
         return Json(new JsonResultData {
             Success = true,
