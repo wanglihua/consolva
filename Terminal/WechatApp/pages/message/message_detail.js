@@ -12,6 +12,7 @@ Page({
     },
 
     onLoad(options) {
+        // const messageId = 11097;
         const messageId = options.id;
 
         const that = this;
@@ -19,7 +20,7 @@ Page({
         // 登录
         wx.login({
             success: res => {
-                that.postWithoutLoading(
+                app.postWithoutLoading(
                     "/client/wechat/app/login", {
                         code: res.code
                     }, function (res) {
