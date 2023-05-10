@@ -14,17 +14,20 @@ namespace shunda.Client.Areas.Message.Controllers;
 [MessageArea]
 public class CustomerMessageDetailController : Controller {
     private readonly ISession session;
+    private readonly WechatAppLoginService wechatAppLoginService;
     private readonly LoginCustomerService loginCustomerService;
     private readonly CustomerCodeService customerCodeService;
     private readonly CustomerMessageClientUrlService customerMessageClientUrlService;
 
     public CustomerMessageDetailController(
         ISession session,
+        WechatAppLoginService wechatAppLoginService,
         LoginCustomerService loginCustomerService,
         CustomerCodeService customerCodeService,
         CustomerMessageClientUrlService customerMessageClientUrlService
     ) {
         this.session = session;
+        this.wechatAppLoginService = wechatAppLoginService;
         this.loginCustomerService = loginCustomerService;
         this.customerCodeService = customerCodeService;
         this.customerMessageClientUrlService = customerMessageClientUrlService;
@@ -34,6 +37,14 @@ public class CustomerMessageDetailController : Controller {
     [Route("/client/customer/message/detail")]
     public IActionResult Detail([FromBody] CustomerMessageDetailParam param) {
         ValidationUtil.Validate<CustomerMessageDetailParamValidator, CustomerMessageDetailParam>(param);
+
+        // 后面可以把这个判断去掉
+        if (string.IsNullOrWhiteSpace(param.Code)) {
+            LoginResult loginResult = wechatAppLoginService.Login(param.Code, Request);
+            if (loginResult.ResultCode != LoginResultCode.Success || loginResult.Customer == null) {
+                throw new Exception("登陆出现异常，请重试！");
+            }
+        }
 
         int messageId = param.MessageId;
         var customerMessage = session.Get<CustomerMessageInfo>(messageId);
