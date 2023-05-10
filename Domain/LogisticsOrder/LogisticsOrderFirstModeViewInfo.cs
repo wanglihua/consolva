@@ -81,12 +81,28 @@ public class LogisticsOrderFirstModeViewInfo : Entity {
     /// 跟踪子状态
     /// </summary>
     public virtual SeventeenTrackNumberTrackSubStatus TrackSubStatus { get; set; } = SeventeenTrackNumberTrackSubStatus.None;
-    
+
+    /// <summary>
+    /// 支付时间，可空
+    /// </summary>
+    public virtual DateTime? PayTime { get; set; }
+
     /// <summary>
     /// 支付状态，非空
     /// </summary>
     [ModelBinder(typeof(PayStatusModelBinder))]
-    public virtual PayStatus PayStatus { get; set; } = PayStatus.None;    
+    public virtual PayStatus PayStatus { get; set; } = PayStatus.None;
+    
+    /// <summary>
+    /// 发货时间，可空
+    /// </summary>
+    public virtual DateTime? TransferTime { get; set; }
+    
+    /// <summary>
+    /// 妥投时间，可空
+    /// </summary>
+    public virtual DateTime? DeliverTime { get; set; }
+
 
     #region Cache
 

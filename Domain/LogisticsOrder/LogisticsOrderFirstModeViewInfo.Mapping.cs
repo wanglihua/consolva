@@ -117,11 +117,38 @@ public class LogisticsOrderFirstModeViewInfoMapping : EntityMapping<LogisticsOrd
         );
 
         Property(
+            x => x.PayTime,
+            map => {
+                map.Type(NHibernateUtil.DateTime);
+                map.Column("pay_time");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
             x => x.PayStatus,
             map => {
                 map.Type<PayStatusHibernateType>();
                 map.Column("pay_status_id");
                 map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.TransferTime,
+            map => {
+                map.Type(NHibernateUtil.DateTime);
+                map.Column("transfer_time");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.DeliverTime,
+            map => {
+                map.Type(NHibernateUtil.DateTime);
+                map.Column("deliver_time");
+                map.NotNullable(false);
             }
         );
     }
