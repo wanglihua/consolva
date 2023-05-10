@@ -39,7 +39,7 @@ public class CustomerMessageDetailController : Controller {
         ValidationUtil.Validate<CustomerMessageDetailParamValidator, CustomerMessageDetailParam>(param);
 
         // 后面可以把这个判断去掉
-        if (string.IsNullOrWhiteSpace(param.Code)) {
+        if (string.IsNullOrWhiteSpace(param.Code) == false) {
             LoginResult loginResult = wechatAppLoginService.Login(param.Code, Request);
             if (loginResult.ResultCode != LoginResultCode.Success || loginResult.Customer == null) {
                 throw new Exception("登陆出现异常，请重试！");
