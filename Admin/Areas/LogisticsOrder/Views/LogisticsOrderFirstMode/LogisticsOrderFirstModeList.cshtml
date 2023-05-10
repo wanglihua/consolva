@@ -96,10 +96,11 @@
                         <div>
                             @if (string.IsNullOrWhiteSpace(orderFirstMode.TrackingNo)) {
                                 <span>@ListDataUtil.Render(orderFirstMode.TrackingNo)</span>
-                            } else {
+                            } else if (orderFirstMode.SeventeenTrackNumber != null) {
                                 <a style="cursor: pointer;" onclick="showSeventeenTrackNumberEvent('@(orderFirstMode.TrackingNo)')">@ListDataUtil.Render(orderFirstMode.TrackingNo)</a>
+                            } else {
+                                <span>@ListDataUtil.Render(orderFirstMode.TrackingNo)</span><span>(未注册)</span>
                             }
-
                         </div>
                     </td>
 
