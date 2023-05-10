@@ -156,7 +156,8 @@ public class WechatMessageService {
         var firstTemplateDataItem = new TemplateDataItem(first);
         var keyword1TemplateDataItem = new TemplateDataItem(orderCode);
 
-        string keyword2Str = $"操作时间:北京时间{DateTime.Now:yyyy-MM-dd HH:mm}";
+        // string keyword2Str = $"操作时间:北京时间{DateTime.Now:yyyy-MM-dd HH:mm}";
+        string keyword2Str = $"北京时间{DateTime.Now:yyyy-MM-dd HH:mm}";
         if (string.IsNullOrWhiteSpace(sender) == false) {
             keyword2Str += $", 操作人:{sender}";
         }
