@@ -196,9 +196,13 @@
             url: "@Url.Action("Export", "LogisticsOrderFirstMode")",
             data: {
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.OrderCodeQuery))": $("#orderCodeQuery").val(),
+                "@(nameof(LogisticsOrderFirstModeListQueryParam.PayStatusQuery))": $("#payStatusQuery").val(),
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.FirstModeNameQuery))": $("#firstModeNameQuery").val(),
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.GoodsTypeQuery))": $("#goodsTypeQuery").val(),
-                "@(nameof(LogisticsOrderFirstModeListQueryParam.TrackingNoQuery))": $("#trackingNoQuery").val()              
+                "@(nameof(LogisticsOrderFirstModeListQueryParam.TrackStatusQuery))": $("#trackStatusQuery").val(),
+                "@(nameof(LogisticsOrderFirstModeListQueryParam.TrackingNoQuery))": $("#trackingNoQuery").val(),
+                "@(nameof(LogisticsOrderFirstModeListQueryParam.BeginDateQuery))": $("#beginDateQuery").val(),
+                "@(nameof(LogisticsOrderFirstModeListQueryParam.EndDateQuery))": $("#endDateQuery").val()
             }
         });            
     }
