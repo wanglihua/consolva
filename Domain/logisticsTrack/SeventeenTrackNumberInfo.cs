@@ -41,6 +41,12 @@ public class SeventeenTrackNumberInfo : Entity {
     /// 状态，非空
     /// </summary>
     public virtual SeventeenTrackNumberStatus Status { get; set; } = SeventeenTrackNumberStatus.None;
+    
+    /// <summary>
+    /// 跟踪时间，可空
+    /// 就是第一条跟踪记录的时间
+    /// </summary>
+    public virtual DateTime? TrackTime { get; set; }
 
     /// <summary>
     /// 跟踪状态

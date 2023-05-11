@@ -62,6 +62,15 @@ public class SeventeenTrackNumberInfoMapping : EntityMapping<SeventeenTrackNumbe
         );
 
         Property(
+            x => x.TrackTime,
+            map => {
+                map.Type(NHibernateUtil.DateTime);
+                map.Column("track_time");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
             x => x.Status,
             map => {
                 map.Type<SeventeenTrackNumberStatusHibernateType>();
@@ -78,7 +87,7 @@ public class SeventeenTrackNumberInfoMapping : EntityMapping<SeventeenTrackNumbe
                 map.NotNullable(true);
             }
         );
-        
+
         Property(
             x => x.TrackSubStatus,
             map => {
@@ -86,7 +95,6 @@ public class SeventeenTrackNumberInfoMapping : EntityMapping<SeventeenTrackNumbe
                 map.Column("track_sub_status");
                 map.NotNullable(true);
             }
-        );        
-
+        );
     }
 }

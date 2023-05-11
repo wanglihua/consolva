@@ -99,6 +99,15 @@ public class LogisticsOrderFirstModeViewInfoMapping : EntityMapping<LogisticsOrd
         );
 
         Property(
+            x => x.TrackTime,
+            map => {
+                map.Type(NHibernateUtil.DateTime);
+                map.Column("track_time");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
             x => x.TrackStatus,
             map => {
                 map.Type<SeventeenTrackNumberTrackStatusHibernateType>();

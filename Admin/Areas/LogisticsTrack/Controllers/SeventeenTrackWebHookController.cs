@@ -158,12 +158,19 @@ public class SeventeenTrackWebHookController : Controller {
 
             var eventList = provider.EventList.Reverse(); // 这里原来是按时间倒序排列的
 
+            DateTime? trackTime = null;
+
             // 假设按时间正序循环
             foreach (var evt in eventList) {
                 if (DateTime.TryParse(evt.TimeIso, out DateTime eventTime) == false) {
                     log.Error($"{evt.TimeIso}不是正确的时间格式！");
                     log.Error(requestBody);
                     return StatusCode((int)HttpStatusCode.InternalServerError);
+                }
+
+                if (trackTime == null || trackTime > eventTime) {
+                    // 取最小的时间，就是跟踪开始时间
+                    trackTime = eventTime;
                 }
 
                 string eventDesc = evt.Description ?? string.Empty;
@@ -186,6 +193,11 @@ public class SeventeenTrackWebHookController : Controller {
 
                     latestNumberEvent = trackNumberEvent;
                 }
+            }
+
+            if (trackNumber.TrackTime != trackTime) {
+                trackNumber.TrackTime = trackTime;
+                session.Update(trackNumber);
             }
 
             session.Flush();
