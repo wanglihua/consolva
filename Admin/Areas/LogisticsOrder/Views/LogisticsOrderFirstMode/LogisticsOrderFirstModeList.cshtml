@@ -54,6 +54,16 @@
             </th>
             <th style="width: 120px; text-align: center;">
                 <div>
+                    <a field="@(Model.OrderFirstModeAlias).@(nameof(LogisticsOrderFirstModeViewInfo.PayTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFirstModeList">付款时间</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.OrderFirstModeAlias).@(nameof(LogisticsOrderFirstModeViewInfo.DeliverTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFirstModeList">妥投时间</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
                     <a field="@(Model.OrderFirstModeAlias).@(nameof(LogisticsOrderFirstModeViewInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFirstModeList">修改时间</a>
                 </div>
             </th>
@@ -99,7 +109,8 @@
                             } else if (orderFirstMode.SeventeenTrackNumber != null) {
                                 <a style="cursor: pointer;" onclick="showSeventeenTrackNumberEvent('@(orderFirstMode.TrackingNo)')">@ListDataUtil.Render(orderFirstMode.TrackingNo)</a>
                             } else {
-                                <span>@ListDataUtil.Render(orderFirstMode.TrackingNo)</span><span>(未注册)</span>
+                                <span>@ListDataUtil.Render(orderFirstMode.TrackingNo)</span>
+                                <span>(未注册)</span>
                             }
                         </div>
                     </td>
@@ -117,6 +128,16 @@
                     </td>
                     <td style="text-align: center;">
                         <div>
+                            @ListDataUtil.Render(orderFirstMode.PayTime)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(orderFirstMode.DeliverTime)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
                             @orderFirstMode.UpdateTime.ToString("yyyy-MM-dd HH:mm")
                         </div>
                     </td>
@@ -125,7 +146,7 @@
             }
         } else {
             <tr>
-                <td colspan="10">
+                <td colspan="12">
                     暂时没有数据！
                 </td>
             </tr>
