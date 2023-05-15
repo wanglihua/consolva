@@ -158,7 +158,8 @@ public class SeventeenTrackWebHookController : Controller {
 
             var eventList = provider.EventList.Reverse(); // 这里原来是按时间倒序排列的
 
-            DateTime? trackTime = null;
+            DateTime? firstStatusTime = null;
+            DateTime? latestStatusTime = null;
 
             // 假设按时间正序循环
             foreach (var evt in eventList) {
@@ -168,9 +169,14 @@ public class SeventeenTrackWebHookController : Controller {
                     return StatusCode((int)HttpStatusCode.InternalServerError);
                 }
 
-                if (trackTime == null || trackTime > eventTime) {
-                    // 取最小的时间，就是跟踪开始时间
-                    trackTime = eventTime;
+                if (firstStatusTime == null || firstStatusTime > eventTime) {
+                    // 取最小的时间，就是跟踪开始状态时间
+                    firstStatusTime = eventTime;
+                }
+
+                if (latestStatusTime == null || latestStatusTime < eventTime) {
+                    // 取最大的时间，就是跟踪最近状态时间
+                    latestStatusTime = eventTime;
                 }
 
                 string eventDesc = evt.Description ?? string.Empty;
@@ -195,8 +201,9 @@ public class SeventeenTrackWebHookController : Controller {
                 }
             }
 
-            if (trackNumber.FirstStatusTime != trackTime) {
-                trackNumber.FirstStatusTime = trackTime;
+            if (trackNumber.FirstStatusTime != firstStatusTime || trackNumber.LatestStatusTime != latestStatusTime) {
+                trackNumber.FirstStatusTime = firstStatusTime;
+                trackNumber.LatestStatusTime = latestStatusTime;
                 session.Update(trackNumber);
             }
 

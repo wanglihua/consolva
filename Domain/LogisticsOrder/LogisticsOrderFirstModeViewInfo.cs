@@ -76,7 +76,13 @@ public class LogisticsOrderFirstModeViewInfo : Entity {
     /// 跟踪时间，可空
     /// 就是第一条跟踪记录的时间
     /// </summary>
-    public virtual DateTime? TrackTime { get; set; }
+    public virtual DateTime? FirstStatusTime { get; set; }
+
+    /// <summary>
+    /// 跟踪时间，可空
+    /// 就是最近一条跟踪记录的时间
+    /// </summary>
+    public virtual DateTime? LatestStatusTime { get; set; }
 
     /// <summary>
     /// 跟踪状态
