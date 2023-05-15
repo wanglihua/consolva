@@ -195,8 +195,8 @@ public class SeventeenTrackWebHookController : Controller {
                 }
             }
 
-            if (trackNumber.TrackTime != trackTime) {
-                trackNumber.TrackTime = trackTime;
+            if (trackNumber.FirstStatusTime != trackTime) {
+                trackNumber.FirstStatusTime = trackTime;
                 session.Update(trackNumber);
             }
 
