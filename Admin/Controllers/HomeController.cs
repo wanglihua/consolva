@@ -23,8 +23,11 @@ public class HomeController : Controller {
     [HttpGet]
     [Route("/")]
     public IActionResult Index() {
-        // return RedirectToAction("AdminIndex", "Home");
+#if DEBUG
+        return RedirectToAction("AdminIndex", "Home");
+#else
         return View("HomeIndex");
+#endif
     }
 
     [AdminAuth]

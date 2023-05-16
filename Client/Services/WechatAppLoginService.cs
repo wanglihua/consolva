@@ -43,6 +43,21 @@ public class WechatAppLoginService {
         string wechatAppOpenId = result.OpenId;
         string wechatUnionId = result.UnionId;
 
+#if DEBUG
+        // 调试时模拟用户
+
+        // 1
+        // oDVH44vbHUJD3vOiluhZhrRLP4Is
+        // oD-2d6S8CrnPzf4MrV0Kk8CGs988
+
+        // 33
+        // oDVH44iGSPzotLHDlH1bOm1RngpE
+        // oD-2d6aMHTJuXemMhJJdBPXVZIp0
+
+        wechatAppOpenId = "oDVH44iGSPzotLHDlH1bOm1RngpE";
+        wechatUnionId = "oD-2d6aMHTJuXemMhJJdBPXVZIp0";
+#endif
+
         LoginResult loginResult = new LoginResult(LoginResultCode.AccountNotExist, null);
 
         // 主要是防止新的用户的重复创建

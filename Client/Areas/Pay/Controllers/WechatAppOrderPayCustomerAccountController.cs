@@ -104,7 +104,8 @@ public class WechatAppOrderPayCustomerAccountController : Controller {
         }
 
         if (param.ScoreDeduct) {
-            var scoreDeductResult = customerScoreDeductService.GetDeduction(orderId, Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeCouponType));
+            decimal scoreDeductBaseAmount = Math.Min(arrearsAmount, orderFeeSumData.FirstModeFeeCouponType);
+            var scoreDeductResult = customerScoreDeductService.GetDeduction(orderId, scoreDeductBaseAmount);
             arrearsAmount -= scoreDeductResult.Amount;
         }
 
@@ -112,6 +113,7 @@ public class WechatAppOrderPayCustomerAccountController : Controller {
         decimal maxCustomerAccountAllowed = orderFeeSumData.FirstModeFeeCouponType - discountAmount;
         decimal availableAccount = Math.Min(customerAccount, maxCustomerAccountAllowed);
         decimal actualPayAmount = Math.Min(arrearsAmount, availableAccount);
+        availableAccount = Math.Min(availableAccount, actualPayAmount); // 显示的时候，最好不要显示成比实际支付的高
 
         // 这个判断一般是不会成立的
         if (actualPayAmount < 0) {
