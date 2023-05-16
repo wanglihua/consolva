@@ -59,12 +59,18 @@
                 </div>
             </th>
 
+            <th style="width: 80px; text-align: center;">
+                <div>
+                    <a field="@(Model.SeventeenTrackNumberAlias).@(nameof(SeventeenTrackNumberInfo.StopDaysFormula))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberList">停留天数</a>
+                </div>
+            </th>
+
             <th style="width: 120px; text-align: center;">
                 <div>
                     <a field="@(Model.SeventeenTrackNumberAlias).@(nameof(SeventeenTrackNumberInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberList">注册时间</a>
                 </div>
             </th>
-            
+
             <th style="width: 120px; text-align: center;">
                 <div>
                     <a field="@(Model.SeventeenTrackNumberAlias).@(nameof(SeventeenTrackNumberInfo.ErrorMessage))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortSeventeenTrackNumberList">错误信息</a>
@@ -131,10 +137,16 @@
 
                     <td style="text-align: center;">
                         <div>
+                            @ListDataUtil.Render(seventeenTrackNumber.StopDaysFormula)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
                             @seventeenTrackNumber.CreateTime.ToString("yyyy-MM-dd HH:mm")
                         </div>
                     </td>
-                    
+
                     <td style="text-align: left;" class="break-word">
                         <div>
                             @ListDataUtil.Render(seventeenTrackNumber.ErrorMessage)
@@ -152,7 +164,7 @@
             }
         } else {
             <tr>
-                <td colspan="13">
+                <td colspan="14">
                     暂时没有数据！
                 </td>
             </tr>
