@@ -47,6 +47,12 @@
                 </div>
             </th>
 
+            <th style="width: 80px; text-align: center;">
+                <div>
+                    <a field="@(Model.OrderFirstModeAlias).@(nameof(LogisticsOrderFirstModeViewInfo.StopDays))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFirstModeList">停留天数</a>
+                </div>
+            </th>
+
             <th style="width: 120px; text-align: center;">
                 <div>
                     <a field="@(Model.OrderFirstModeAlias).@(nameof(LogisticsOrderFirstModeViewInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFirstModeList">打包时间</a>
@@ -123,6 +129,12 @@
 
                     <td style="text-align: center;">
                         <div>
+                            @ListDataUtil.Render(orderFirstMode.StopDays)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
                             @orderFirstMode.CreateTime.ToString("yyyy-MM-dd HH:mm")
                         </div>
                     </td>
@@ -146,7 +158,7 @@
             }
         } else {
             <tr>
-                <td colspan="12">
+                <td colspan="13">
                     暂时没有数据！
                 </td>
             </tr>
