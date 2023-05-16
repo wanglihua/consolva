@@ -85,6 +85,11 @@ public class LogisticsOrderFirstModeViewInfo : Entity {
     public virtual DateTime? LatestStatusTime { get; set; }
 
     /// <summary>
+    /// 滞留时间，非空
+    /// </summary>
+    public virtual int? StopDays { get; set; }
+
+    /// <summary>
     /// 跟踪状态
     /// </summary>
     public virtual SeventeenTrackNumberTrackStatus TrackStatus { get; set; } = SeventeenTrackNumberTrackStatus.None;

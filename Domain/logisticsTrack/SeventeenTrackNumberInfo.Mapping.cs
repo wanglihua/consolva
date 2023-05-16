@@ -80,6 +80,14 @@ public class SeventeenTrackNumberInfoMapping : EntityMapping<SeventeenTrackNumbe
         );
 
         Property(
+            x => x.StopDaysFormula,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Formula("IF(track_status = 'Delivered', NULL, DATEDIFF(NOW(), latest_status_time))");
+            }
+        );
+
+        Property(
             x => x.Status,
             map => {
                 map.Type<SeventeenTrackNumberStatusHibernateType>();

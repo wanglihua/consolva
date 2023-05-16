@@ -115,6 +115,15 @@ public class LogisticsOrderFirstModeViewInfoMapping : EntityMapping<LogisticsOrd
                 map.NotNullable(false);
             }
         );
+        
+        Property(
+            x => x.StopDays,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("stop_days");
+                map.NotNullable(false);
+            }
+        );        
 
         Property(
             x => x.TrackStatus,
