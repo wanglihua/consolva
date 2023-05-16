@@ -251,19 +251,19 @@ public class LogisticsOrderExcelService {
 
                     var packData = packDataList.Where(e => e.Order.Id == orderId).Take(1).SingleOrDefault();
 
-
-
                     bool first = true;
                     foreach (var ofm in thisOrderFirstModeList) {
-                        int volumeWeightDenominator = 5000;
-                        int orderFirstModeId = order.FirstModeId;
-                        var orderFirstModeFeeRate = session.Query<LogisticsModeFeeRateInfo>()
-                            .Fetch(e => e.FeeRate)
-                            .Where(e => e.Mode.Id == orderFirstModeId)
-                            .Take(1)
-                            .SingleOrDefault();
-                        volumeWeightDenominator = orderFirstModeFeeRate?.FeeRate.VolumeWeightDenominator ?? 5000;
-                    
+                        int orderFirstModeId = ofm.Id;
+
+                        // int volumeWeightDenominator = 5000;
+                        // var orderFirstModeFeeRate = session.Query<LogisticsModeFeeRateInfo>()
+                        //     .Fetch(e => e.FeeRate)
+                        //     .Where(e => e.Mode.Id == orderFirstModeId)
+                        //     .Take(1)
+                        //     .SingleOrDefault();
+                        // volumeWeightDenominator = orderFirstModeFeeRate?.FeeRate.VolumeWeightDenominator ?? 5000;
+                        int volumeWeightDenominator = ofm.VolumeWeightDenominator;
+
                         var modePackList = thisOrderPackList.Where(e => e.OrderFirstMode.Id == orderFirstModeId).ToList();
 
                         double orderAmount = 0d;
