@@ -33,6 +33,9 @@ public class WechatAppOrderPayCustomerAccountDetailModel {
     [JsonProperty("actualPayAmount")]
     public string ActualPayAmount { get; set; } = string.Empty;
 
+    [JsonProperty("scoreDeduct")]
+    public bool ScoreDeduct { get; set; }
+
     [JsonProperty("hasAccountToPay")]
     public bool HasAccountToPay { get; set; }
 }

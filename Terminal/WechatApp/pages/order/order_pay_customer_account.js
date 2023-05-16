@@ -13,6 +13,7 @@ Page({
         customerAccount: "",
         availableAccount: "",
         actualPayAmount: "",
+        scoreDeduct: false,
         hasAccountToPay: true,
     },
 
@@ -42,6 +43,7 @@ Page({
                 actualPayAmount: res.data.actualPayAmount,
                 customerAccount: res.data.customerAccount,
                 availableAccount: res.data.availableAccount,
+                scoreDeduct: res.data.scoreDeduct,
                 hasAccountToPay: res.data.hasAccountToPay,
             });
         });
@@ -50,10 +52,12 @@ Page({
     onPayClick(e) {
         const orderId = this.data.orderId;
         const couponId = this.data.couponId;
+        const scoreDeduct = this.data.scoreDeduct;
 
         app.post("/client/order/pay/customer/account/pay", {
             orderId: orderId,
             couponId: couponId,
+            scoreDeduct: scoreDeduct,
         }, function (res) {
             wx.showModal({
                 title: '成功',

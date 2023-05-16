@@ -136,6 +136,7 @@ public class WechatAppOrderPayCustomerAccountController : Controller {
                 CustomerAccount = customerAccount.ToString("#0.00"),
                 AvailableAccount = availableAccount.ToString("#0.00"),
                 ActualPayAmount = actualPayAmount.ToString("#0.00"),
+                ScoreDeduct = param.ScoreDeduct,
                 HasAccountToPay = hasAccountToPay,
             },
         });
