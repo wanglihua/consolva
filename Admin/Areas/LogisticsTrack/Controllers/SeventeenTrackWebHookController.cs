@@ -255,6 +255,11 @@ public class SeventeenTrackWebHookController : Controller {
                         if (notDeliverPackBoxCount == 0) {
                             customerMessageOrderDeliveredService.SendMessage(customer, order);
 
+                            // 设置订单交付时间
+                            order.DeliverTime = latestNumberEvent.EventTime;
+                            session.Update(order);
+                            session.Flush();
+
                             // 结束订单
                             logisticsOrderService.CompleteOrder(new LogisticsOrderCompleteParam {
                                 OrderId = orderId,
