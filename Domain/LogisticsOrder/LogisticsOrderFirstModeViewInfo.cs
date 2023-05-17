@@ -120,6 +120,10 @@ public class LogisticsOrderFirstModeViewInfo : Entity {
     /// </summary>
     public virtual DateTime? DeliverTime { get; set; }
 
+    /// <summary>
+    /// 投递时效，可空
+    /// </summary>
+    public virtual int? DeliverDays { get; set; }
 
     #region Cache
 

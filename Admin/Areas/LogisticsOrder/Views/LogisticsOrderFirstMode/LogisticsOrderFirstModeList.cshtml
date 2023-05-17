@@ -70,7 +70,7 @@
             </th>
             <th style="width: 120px; text-align: center;">
                 <div>
-                    <a field="@(Model.OrderFirstModeAlias).@(nameof(LogisticsOrderFirstModeViewInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFirstModeList">修改时间</a>
+                    <a field="@(Model.OrderFirstModeAlias).@(nameof(LogisticsOrderFirstModeViewInfo.DeliverDays))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderFirstModeList">投递时效</a>
                 </div>
             </th>
             <th></th>
@@ -150,7 +150,7 @@
                     </td>
                     <td style="text-align: center;">
                         <div>
-                            @orderFirstMode.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                            @ListDataUtil.Render(orderFirstMode.DeliverDays)
                         </div>
                     </td>
                     <td></td>

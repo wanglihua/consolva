@@ -115,7 +115,7 @@ public class LogisticsOrderFirstModeViewInfoMapping : EntityMapping<LogisticsOrd
                 map.NotNullable(false);
             }
         );
-        
+
         Property(
             x => x.StopDays,
             map => {
@@ -123,7 +123,7 @@ public class LogisticsOrderFirstModeViewInfoMapping : EntityMapping<LogisticsOrd
                 map.Column("stop_days");
                 map.NotNullable(false);
             }
-        );        
+        );
 
         Property(
             x => x.TrackStatus,
@@ -175,6 +175,15 @@ public class LogisticsOrderFirstModeViewInfoMapping : EntityMapping<LogisticsOrd
             map => {
                 map.Type(NHibernateUtil.DateTime);
                 map.Column("deliver_time");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
+            x => x.DeliverDays,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("deliver_days");
                 map.NotNullable(false);
             }
         );
