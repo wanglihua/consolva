@@ -451,7 +451,7 @@ public class LogisticsFeeService {
 
             if (feeRate.VolumeWeightCareSideSumBegin) {
                 if (sideSum <= feeRate.VolumeWeightSideSumBegin) {
-                    finalCareVolumeWeight = false;
+                    careVolumeWeightBySideLength = false;
                 }
             }
 
