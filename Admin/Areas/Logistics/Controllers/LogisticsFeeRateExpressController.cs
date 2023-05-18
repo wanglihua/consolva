@@ -40,6 +40,7 @@ public class LogisticsFeeRateExpressController : Controller {
         model.FeeRateExpress = feeRate;
 
         if (feeRate != null) {
+            model.DeliverPrice = feeRate.DeliverPrice;
             model.StartWeight = feeRate.StartWeight;
             model.StartPrice = feeRate.StartPrice;
             model.StepWeight = feeRate.StepWeight;
@@ -81,6 +82,7 @@ public class LogisticsFeeRateExpressController : Controller {
             isCreate = false;
         }
 
+        feeRate.DeliverPrice = model.DeliverPrice ?? 0;
         feeRate.StartWeight = model.StartWeight ?? 0;
         feeRate.StartPrice = model.StartPrice ?? 0;
         feeRate.StepWeight = model.StepWeight ?? 0;

@@ -69,6 +69,18 @@
                 <form id="logisticsFeeRateExpressDetailForm" class="form-horizontal" role="form">
                     <input asp-for="LogisticsModeId" type="hidden"/>
                     <div class="row">
+                    
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="DeliverPrice" class="col-xs-3 control-label">派送费用</label>
+                                <div class="col-xs-9">
+                                    <div class="input-group">
+                                        <input asp-for="DeliverPrice" type="number" step="1" required="required" class="input-sm form-control"/>
+                                        <span class="input-group-addon">RMB</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="col-xs-12">
                             <div class="form-group">

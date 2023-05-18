@@ -10,6 +10,12 @@ public class LogisticsFeeRateExpressSaveModel {
     public int LogisticsModeId { get; set; }
 
     /// <summary>
+    /// 派送费用
+    /// </summary>
+    [Required(ErrorMessage = "派送费用不能为空！")]
+    public decimal? DeliverPrice { get; set; }
+
+    /// <summary>
     /// 起步重量
     /// </summary>
     [Required(ErrorMessage = "起步重量不能为空！")]
