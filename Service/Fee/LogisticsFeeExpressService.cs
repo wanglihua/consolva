@@ -47,10 +47,7 @@ public class LogisticsFeeExpressService {
 
         LogisticsFeeRateExpressInfo feeRateExpress = feeRateExpressList[0];
 
-        decimal startPrice = 0m;
-        if (feeRateExpress.StartPrice.HasValue) {
-            startPrice = feeRateExpress.StartPrice.Value;
-        }
+        decimal startPrice = feeRateExpress.StartPrice;
 
         // 重量满减
         if ((feeRateExpress.WeightBreakStart != null && feeRateExpress.WeightBreakStart.Value > 0)
@@ -94,20 +91,9 @@ public class LogisticsFeeExpressService {
             startPrice = 0;
         }
 
-        decimal startWeight = 0m;
-        if (feeRateExpress.StartWeight.HasValue) {
-            startWeight = feeRateExpress.StartWeight.Value;
-        }
-
-        decimal stepPrice = 0m;
-        if (feeRateExpress.StepPrice.HasValue) {
-            stepPrice = feeRateExpress.StepPrice.Value;
-        }
-
-        decimal stepWeight = 0m;
-        if (feeRateExpress.StepWeight.HasValue) {
-            stepWeight = feeRateExpress.StepWeight.Value;
-        }
+        decimal startWeight = feeRateExpress.StartWeight;
+        decimal stepPrice = feeRateExpress.StepPrice;
+        decimal stepWeight = feeRateExpress.StepWeight;
 
         if (stepWeight == 0m) {
             if (feeMessageType == FeeMessageType.Customer) {

@@ -98,7 +98,7 @@ public class LogisticsOrderStatus : CodeTypeBase {
             Packed,
         };
     }
-    
+
     public static IList<LogisticsOrderStatus> GetPackedStatusList() {
         return new List<LogisticsOrderStatus>() {
             Packed,
@@ -107,7 +107,7 @@ public class LogisticsOrderStatus : CodeTypeBase {
             Delivered,
             Completed,
         };
-    }    
+    }
 
     /// <summary>
     /// 构造函数
@@ -127,6 +127,10 @@ public class LogisticsOrderStatus : CodeTypeBase {
         }
 
         if (this == WaitPack) {
+            return false;
+        }
+
+        if (this == Canceled) {
             return false;
         }
 

@@ -20,6 +20,15 @@ public class LogisticsFeeRateExpressInfoMapping : EntityMapping<LogisticsFeeRate
         );
 
         Property(
+            x => x.DeliverPrice,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("deliver_price");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
             x => x.StartWeight,
             map => {
                 map.Type(NHibernateUtil.Decimal);

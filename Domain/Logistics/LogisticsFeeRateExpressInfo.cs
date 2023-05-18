@@ -14,28 +14,33 @@ public class LogisticsFeeRateExpressInfo : Entity {
     public virtual LogisticsModeInfo LogisticsMode { get; set; } = new LogisticsModeInfo();
 
     /// <summary>
+    /// 派送费用
+    /// </summary>
+    public virtual decimal DeliverPrice { get; set; }
+
+    /// <summary>
     /// 起步重量
     /// </summary>
     [Required(ErrorMessage = "起步重量不能为空！")]
-    public virtual decimal? StartWeight { get; set; }
+    public virtual decimal StartWeight { get; set; }
 
     /// <summary>
     /// 起步价格
     /// </summary>
     [Required(ErrorMessage = "起步价格不能为空！")]
-    public virtual decimal? StartPrice { get; set; }
+    public virtual decimal StartPrice { get; set; }
 
     /// <summary>
     /// 阶梯重量
     /// </summary>
     [Required(ErrorMessage = "阶梯重量不能为空！")]
-    public virtual decimal? StepWeight { get; set; }
+    public virtual decimal StepWeight { get; set; }
 
     /// <summary>
     /// 阶梯价格
     /// </summary>
     [Required(ErrorMessage = "阶梯价格不能为空！")]
-    public virtual decimal? StepPrice { get; set; }
+    public virtual decimal StepPrice { get; set; }
 
     /// <summary>
     /// 首重免费最小总重

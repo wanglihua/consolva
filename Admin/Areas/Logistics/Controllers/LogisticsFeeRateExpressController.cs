@@ -81,10 +81,11 @@ public class LogisticsFeeRateExpressController : Controller {
             isCreate = false;
         }
 
-        feeRate.StartWeight = model.StartWeight;
-        feeRate.StartPrice = model.StartPrice;
-        feeRate.StepWeight = model.StepWeight;
-        feeRate.StepPrice = model.StepPrice;
+        feeRate.StartWeight = model.StartWeight ?? 0;
+        feeRate.StartPrice = model.StartPrice ?? 0;
+        feeRate.StepWeight = model.StepWeight ?? 0;
+        feeRate.StepPrice = model.StepPrice ?? 0;
+
         feeRate.StartFreeMinWeight = model.StartFreeMinWeight;
         feeRate.WeightBreakStart = model.WeightBreakStart;
         feeRate.WeightBreakDiscount = model.WeightBreakDiscount;
