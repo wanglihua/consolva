@@ -41,6 +41,11 @@ public class LogisticsOrderFeeType : CodeTypeBase {
     public static readonly LogisticsOrderFeeType ExtraStorageDayFee = new LogisticsOrderFeeType(7000, "中国仓额外仓储费", "中国仓额外仓储费");
 
     /// <summary>
+    /// 派送费用
+    /// </summary>
+    public static readonly LogisticsOrderFeeType DeliverFee = new LogisticsOrderFeeType(8000, "派送费用", "派送费用");
+
+    /// <summary>
     /// 超级VIP折扣，这个费用是负的
     /// 客户端显示时，也显示VIP折扣
     /// </summary>
@@ -109,6 +114,7 @@ public class LogisticsOrderFeeType : CodeTypeBase {
         AverageExtraWeightFee,
         ExtraWeightFee,
         ExtraStorageDayFee,
+        DeliverFee,
         ExpressFee,
     };
 
@@ -153,7 +159,7 @@ public class LogisticsOrderFeeType : CodeTypeBase {
         couponFeeTypeList.Add(ManualIncrease);
         couponFeeTypeList.Add(ManualDecrease);
         couponFeeTypeList.Add(ManualAdjustFee);
-        
+
         return couponFeeTypeList;
     }
 

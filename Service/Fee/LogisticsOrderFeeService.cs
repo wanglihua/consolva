@@ -119,6 +119,38 @@ public class LogisticsOrderFeeService {
             EntryType = LogisticsFeeResultEntryType.Single
         });
 
+        // 跟 LogisticsOrderFeeSumService 中的逻辑一致
+        firstModeFeeNoPromotion += extraPackageCountFee;
+        firstModeFee += extraPackageCountFee;
+
+        #endregion
+
+        #region 派送费用
+
+        decimal deliverFee = 0m;
+
+        // 一个订单只收一个派送费，就取中间最大的一个
+        foreach (var feeDataItem in feeDataItemList) {
+            decimal fee = logisticsFeeService.GetDeliverFee(feeDataItem.LogisticsMode.Id, FeeMessageType.User);
+            deliverFee = Math.Max(fee, deliverFee);
+        }
+
+        if (deliverFee > 0) {
+            orderResultEntryList.Add(new LogisticsFeeResultEntry {
+                OrderFirstMode = null,
+                LogisticsMode = null,
+                Title = LogisticsOrderFeeType.DeliverFee.Name,
+                FeeType = LogisticsOrderFeeType.DeliverFee,
+                Fee = deliverFee,
+                GoodsType = LogisticsGoodsType.None,
+                EntryType = LogisticsFeeResultEntryType.Single
+            });
+        }
+
+        // 跟 LogisticsOrderFeeSumService 中的逻辑一致
+        firstModeFeeNoPromotion += deliverFee;
+        firstModeFee += deliverFee;
+
         #endregion
 
         #region vip 和 超级 vip折扣

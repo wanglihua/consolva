@@ -16,6 +16,40 @@ public class LogisticsFeeExpressService {
         this.feeCalculateLogService = feeCalculateLogService;
     }
 
+    public decimal GetDeliverFee(int logisticsModeId, FeeMessageType feeMessageType) {
+        LogisticsModeInfo logisticsMode = session.Get<LogisticsModeInfo>(logisticsModeId);
+        if (logisticsMode == null) {
+            throw new Exception("指定的物流方式不存在！");
+        }
+
+        feeCalculateLogService.AddLog($"按跨国快递费率计算");
+
+        IList<LogisticsFeeRateExpressInfo> feeRateExpressList = session
+            .Query<LogisticsFeeRateExpressInfo>()
+            .Where(e => e.LogisticsMode.Id == logisticsModeId)
+            .ToList();
+
+        if (feeRateExpressList.Count > 1) {
+            if (feeMessageType == FeeMessageType.Customer) {
+                throw new LogisticsFeeException("物流方式不支持当前物品重量！SD0060");
+            } else {
+                throw new LogisticsFeeException($"跨国快递物流方式{logisticsMode.Name}的费率设置多于一个，费率设置有问题！");
+            }
+        }
+
+        if (feeRateExpressList.Count == 0) {
+            if (feeMessageType == FeeMessageType.Customer) {
+                throw new LogisticsFeeException("物流方式不支持当前物品重量！SD0070");
+            } else {
+                throw new LogisticsFeeException($"跨国快递物流方式{logisticsMode.Name}中没有对应的费率设置！");
+            }
+        }
+
+        LogisticsFeeRateExpressInfo feeRateExpress = feeRateExpressList[0];
+
+        return feeRateExpress.DeliverPrice;
+    }
+
     public decimal GetFee(decimal totalWeightKg, int logisticsModeId, FeeMessageType feeMessageType) {
         LogisticsModeInfo logisticsMode = session.Get<LogisticsModeInfo>(logisticsModeId);
         if (logisticsMode == null) {

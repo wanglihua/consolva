@@ -56,7 +56,7 @@ public class LogisticsOrderFeeSumService {
             if (couponFeeTypeList.Contains(fee.Type)) {
                 firstModeFee += fee.Fee;
 
-                if (fee.OrderFirstMode != null && fee.OrderFirstMode.FirstMode.Promotion == false) {
+                if (fee.OrderFirstMode == null || fee.OrderFirstMode.FirstMode.Promotion == false) {
                     firstModeFeeCouponType += fee.Fee;
                 }
             }

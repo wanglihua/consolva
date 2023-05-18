@@ -50,8 +50,19 @@ public class FreightEstimateService {
         }
 
         #endregion
-        
+
         // 这里不用计算额外包裹费？
+        
+        decimal deliverFee = logisticsFeeService.GetDeliverFee(feeDataItem.LogisticsMode.Id, FeeMessageType.Customer);
+        if (deliverFee > 0) {
+            firstModeFeeEntryList.Add(new LogisticsFeeResultEntry {
+                Title = "派送费用",
+                Fee = deliverFee,
+                GoodsType = LogisticsGoodsType.None,
+                EntryType = LogisticsFeeResultEntryType.Single,
+                FeeType = LogisticsOrderFeeType.DeliverFee
+            });
+        }        
 
         #region 计算GST
 

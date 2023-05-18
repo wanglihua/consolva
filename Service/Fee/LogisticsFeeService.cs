@@ -38,6 +38,14 @@ public class LogisticsFeeService {
     }
 
     /// <summary>
+    /// 获取派送费用，一个订单只计算一次这个费用
+    /// </summary>
+    /// <returns></returns>
+    public decimal GetDeliverFee(int logisticsModeId, FeeMessageType feeMessageType) {
+        return logisticsFeeExpressService.GetDeliverFee(logisticsModeId, feeMessageType);
+    }
+
+    /// <summary>
     /// 根据物流数据计算物流费用
     /// 这是只计算一程的费用， 所以参数里面需要指定 LogisticsMode
     /// </summary>
