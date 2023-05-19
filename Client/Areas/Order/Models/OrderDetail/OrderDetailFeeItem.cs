@@ -5,6 +5,9 @@ namespace shunda.Client.Areas.Order.Models.OrderDetail;
 public class OrderDetailFeeItem {
     [JsonProperty("firstModeList")]
     public IList<OrderDetailFeeFirstModeItem> FirstModeList = new List<OrderDetailFeeFirstModeItem>();
+    
+    [JsonProperty("extraFeeList")]
+    public IList<OrderDetailFeeListItem> ExtraFeeList = new List<OrderDetailFeeListItem>();    
 
     [JsonProperty("otherFeeList")]
     public IList<OrderDetailFeeListItem> OtherFeeList = new List<OrderDetailFeeListItem>();

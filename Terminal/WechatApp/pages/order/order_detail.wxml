@@ -222,6 +222,14 @@
                     </block>
                 </block>
 
+                <block wx:if="{{ orderDetail.fee.extraFeeList && orderDetail.fee.extraFeeList.length > 0 }}">
+                    <van-cell title="额外费用" border="{{ true }}" title-class="item-subtitle" custom-class="item"/>
+                    <block wx:for="{{ orderDetail.fee.extraFeeList }}" wx:key="id" wx:for-item="fee" wx:for-index="feeIndex">
+                        <van-cell title="{{ fee.feeType }}" value="{{ fee.amount }} RMB" title-class="item-title-long" border="{{ false }}" custom-class="item"/>
+                    </block>
+                    <view class="item-last-vspace"/>
+                </block>
+
                 <block wx:if="{{ orderDetail.fee.otherFeeList && orderDetail.fee.otherFeeList.length > 0 }}">
                     <van-cell title="其他费用" border="{{ true }}" title-class="item-subtitle" custom-class="item" />
                     <block wx:for="{{ orderDetail.fee.otherFeeList }}" wx:key="id" wx:for-item="fee" wx:for-index="feeIndex">

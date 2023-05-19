@@ -331,6 +331,20 @@ public class OrderDetailController : Controller {
             orderFeeFirstModeList.Add(orderFirstModeItem);
         }
 
+        var logisticsFeeTypeList = LogisticsOrderFeeType.GetLogisticsFeeTypeList();
+        var extraFeeList = orderFeeList
+            .Where(e => e.OrderFirstMode == null && logisticsFeeTypeList.Contains(e.Type))
+            .OrderBy(e => e.Id)
+            .ToList();
+
+        var extraFeeItemList = extraFeeList
+            .Select(e => new OrderDetailFeeListItem {
+                Id = e.Id,
+                FeeType = e.Type.Name,
+                Amount = e.Fee.ToString("#0.00"),
+            })
+            .ToList();                   
+
         var otherFeeTypeList = LogisticsOrderFeeType.GetOtherFeeTypeList();
         var orderOtherFeeList = orderFeeList
             .Where(e => otherFeeTypeList.Contains(e.Type))
@@ -347,6 +361,7 @@ public class OrderDetailController : Controller {
 
         var feeItem = new OrderDetailFeeItem {
             FirstModeList = orderFeeFirstModeList,
+            ExtraFeeList = extraFeeItemList,
             OtherFeeList = orderOtherFeeItemList,
 
             TotalAmount = orderDetailItem.OrderAmount,
