@@ -313,6 +313,16 @@ public class LogisticsFeeRateInfo : Entity {
     public virtual decimal? MinVolumeActualWeightRatio { get; set; }
 
     /// <summary>
+    /// 体积重考虑实际重起始
+    /// </summary>
+    public virtual bool VolumeWeightCareActualWeightBegin { get; set; }
+
+    /// <summary>
+    /// 体积重实际重起始
+    /// </summary>
+    public virtual decimal? VolumeWeightActualWeightBegin { get; set; }
+
+    /// <summary>
     /// 体积重考虑最长边
     /// </summary>
     public virtual bool VolumeWeightCareMaxSideLength { get; set; }

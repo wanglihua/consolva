@@ -500,6 +500,24 @@ public class LogisticsFeeRateInfoMapping : EntityMapping<LogisticsFeeRateInfo>
         );
 
         Property(
+            x => x.VolumeWeightCareActualWeightBegin,
+            map => {
+                map.Type(NHibernateUtil.Boolean);
+                map.Column("volume_weight_care_actual_weight_begin");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.VolumeWeightActualWeightBegin,
+            map => {
+                map.Type(NHibernateUtil.Decimal);
+                map.Column("volume_weight_actual_weight_begin");
+                map.NotNullable(false);
+            }
+        );
+
+        Property(
             x => x.VolumeWeightCareMaxSideLength,
             map => {
                 map.Type(NHibernateUtil.Boolean);
