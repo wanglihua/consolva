@@ -84,6 +84,80 @@
         }
     }
 
+    var logisticsFeeTypeList = LogisticsOrderFeeType.GetLogisticsFeeTypeList();
+    var logisticsFeeListOfNoneMode = orderFeeList
+        .Where(e => e.OrderFirstMode == null && logisticsFeeTypeList.Contains(e.Type))
+        .OrderBy(e => e.Id)
+        .ToList();
+
+    if (logisticsFeeListOfNoneMode.Count != 0) {
+        <table class="data-list-table table table-striped table-bordered table-hover">
+            <caption style="padding: 8px; font-weight: bold; color: #2a62bc;">额外费用</caption>
+            <thead>
+                <tr>
+                    <th style="width: 50px; text-align: center;">序号</th>
+                    <th style="width: 100px; text-align: center;">
+                        物品类型
+                    </th>
+                    <th style="width: 120px; text-align: center;">
+                        费用类型
+                    </th>
+                    <th style="width: 80px; text-align: right;">
+                        金额
+                    </th>
+                    <th style="width: 120px; text-align: center;">
+                        产生时间
+                    </th>
+                    <th>
+                        描述
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    int noneModeGoodsTypeFeeOrder = 1;
+                    foreach (var logisticsOrderFee in logisticsFeeListOfNoneMode) {
+                        <tr>
+                            <td style="text-align: center;">@(noneModeGoodsTypeFeeOrder++)</td>
+                            <td style="text-align: center;">
+                                @logisticsOrderFee.GoodsType.Name
+                            </td>
+                            <td style="text-align: center;">
+                                @logisticsOrderFee.Type.Name
+                            </td>
+                            <td style="text-align: right;">
+                                @logisticsOrderFee.Fee
+                            </td>
+                            <td style="text-align: center;">
+                                @logisticsOrderFee.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                            </td>
+                            <td>
+                                @logisticsOrderFee.Description
+                            </td>
+                        </tr>
+                    }
+
+                    <tr>
+                        <td style="text-align: center;"></td>
+                        <td style="text-align: center;"></td>
+                        <td style="text-align: center;">
+                            小计
+                        </td>
+                        <td style="text-align: right;">
+                            <span style="color: #2a62bc;">
+                                @(logisticsFeeListOfNoneMode.Count == 0 ? 0m : logisticsFeeListOfNoneMode.Sum(e => e.Fee))
+                            </span>
+                        </td>
+                        <td style="text-align: center;">
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
     var otherFeeTypeList = LogisticsOrderFeeType.GetOtherFeeTypeList();
     var otherOrderFeeList = Model.OrderFeeList.Where(e => otherFeeTypeList.Contains(e.Type)).OrderBy(e => e.Id).ToList();
 
