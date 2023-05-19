@@ -137,7 +137,11 @@ public class LogisticsFeeRateController : Controller {
 
             if (logisticsFeeRateFromUi.VolumeWeightCareSideSumBegin
                 && (logisticsFeeRateFromUi.VolumeWeightSideSumBegin.HasValue == false || logisticsFeeRateFromUi.VolumeWeightSideSumBegin.Value <= 0))
-                ModelState.AddModelError(nameof(LogisticsFeeRateInfo.VolumeWeightMaxSideLengthBegin), "体积重考虑三边之和起始，但体积重三边之和起始 未设置 或 为0！");
+                ModelState.AddModelError(nameof(LogisticsFeeRateInfo.VolumeWeightSideSumBegin), "体积重考虑三边之和起始，但体积重三边之和起始 未设置 或 为0！");
+
+            if (logisticsFeeRateFromUi.VolumeWeightCareActualWeightBegin
+                && (logisticsFeeRateFromUi.VolumeWeightActualWeightBegin.HasValue == false || logisticsFeeRateFromUi.VolumeWeightActualWeightBegin.Value <= 0))
+                ModelState.AddModelError(nameof(LogisticsFeeRateInfo.VolumeWeightActualWeightBegin), "体积重考虑实际重起始，但体积重实际重起始 未设置 或 为0！");
 
             if (logisticsFeeRateFromUi.CareGoodsVolumePrice
                 && (logisticsFeeRateFromUi.GoodsVolumePrice == null || logisticsFeeRateFromUi.GoodsVolumePrice.Value <= 0))
@@ -260,6 +264,8 @@ public class LogisticsFeeRateController : Controller {
         logisticsFeeRate.GoodsVolumePrice = logisticsFeeRateFromUi.GoodsVolumePrice;
         logisticsFeeRate.CareVolumeActualWeightRatio = logisticsFeeRateFromUi.CareVolumeActualWeightRatio;
         logisticsFeeRate.MinVolumeActualWeightRatio = logisticsFeeRateFromUi.MinVolumeActualWeightRatio;
+        logisticsFeeRate.VolumeWeightCareActualWeightBegin = logisticsFeeRateFromUi.VolumeWeightCareActualWeightBegin;
+        logisticsFeeRate.VolumeWeightActualWeightBegin = logisticsFeeRateFromUi.VolumeWeightActualWeightBegin;
         logisticsFeeRate.VolumeWeightCareMaxSideLength = logisticsFeeRateFromUi.VolumeWeightCareMaxSideLength;
         logisticsFeeRate.VolumeWeightMaxSideLengthBegin = logisticsFeeRateFromUi.VolumeWeightMaxSideLengthBegin;
         logisticsFeeRate.VolumeWeightCareSideSumBegin = logisticsFeeRateFromUi.VolumeWeightCareSideSumBegin;
