@@ -127,6 +127,14 @@ public class LogisticsFeeService {
             }
         }
 
+        if (feeRate.VolumeWeightCareActualWeightBegin && feeRate.VolumeWeightActualWeightBegin <= 0) {
+            if (feeMessageType == FeeMessageType.Customer) {
+                throw new LogisticsFeeException("物流方式不支持！SD0242");
+            } else {
+                throw new LogisticsFeeException($"通用费率 {feeRate.Name} 费率体积重考虑实际重起始时，体积重实际重起始应该大于0！");
+            }
+        }
+
         if (feeRate.VolumeWeightCareMaxSideLength && feeRate.VolumeWeightMaxSideLengthBegin <= 0) {
             if (feeMessageType == FeeMessageType.Customer) {
                 throw new LogisticsFeeException("物流方式不支持！SD0243");
@@ -415,6 +423,7 @@ public class LogisticsFeeService {
     /// </summary>
     /// <param name="packList"></param>
     /// <param name="feeRate"></param>
+    /// <param name="feeMessageType"></param>
     /// <returns></returns>
     private decimal GetWholePackTotalWeight(IList<LogisticsFeePack> packList, LogisticsFeeRateInfo feeRate, FeeMessageType feeMessageType) {
         // 这里的总体逻辑和 GetSinglePackWeight 保持一致
@@ -442,6 +451,16 @@ public class LogisticsFeeService {
                 }
             }
 
+            // 实际重起始
+            bool careVolumeWeightActualWeightBegin = true;
+
+            if (feeRate.VolumeWeightCareActualWeightBegin) {
+                if (finalActualWeightKg <= feeRate.VolumeWeightActualWeightBegin) {
+                    careVolumeWeightActualWeightBegin = false;
+                }
+            }
+
+            // 最长边起始
             bool careVolumeWeightBySideLength = true;
 
             if (feeRate.VolumeWeightCareMaxSideLength) {
@@ -451,6 +470,9 @@ public class LogisticsFeeService {
                 }
             }
 
+            // 三边之和起始
+            bool careVolumeWeightSideSumBegin = true;
+
             // 体积重三边之和起始，低于这个长度，不考虑体积重；大于这个长度，考虑体积重
             decimal sideSum = 0;
             foreach (var feePack in packList) {
@@ -459,18 +481,12 @@ public class LogisticsFeeService {
 
             if (feeRate.VolumeWeightCareSideSumBegin) {
                 if (sideSum <= feeRate.VolumeWeightSideSumBegin) {
-                    careVolumeWeightBySideLength = false;
+                    careVolumeWeightSideSumBegin = false;
                 }
             }
 
-            // 两个都启用了的话，有一个符合的就行了
-            if (careVolumeWeightBySideLength == false && feeRate.VolumeWeightCareMaxSideLength && feeRate.VolumeWeightCareSideSumBegin) {
-                if (maxSideLength > feeRate.VolumeWeightMaxSideLengthBegin || sideSum > feeRate.VolumeWeightSideSumBegin) {
-                    careVolumeWeightBySideLength = true;
-                }
-            }
-
-            if (careVolumeWeightBySideLength == false) {
+            // 三个中，有一个启用符合的就行了
+            if (careVolumeWeightActualWeightBegin == false && careVolumeWeightBySideLength == false && careVolumeWeightSideSumBegin == false) {
                 finalCareVolumeWeight = false;
             }
         }
@@ -632,8 +648,6 @@ public class LogisticsFeeService {
     /// <param name="feePack"></param>
     /// <param name="feeRate"></param>
     /// <param name="feeMessageType"></param>
-    /// <returns></returns>
-    /// <exception cref="Exception"></exception>
     private decimal GetSinglePackWeight(LogisticsFeePack feePack, LogisticsFeeRateInfo feeRate, FeeMessageType feeMessageType) {
         // 这里的总体逻辑和 GetWholePackTotalWeight 保持一致
 
@@ -684,6 +698,49 @@ public class LogisticsFeeService {
             }
 
             if (careVolumeWeightBySideLength == false) {
+                finalCareVolumeWeight = false;
+            }
+        }
+
+        if (careVolumeWeight) {
+            if (feeRate.CareVolumeActualWeightRatio) {
+                // 体积重实际重最小倍率，低于这个倍率，不考虑体积重；大于这个倍率，考虑体积重
+                if (finalVolumeWeightKg <= finalActualWeightKg * feeRate.MinVolumeActualWeightRatio) {
+                    finalCareVolumeWeight = false;
+                }
+            }
+
+            // 实际重起始
+            bool careVolumeWeightActualWeightBegin = true;
+
+            if (feeRate.VolumeWeightCareActualWeightBegin) {
+                if (finalActualWeightKg <= feeRate.VolumeWeightActualWeightBegin) {
+                    careVolumeWeightActualWeightBegin = false;
+                }
+            }
+
+            // 最长边起始
+            bool careVolumeWeightBySideLength = true;
+
+            if (feeRate.VolumeWeightCareMaxSideLength) {
+                // 体积重最长边起始，低于这个长度，不考虑体积重；大于这个长度，考虑体积重
+                if (maxSideLength <= feeRate.VolumeWeightMaxSideLengthBegin) {
+                    careVolumeWeightBySideLength = false;
+                }
+            }
+
+            // 三边之和起始
+            bool careVolumeWeightSideSumBegin = true;
+
+            if (feeRate.VolumeWeightCareSideSumBegin) {
+                // 体积重三边之和起始，低于这个长度，不考虑体积重；大于这个长度，考虑体积重
+                if ((feePack.Length + feePack.Width + feePack.Height) <= feeRate.VolumeWeightSideSumBegin) {
+                    careVolumeWeightBySideLength = false;
+                }
+            }
+
+            // 三个中，有一个启用符合的就行了
+            if (careVolumeWeightActualWeightBegin == false && careVolumeWeightBySideLength == false && careVolumeWeightSideSumBegin == false) {
                 finalCareVolumeWeight = false;
             }
         }
