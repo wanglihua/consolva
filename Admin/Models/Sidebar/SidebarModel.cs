@@ -5,8 +5,7 @@ using shunda.Domain.Storage;
 
 namespace shunda.Admin.Models.Sidebar;
 
-public class SidebarModel
-{
+public class SidebarModel {
     /// <summary>
     /// Sidebar 是不是被折叠的
     /// </summary>
@@ -28,8 +27,7 @@ public class SidebarModel
     /// </summary>
     /// <param name="passResId"></param>
     /// <returns></returns>
-    public bool HasPassRes(int passResId)
-    {
+    public bool HasPassRes(int passResId) {
         return PassUtil.HasPassRes(PassResIdMap, IsAdmin, passResId);
     }
 
@@ -39,16 +37,14 @@ public class SidebarModel
     /// </summary>
     /// <param name="passResIds"></param>
     /// <returns></returns>
-    public bool HasOneOfPassRes(params int[] passResIds)
-    {
+    public bool HasOneOfPassRes(params int[] passResIds) {
         return PassUtil.HasOneOfPassRes(PassResIdMap, IsAdmin, passResIds);
     }
 
-    public bool HasOneOfPassRes(IList<int> passResIdList)
-    {
+    public bool HasOneOfPassRes(IList<int> passResIdList) {
         return PassUtil.HasOneOfPassRes(PassResIdMap, IsAdmin, passResIdList);
     }
-    
+
     [BindNever]
     public IList<LogisticsGoodsType> LogisticsGoodsTypeList { get; set; } = LogisticsGoodsType.GetInnerList();
 
