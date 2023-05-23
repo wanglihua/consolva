@@ -6,9 +6,9 @@ public partial class PassRes {
     /// </summary>
     public class Express {
         public const int CateId = PassResCate.ExpressCateId;
-        public static readonly PassResCateInfo Cate = PassResCate.Express;
+        public static PassResCateInfo Cate => PassResCate.Express;
 
-        public static readonly IList<PassResInfo> AllData = new List<PassResInfo>() {
+        public static IList<PassResInfo> AllData => new List<PassResInfo>() {
             new PassResInfo { Id = ExpressList, Name = "快递列表", Cate = Cate },
             new PassResInfo { Id = ExpressRemarkEdit, Name = "快递单备注维护", Cate = Cate },
             new PassResInfo { Id = ExpressForceDelete, Name = "快递强制删除", Cate = Cate },
@@ -23,7 +23,7 @@ public partial class PassRes {
             new PassResInfo { Id = ExpressOffShelfSchedule, Name = "快递下架排班", Cate = Cate },
         };
 
-        public static readonly IList<int> All = AllData.Select(e => e.Id).ToList();
+        public static IList<int> All => AllData.Select(e => e.Id).ToList();
 
         /// <summary>
         /// 快递列表

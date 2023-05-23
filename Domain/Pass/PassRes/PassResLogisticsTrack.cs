@@ -6,9 +6,9 @@ public partial class PassRes {
     /// </summary>
     public class LogisticsTrack {
         public const int CateId = PassResCate.LogisticsTrackCateId;
-        public static readonly PassResCateInfo Cate = PassResCate.LogisticsTrack;
+        public static PassResCateInfo Cate => PassResCate.LogisticsTrack;
 
-        public static readonly IList<PassResInfo> AllData = new List<PassResInfo>() {
+        public static IList<PassResInfo> AllData => new List<PassResInfo>() {
             new PassResInfo { Id = SeventeenTrackNumber, Name = "17TRACK注册单号", Cate = Cate },
             new PassResInfo { Id = SeventeenTrackCarrier, Name = "17TRACK运输商", Cate = Cate },
         };
@@ -16,7 +16,7 @@ public partial class PassRes {
         /// <summary>
         /// 所有
         /// </summary>
-        public static readonly IList<int> All = AllData.Select(e => e.Id).ToList();
+        public static IList<int> All => AllData.Select(e => e.Id).ToList();
 
         /// <summary>
         /// 17TRACK注册单号

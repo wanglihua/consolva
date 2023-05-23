@@ -6,9 +6,9 @@ public partial class PassRes {
     /// </summary>
     public class Logistics {
         public const int CateId = PassResCate.LogisticsCateId;
-        public static readonly PassResCateInfo Cate = PassResCate.Logistics;
+        public static PassResCateInfo Cate => PassResCate.Logistics;
 
-        public static readonly IList<PassResInfo> AllData = new List<PassResInfo>() {
+        public static IList<PassResInfo> AllData => new List<PassResInfo>() {
             new PassResInfo { Id = LogisticsModeSetting, Name = "物流配置", Cate = Cate },
             new PassResInfo { Id = LogisticsFeeRate, Name = "通用费率", Cate = Cate },
             new PassResInfo { Id = LogisticsModeList, Name = "物流列表", Cate = Cate },
@@ -21,7 +21,7 @@ public partial class PassRes {
         /// <summary>
         /// 所有
         /// </summary>
-        public static readonly IList<int> All = AllData.Select(e => e.Id).ToList();
+        public static IList<int> All => AllData.Select(e => e.Id).ToList();
 
         /// <summary>
         /// 物流配置

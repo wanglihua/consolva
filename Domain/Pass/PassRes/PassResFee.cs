@@ -6,9 +6,9 @@ public partial class PassRes {
     /// </summary>
     public class Fee {
         public const int CateId = PassResCate.FeeCateId;
-        public static readonly PassResCateInfo Cate = PassResCate.Fee;
+        public static PassResCateInfo Cate => PassResCate.Fee;
 
-        public static readonly IList<PassResInfo> AllData = new List<PassResInfo>() {
+        public static IList<PassResInfo> AllData => new List<PassResInfo>() {
             new PassResInfo { Id = ManualIncreaseFee, Name = "手动增加费用", Cate = Cate },
             new PassResInfo { Id = ManualDecreaseFeeApply, Name = "手动减少费用申请", Cate = Cate },
             new PassResInfo { Id = ManualDecreaseFeeApprove, Name = "手动减少费用审核", Cate = Cate },
@@ -33,8 +33,7 @@ public partial class PassRes {
         /// <summary>
         /// 所有
         /// </summary>
-        public static readonly IList<int> All = AllData.Select(e => e.Id).ToList();
-
+        public static IList<int> All => AllData.Select(e => e.Id).ToList();
 
         /// <summary>
         /// 手动增加费用

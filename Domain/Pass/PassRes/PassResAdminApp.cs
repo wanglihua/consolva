@@ -6,9 +6,9 @@ public partial class PassRes {
     /// </summary>
     public class AdminApp {
         public const int CateId = PassResCate.AdminAppCateId;
-        public static readonly PassResCateInfo Cate = PassResCate.AdminApp;
+        public static PassResCateInfo Cate => PassResCate.AdminApp;
 
-        public static readonly IList<PassResInfo> AllData = new List<PassResInfo>() {
+        public static IList<PassResInfo> AllData => new List<PassResInfo>() {
             new PassResInfo { Id = ExpressQuery, Name = "快递单号查询", Cate = Cate },
             new PassResInfo { Id = ExpressOnShelf, Name = "快递上架", Cate = Cate },
             new PassResInfo { Id = ExpressWarehouseCheck, Name = "仓库需核实", Cate = Cate },
@@ -29,7 +29,7 @@ public partial class PassRes {
         /// <summary>
         /// 所有
         /// </summary>
-        public static readonly IList<int> All = AllData.Select(e => e.Id).ToList();
+        public static IList<int> All => AllData.Select(e => e.Id).ToList();
 
         /// <summary>
         ///  快递单号查询
