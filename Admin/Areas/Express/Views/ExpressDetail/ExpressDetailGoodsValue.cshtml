@@ -1,0 +1,52 @@
+@model shunda.Admin.Areas.Express.Models.ExpressDetail.ExpressDetailGoodsValueShowModel
+
+@{
+    Layout = null;
+}
+
+<div class="modal fade" id="expressGoodsValueDialog">
+    <div class="modal-dialog" style="width: 640px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="True"></button>
+                <h4 class="modal-title">快递单物品货值修改</h4>
+            </div>
+            <div class="modal-body clearfix">
+                <form id="expressGoodsValueForm" class="form-horizontal" role="form">
+                    <input asp-for="Id" type="hidden"/>
+                    <div class="row">
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="TrackingNo" class="col-xs-2 control-label">快递单号</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="TrackingNo" type="text" class="input-sm form-control" disabled="disabled"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="GoodsValue" class="col-xs-2 control-label">货品总值</label>
+                                <div class="col-xs-10">
+                                    <input asp-for="GoodsValue" value="@(Model.GoodsValue.ToString("#0.00"))" type="number" step="1" min="0" class="input-sm form-control"/>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success btn-sm" onclick="saveExpressGoodsValue();">
+                    <i class="ace-icon fa fa-floppy-o"></i>
+                    保存
+                </button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">
+                    <i class="ace-icon fa fa-times"></i>
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

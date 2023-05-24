@@ -4,6 +4,7 @@ using NHibernate.Linq;
 using shunda.Admin.Areas.Express.Models.ExpressDetail;
 using shunda.Admin.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
@@ -166,5 +167,50 @@ public class ExpressDetailController : Controller {
         model.VolumeWeightDenominator = logisticsModeSettingService.GetSetting().VolumeWeightDenominator;
 
         return View("ExpressDetailIndex", model);
+    }
+
+    [HttpPost]
+    [Route("/admin/express/detail/show/modify/goods/value")]
+    public IActionResult ShowModifyGoodsValue(int id) {
+        var express = session.Get<ExpressInfo>(id);
+        if (express == null) {
+            throw new ValidationException($"指定的快递单号#{id}不存在！");
+        }
+
+        var model = new ExpressDetailGoodsValueShowModel {
+            Id = id,
+            TrackingNo = express.TrackingNo,
+            GoodsValue = express.GoodsValue,
+        };
+
+        return View("ExpressDetailGoodsValue", model);
+    }
+
+    [HttpPost]
+    [Route("/admin/express/detail/save/goods/value")]
+    [Transactional]
+    public IActionResult SaveGoodsValue(ExpressDetailGoodsValueSaveModel model) {
+        ValidationUtil.Validate<ExpressDetailGoodsValueSaveModelValidator, ExpressDetailGoodsValueSaveModel>(model);
+
+        int id = model.Id;
+        decimal goodsValue = model.GoodsValue;
+
+        var express = session.Get<ExpressInfo>(id);
+        if (express == null) {
+            throw new ValidationException($"指定的快递单号#{id}不存在！");
+        }
+
+        express.GoodsValue = goodsValue;
+
+        session.Update(express);
+        session.Flush();
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "货品总值保存成功！",
+            Data = new {
+                goodsValue = goodsValue,
+            }
+        });
     }
 }
