@@ -45,7 +45,8 @@
                     }
 
                     $.msg.show(data.message);
-                    $("#expressGoodsValue").val(data.data.goodsValue);
+                    $("#expressGoodsValue" + data.data.expressId).val(data.data.expressGoodsValue);
+                    $("#orderGoodsValue").val(data.data.orderGoodsValue);
                     
                     $("#expressGoodsValueDialog").modal('hide');
                 }

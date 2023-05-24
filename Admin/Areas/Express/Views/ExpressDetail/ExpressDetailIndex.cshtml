@@ -127,14 +127,14 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label for="expressGoodsValue" class="col-xs-4 control-label">
+                                        <label for="expressGoodsValue@(Model.Express.Id)" class="col-xs-4 control-label">
                                             <a href="javascript:showExpressGoodsValue('@(Model.Express.Id)')">
                                                 货品总值
                                             </a>
                                         </label>
                                         <div class="col-xs-8">
                                             <div class="input-group">
-                                                <input id="expressGoodsValue" asp-for="Express.GoodsValue" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                <input id="expressGoodsValue@(Model.Express.Id)" asp-for="Express.GoodsValue" type="text" disabled="disabled" class="input-sm form-control"/>
                                                 <span class="input-group-addon">RMB</span>
                                             </div>
                                         </div>
