@@ -209,7 +209,7 @@ public class ExpressDetailController : Controller {
             Success = true,
             Message = "货品总值保存成功！",
             Data = new {
-                goodsValue = goodsValue,
+                goodsValue = goodsValue.ToString("#0.00"),
             }
         });
     }
