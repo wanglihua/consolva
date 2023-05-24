@@ -10,6 +10,7 @@ public partial class PassRes {
 
         public static IList<PassResInfo> AllData => new List<PassResInfo>() {
             new PassResInfo { Id = ExpressList, Name = "快递列表", Cate = Cate },
+            new PassResInfo { Id = ExpressGoodsValue, Name = "快递货值修改", Cate = Cate },
             new PassResInfo { Id = ExpressRemarkEdit, Name = "快递单备注维护", Cate = Cate },
             new PassResInfo { Id = ExpressForceDelete, Name = "快递强制删除", Cate = Cate },
             new PassResInfo { Id = ExpressThrowAway, Name = "快递单丢弃", Cate = Cate },
@@ -29,6 +30,11 @@ public partial class PassRes {
         /// 快递列表
         /// </summary>
         public const int ExpressList = CateId + 0200;
+
+        /// <summary>
+        /// 快递货值修改
+        /// </summary>
+        public const int ExpressGoodsValue = CateId + 0300;
 
         /// <summary>
         /// 快递单备注维护

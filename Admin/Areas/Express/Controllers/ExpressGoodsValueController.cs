@@ -7,12 +7,13 @@ using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
 using shunda.Domain.LogisticsOrder;
+using shunda.Domain.Pass.PassRes;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Express.Controllers;
 
 [ExpressArea]
-[AdminAuth]
+[AdminAuth(PassRes.Express.ExpressGoodsValue)]
 public class ExpressGoodsValueController : Controller {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
