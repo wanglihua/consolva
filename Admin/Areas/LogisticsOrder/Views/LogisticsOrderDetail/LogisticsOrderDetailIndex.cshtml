@@ -148,10 +148,10 @@
 
                                 <div class="col-xs-3">
                                     <div class="form-group">
-                                        <label asp-for="Order.GoodsValue" class="col-xs-4 control-label">商品总价</label>
+                                        <label for="orderGoodsValue" class="col-xs-4 control-label">货品总值</label>
                                         <div class="col-xs-8">
                                             <div class="input-group">
-                                                <input asp-for="Order.GoodsValue" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                <input id="orderGoodsValue" asp-for="Order.GoodsValue" type="text" disabled="disabled" class="input-sm form-control"/>
                                                 <span class="input-group-addon">RMB</span>
                                             </div>
                                         </div>
@@ -688,10 +688,14 @@
 
                                         <div class="col-xs-3">
                                             <div class="form-group">
-                                                <label for="express_@(express.Id)_goods_value" class="col-xs-4 control-label">货品总值</label>
+                                                <label for="expressGoodsValue@(express.Id)" class="col-xs-4 control-label">
+                                                    <a href="javascript:showExpressGoodsValue('@(express.Id)')">
+                                                        货品总值
+                                                    </a>
+                                                </label>
                                                 <div class="col-xs-8">
                                                     <div class="input-group">
-                                                        <input id="express_@(express.Id)_goods_value" value="@(express.GoodsValue.ToString("#0.00"))" type="text" disabled="disabled" class="input-sm form-control"/>
+                                                        <input id="expressGoodsValue@(express.Id)" value="@(express.GoodsValue.ToString("#0.00"))" type="text" disabled="disabled" class="input-sm form-control"/>
                                                         <span class="input-group-addon">RMB</span>
                                                     </div>
                                                 </div>
@@ -1342,3 +1346,4 @@
 <div id="logisticsOrderRemarkDetailDialogWrapper"></div>
 <div id="orderPackDetailDialogWrapper"></div>
 <partial name="~/Areas/LogisticsTrack/Views/SeventeenTrackNumberEvent/SeventeenTrackNumberEventDialogWrapperByTrackingNo.cshtml"/>
+<partial name="~/Areas/Express/Views/ExpressGoodsValue/ExpressGoodsValue.cshtml"/>

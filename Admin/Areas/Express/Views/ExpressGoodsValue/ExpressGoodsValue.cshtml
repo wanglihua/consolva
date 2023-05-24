@@ -11,7 +11,7 @@
         showMask("加载中...");
 
         $.ajax({
-            url: '@Url.Action("Show", "ExpressGoodsValue")',
+            url: '@Url.Action("Show", "ExpressGoodsValue", new { Area = "Express" })',
             type: "POST",
             data: { "id": id },
             success: function(data) {
@@ -34,7 +34,7 @@
         if (valid) {
             showMask("提交中...");
             $.ajax({
-                url: '@Url.Action("Save", "ExpressGoodsValue")',
+                url: '@Url.Action("Save", "ExpressGoodsValue", new { Area = "Express" })',
                 type: "POST",
                 data: form.serialize(),
                 success: function(data) {
