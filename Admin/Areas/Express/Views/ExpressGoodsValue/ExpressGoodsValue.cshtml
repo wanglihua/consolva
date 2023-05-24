@@ -1,0 +1,55 @@
+@{
+    Layout = null;
+}
+
+<div id="expressGoodsValueDialogWrapper"></div>
+
+<script type="text/javascript">
+    function showExpressGoodsValue(id) {
+        $("#expressGoodsValueDialogWrapper").html("");
+
+        showMask("加载中...");
+
+        $.ajax({
+            url: '@Url.Action("Show", "ExpressGoodsValue")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#expressGoodsValueDialogWrapper").html(data);
+                $("#expressGoodsValueDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveExpressGoodsValue() {
+        var form = $("#expressGoodsValueForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "ExpressGoodsValue")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    }
+
+                    $.msg.show(data.message);
+                    $("#expressGoodsValue").val(data.data.goodsValue);
+                    
+                    $("#expressGoodsValueDialog").modal('hide');
+                }
+            });
+        }
+    }
+</script>

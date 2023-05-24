@@ -1,4 +1,5 @@
-@model shunda.Admin.Areas.Express.Models.ExpressDetail.ExpressDetailGoodsValueShowModel
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model shunda.Admin.Areas.Express.Models.ExpressGoodsValue.ExpressGoodsValueShowModel
 
 @{
     Layout = null;
@@ -27,9 +28,9 @@
 
                         <div class="col-xs-12">
                             <div class="form-group">
-                                <label asp-for="GoodsValue" class="col-xs-2 control-label">货品总值</label>
+                                <label asp-for="ExpressGoodsValue" class="col-xs-2 control-label">货品总值</label>
                                 <div class="col-xs-10">
-                                    <input asp-for="GoodsValue" value="@(Model.GoodsValue.ToString("#0.00"))" type="number" step="1" min="0" class="input-sm form-control"/>
+                                    <input asp-for="ExpressGoodsValue" value="@(Model.ExpressGoodsValue.ToString("#0.00"))" type="number" step="1" min="0" class="input-sm form-control"/>
                                 </div>
                             </div>
                         </div>

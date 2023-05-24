@@ -128,7 +128,7 @@
                                 <div class="col-xs-3">
                                     <div class="form-group">
                                         <label for="expressGoodsValue" class="col-xs-4 control-label">
-                                            <a href="javascript:showExpressGoodsValueModify()">
+                                            <a href="javascript:showExpressGoodsValue('@(Model.Express.Id)')">
                                                 货品总值
                                             </a>
                                         </label>
@@ -863,54 +863,4 @@
 </div>
 
 <div id="expressRemarkDetailDialogWrapper"></div>
-<div id="expressGoodsValueDialogWrapper"></div>
-
-<script type="text/javascript">
-    function showExpressGoodsValueModify() {
-        $("#expressGoodsValueDialogWrapper").html("");
-
-        showMask("加载中...");
-
-        $.ajax({
-            url: '@Url.Action("ShowModifyGoodsValue", "ExpressDetail")',
-            type: "POST",
-            data: { "id": "@(Model.Express.Id)" },
-            success: function(data) {
-                hideMask();
-                if (data.success === false) {
-                    $.msg.error(data.message);
-                    return;
-                }
-
-                $("#expressGoodsValueDialogWrapper").html(data);
-                $("#expressGoodsValueDialog").modal(modalOptions);
-            }
-        });
-    }
-
-    function saveExpressGoodsValue() {
-        var form = $("#expressGoodsValueForm");
-        var valid = validate(form);
-
-        if (valid) {
-            showMask("提交中...");
-            $.ajax({
-                url: '@Url.Action("SaveGoodsValue", "ExpressDetail")',
-                type: "POST",
-                data: form.serialize(),
-                success: function(data) {
-                    hideMask();
-                    if (data.success === false) {
-                        $.msg.error(data.message);
-                        return;
-                    }
-
-                    $.msg.show(data.message);
-                    $("#expressGoodsValue").val(data.data.goodsValue);
-                    
-                    $("#expressGoodsValueDialog").modal('hide');
-                }
-            });
-        }
-    }
-</script>
+<partial name="~/Areas/Express/Views/ExpressGoodsValue/ExpressGoodsValue.cshtml"/>
