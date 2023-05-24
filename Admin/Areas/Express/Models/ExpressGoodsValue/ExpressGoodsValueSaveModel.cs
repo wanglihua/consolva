@@ -1,22 +1,14 @@
-using FluentValidation;
+using Newtonsoft.Json;
 
 namespace shunda.Admin.Areas.Express.Models.ExpressGoodsValue;
 
 public class ExpressGoodsValueSaveModel {
-    /// <summary>
-    /// 快递单号Id
-    /// </summary>
-    public int Id { get; set; }
+    [JsonProperty("expressId")]
+    public int ExpressId { get; set; }
 
-    /// <summary>
-    /// 货品总值
-    /// </summary>
-    public decimal ExpressGoodsValue { get; set; }
-}
+    [JsonProperty("expressGoodsValue")]
+    public string ExpressGoodsValue { get; set; } = string.Empty;
 
-public class ExpressDetailGoodsValueSaveModelValidator : AbstractValidator<ExpressGoodsValueSaveModel> {
-    public ExpressDetailGoodsValueSaveModelValidator() {
-        RuleFor(e => e.Id).Must(p => p > 0).WithMessage("快递单Id不能为空！");
-        RuleFor(e => e.ExpressGoodsValue).Must(p => p > 0).WithMessage("货品总值不能为空！");
-    }
+    [JsonProperty("orderGoodsValue")]
+    public string OrderGoodsValue { get; set; } = string.Empty;
 }

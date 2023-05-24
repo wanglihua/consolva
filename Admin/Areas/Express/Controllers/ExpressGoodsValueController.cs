@@ -6,6 +6,7 @@ using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
+using shunda.Domain.LogisticsOrder;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.Express.Controllers;
@@ -41,11 +42,11 @@ public class ExpressGoodsValueController : Controller {
     [HttpPost]
     [Route("/admin/express/goods/value/save")]
     [Transactional]
-    public IActionResult Save(ExpressGoodsValueSaveModel model) {
-        ValidationUtil.Validate<ExpressDetailGoodsValueSaveModelValidator, ExpressGoodsValueSaveModel>(model);
+    public IActionResult Save(ExpressGoodsValueSaveParam param) {
+        ValidationUtil.Validate<ExpressDetailGoodsValueSaveParamValidator, ExpressGoodsValueSaveParam>(param);
 
-        int id = model.Id;
-        decimal expressGoodsValue = model.ExpressGoodsValue;
+        int id = param.Id;
+        decimal expressGoodsValue = param.ExpressGoodsValue;
 
         var express = session.Get<ExpressInfo>(id);
         if (express == null) {
@@ -57,11 +58,34 @@ public class ExpressGoodsValueController : Controller {
         session.Update(express);
         session.Flush();
 
+        decimal orderGoodsValue = 0m;
+        int orderId = express.Order?.Id ?? 0;
+        if (orderId != 0) {
+            var expressList = session.Query<ExpressInfo>()
+                .Where(e => e.Order!.Id == orderId)
+                .ToList();
+
+            // 这个判断一般是肯定成立的
+            if(expressList.Count != 0) {
+                orderGoodsValue = expressList.Sum(e => e.GoodsValue);
+            }
+
+            var order = session.Get<LogisticsOrderInfo>(orderId);
+            if(order != null) {
+                order.GoodsValue = orderGoodsValue;
+
+                session.Update(order);
+                session.Flush();
+            }
+        }
+
         return Json(new JsonResultData {
             Success = true,
             Message = "货品总值保存成功！",
-            Data = new {
-                expressGoodsValue = expressGoodsValue.ToString("#0.00"),
+            Data = new ExpressGoodsValueSaveModel {
+                ExpressId = express.Id,
+                ExpressGoodsValue = expressGoodsValue.ToString("#0.00"),
+                OrderGoodsValue = orderGoodsValue.ToString("#0.00"),
             }
         });
     }
