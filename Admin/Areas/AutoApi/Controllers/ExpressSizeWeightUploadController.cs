@@ -56,6 +56,11 @@ public class ExpressSizeWeightUploadController : Controller {
                     throw new ValidationException("上传尺寸重量数据快递单号不能为空！");
                 }
 
+                // 这一类的子单号，还是当做母单号看待
+                if (trackingNo.StartsWith("JD") && trackingNo.EndsWith("-1-1-")) {
+                    trackingNo = trackingNo.Replace("-1-1-", "");
+                }
+
                 if (decimal.TryParse(data.Length, out decimal length) == false) {
                     throw new ValidationException("上传尺寸重量数据长度数据格式不正确！");
                 }
