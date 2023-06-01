@@ -51,6 +51,13 @@
     </style>
 }
 
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-danger btn-sm" onclick="cancelOrder()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        订单作废
+    </button>
+</div>
+
 <div class="widget-box" style="border-style: none; width: 1150px;">
     <div class="widget-body">
         <div class="widget-main">
@@ -1347,3 +1354,31 @@
 <div id="orderPackDetailDialogWrapper"></div>
 <partial name="~/Areas/LogisticsTrack/Views/SeventeenTrackNumberEvent/SeventeenTrackNumberEventDialogWrapperByTrackingNo.cshtml"/>
 <partial name="~/Areas/Express/Views/ExpressGoodsValue/ExpressGoodsValue.cshtml"/>
+
+<script type="text/javascript">
+    function cancelOrder() {
+        $.msg.confirm("确认要作废订单吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("CancelOrder", "LogisticsOrderDetail")',
+                    type: "POST",
+                    data: { "id": "@(Model.Order.Id)" },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        }
+
+                        $.msg.show(data.message);
+                        
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 1000);
+                    }
+                });
+            }
+        );
+    }
+</script>

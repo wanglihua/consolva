@@ -12,8 +12,9 @@ public partial class PassRes {
             new PassResInfo { Id = OrderListActive, Name = "活动订单", Cate = Cate },
             new PassResInfo { Id = OrderListComplete, Name = "正常结束订单", Cate = Cate },
             new PassResInfo { Id = ImportOrder, Name = "导入订单", Cate = Cate },
+            new PassResInfo { Id = CancelOrder, Name = "订单作废", Cate = Cate },
             new PassResInfo { Id = ImportOrderCheckinExpress, Name = "导入订单时登记快递单", Cate = Cate },
-            new PassResInfo { Id = OrderListCancel, Name = "作废订单", Cate = Cate },
+            new PassResInfo { Id = OrderListCancel, Name = "作废订单列表", Cate = Cate },
             new PassResInfo { Id = OrderPackBox, Name = "箱号跟踪", Cate = Cate },
             new PassResInfo { Id = LogisticsOrderFirstMode, Name = "国际单号", Cate = Cate },
             new PassResInfo { Id = OrderModifyReceiverAddress, Name = "修改订单收货地址", Cate = Cate },
@@ -48,12 +49,17 @@ public partial class PassRes {
         public const int ImportOrder = CateId + 0600;
 
         /// <summary>
+        /// 订单作废
+        /// </summary>
+        public const int CancelOrder = CateId + 0700;
+
+        /// <summary>
         /// 导入订单时登记快递单
         /// </summary>
         public const int ImportOrderCheckinExpress = CateId + 0800;
 
         /// <summary>
-        /// 作废订单
+        /// 作废订单列表
         /// </summary>
         public const int OrderListCancel = CateId + 1000;
 

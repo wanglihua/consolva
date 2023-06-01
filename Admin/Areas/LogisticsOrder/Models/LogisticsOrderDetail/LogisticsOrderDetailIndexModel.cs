@@ -53,4 +53,7 @@ public class LogisticsOrderDetailIndexModel {
 
     [BindNever]
     public decimal VolumeWeightDenominator { get; set; }
+
+    [BindNever]
+    public bool CanCancelOrder { get; set; }
 }

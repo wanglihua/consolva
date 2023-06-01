@@ -6,6 +6,7 @@ using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderDetail;
 using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderList;
 using shunda.Admin.Services;
 using shunda.Core;
+using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
 using shunda.Domain.Logistics;
@@ -30,6 +31,7 @@ public class LogisticsOrderDetailController : Controller {
     private readonly ExpressPhotoFileService expressPhotoFileService;
     private readonly ExpressSizeWeightService expressSizeWeightService;
     private readonly LogisticsModeSettingService logisticsModeSettingService;
+    private readonly LogisticsOrderService logisticsOrderService;
 
     public LogisticsOrderDetailController(ISession session,
         LoginUserService loginUserService,
@@ -38,7 +40,8 @@ public class LogisticsOrderDetailController : Controller {
         LogisticsOrderPackBoxService logisticsOrderPackBoxService,
         ExpressPhotoFileService expressPhotoFileService,
         ExpressSizeWeightService expressSizeWeightService,
-        LogisticsModeSettingService logisticsModeSettingService
+        LogisticsModeSettingService logisticsModeSettingService,
+        LogisticsOrderService logisticsOrderService
     ) {
         this.session = session;
         this.loginUserService = loginUserService;
@@ -48,6 +51,7 @@ public class LogisticsOrderDetailController : Controller {
         this.expressPhotoFileService = expressPhotoFileService;
         this.expressSizeWeightService = expressSizeWeightService;
         this.logisticsModeSettingService = logisticsModeSettingService;
+        this.logisticsOrderService = logisticsOrderService;
     }
 
     [HttpGet]
@@ -150,6 +154,9 @@ public class LogisticsOrderDetailController : Controller {
             p.SmallImageFullUrlCache = expressPhotoFileService.GetSmallImageFullUrlForSite(p, OssSiteLocType.China);
         }
 
+        bool hasPressResCancelOrder = passResService.UserHasPassRes(loginUserId, PassRes.LogisticsOrder.CancelOrder);
+        bool statusCanCancelOrder = LogisticsOrderStatus.GetAdminCanCancelStatusList().Contains(order.OrderStatus);
+
         var model = new LogisticsOrderDetailIndexModel {
             MenuType = menuType,
             Order = order,
@@ -167,8 +174,31 @@ public class LogisticsOrderDetailController : Controller {
             LogisticsOrderActionList = orderActionList,
             PhotoList = expressPhotoList,
             VolumeWeightDenominator = logisticsModeSettingService.GetSetting().VolumeWeightDenominator,
+            CanCancelOrder = hasPressResCancelOrder && statusCanCancelOrder,
         };
 
         return View("LogisticsOrderDetailIndex", model);
+    }
+
+    [AdminAuth(PassRes.LogisticsOrder.CancelOrder)]
+    [HttpPost]
+    [Route("/admin/logistics/order/detail/cancel/order")]
+    public IActionResult CancelOrder(IdParam param) {
+        ValidationUtil.Validate<IdParamValidator, IdParam>(param);
+
+        int orderId = param.Id;
+
+        int loginUserId = loginUserService.GetLoginUserId();
+
+        logisticsOrderService.CancelOrder(new LogisticsOrderCancelParam {
+            OrderId = orderId,
+            Backend = true,
+            UserId = loginUserId,
+        });
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+        });
     }
 }
