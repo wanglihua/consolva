@@ -6,6 +6,7 @@ using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderDetail;
 using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderList;
 using shunda.Admin.Services;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain.Express;
@@ -183,6 +184,7 @@ public class LogisticsOrderDetailController : Controller {
     [AdminAuth(PassRes.LogisticsOrder.CancelOrder)]
     [HttpPost]
     [Route("/admin/logistics/order/detail/cancel/order")]
+    [Transactional]
     public IActionResult CancelOrder(IdParam param) {
         ValidationUtil.Validate<IdParamValidator, IdParam>(param);
 

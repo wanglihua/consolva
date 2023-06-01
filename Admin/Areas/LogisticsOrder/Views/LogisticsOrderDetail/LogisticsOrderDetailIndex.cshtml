@@ -51,12 +51,14 @@
     </style>
 }
 
-<div class="gridToolBar clearfix">
-    <button type="button" class="btn btn-danger btn-sm" onclick="cancelOrder()">
-        <i class="ace-icon fa fa-trash-o"></i>
-        订单作废
-    </button>
-</div>
+@if (Model.CanCancelOrder) {
+    <div class="gridToolBar clearfix">
+        <button type="button" class="btn btn-danger btn-sm" onclick="cancelOrder()">
+            <i class="ace-icon fa fa-trash-o"></i>
+            订单作废
+        </button>
+    </div>
+}
 
 <div class="widget-box" style="border-style: none; width: 1150px;">
     <div class="widget-body">
@@ -397,7 +399,7 @@
                                             <div class="form-group">
                                                 <label for="orderFirstModeTrackingNo@(orderFirstMode.Id)" class="col-xs-4 control-label">国际单号</label>
                                                 <div class="col-xs-8">
-                                                    @if(string.IsNullOrWhiteSpace(orderFirstMode.TrackingNo)) {
+                                                    @if (string.IsNullOrWhiteSpace(orderFirstMode.TrackingNo)) {
                                                         <input id="orderFirstModeTrackingNo@(orderFirstMode.Id)" type="text" value="@(orderFirstMode.TrackingNo)" disabled="disabled" class="input-sm form-control"/>
                                                     } else {
                                                         <a style="cursor: pointer; line-height: 28px;" onclick="showSeventeenTrackNumberEvent('@(orderFirstMode.TrackingNo)')">@ListDataUtil.Render(orderFirstMode.TrackingNo)</a>
