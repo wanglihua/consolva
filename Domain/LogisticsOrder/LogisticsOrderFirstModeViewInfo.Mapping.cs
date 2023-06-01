@@ -87,6 +87,15 @@ public class LogisticsOrderFirstModeViewInfoMapping : EntityMapping<LogisticsOrd
             }
         );
 
+        Property(
+            x => x.CustomerId,
+            map => {
+                map.Type(NHibernateUtil.Int32);
+                map.Column("customer_id");
+                map.NotNullable(true);
+            }
+        );
+
         ManyToOne(
             x => x.SeventeenTrackNumber,
             map => {

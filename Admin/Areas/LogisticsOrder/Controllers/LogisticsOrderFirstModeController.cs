@@ -10,6 +10,7 @@ using NHibernate.Criterion;
 using NHibernate.SqlCommand;
 using NLog;
 using shunda.Admin.Services;
+using shunda.Domain.Customer;
 using shunda.Domain.Fee;
 using shunda.Domain.Logistics;
 using shunda.Domain.LogisticsTrack;
@@ -80,7 +81,16 @@ public class LogisticsOrderFirstModeController : Controller {
                 .Where(e => e.Code == orderCodeQuery)
                 .Take(1)
                 .SingleOrDefault();
-            queryParam.OrderIdQuery = order?.Id ?? 0;
+            queryParam.OrderIdQuery = order?.Id;
+        }
+
+        if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false) {
+            string customerCodeQuery = queryParam.CustomerCodeQuery.Trim();
+            var customer = session.Query<CustomerInfo>()
+                .Where(e => e.CheckinCode == customerCodeQuery)
+                .Take(1)
+                .SingleOrDefault();
+            queryParam.CustomerIdQuery = customer?.Id;
         }
 
         int totalCount = GetQueryOver(queryParam)
@@ -132,6 +142,11 @@ public class LogisticsOrderFirstModeController : Controller {
         if (queryParam.OrderIdQuery != null) {
             int orderIdQuery = queryParam.OrderIdQuery ?? 0;
             query = query.Where(e => e.OrderId == orderIdQuery);
+        }
+
+        if (queryParam.CustomerIdQuery != null) {
+            int customerIdQuery = queryParam.CustomerIdQuery ?? 0;
+            query = query.Where(e => e.CustomerId == customerIdQuery);
         }
 
         if (queryParam.PayStatusQuery != null && queryParam.PayStatusQuery != PayStatus.None) {
@@ -285,7 +300,16 @@ public class LogisticsOrderFirstModeController : Controller {
                 .Where(e => e.Code == orderCodeQuery)
                 .Take(1)
                 .SingleOrDefault();
-            queryParam.OrderIdQuery = order?.Id ?? 0;
+            queryParam.OrderIdQuery = order?.Id;
+        }
+
+        if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false) {
+            string customerCodeQuery = queryParam.CustomerCodeQuery.Trim();
+            var customer = session.Query<CustomerInfo>()
+                .Where(e => e.CheckinCode == customerCodeQuery)
+                .Take(1)
+                .SingleOrDefault();
+            queryParam.CustomerIdQuery = customer?.Id;
         }
 
         var listQuery = GetQueryOver(queryParam);

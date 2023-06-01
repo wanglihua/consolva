@@ -32,6 +32,8 @@
 
     <label for="orderCodeQuery">订单编号</label>&nbsp;<input id="orderCodeQuery" autocomplete="off" style="width: 150px; height: 30px;" placeholder="订单编号查询"/>&nbsp;
     
+    <label for="customerCodeQuery">客户ID</label>&nbsp;<input id="customerCodeQuery" autocomplete="off" style="width: 100px; height: 30px;" placeholder="客户ID查询"/>&nbsp;
+    
     <label for="payStatusQuery">订单支付状态</label>&nbsp;
     <select id="payStatusQuery" style="width: 120px; height: 30px;">
         <option value="0">支付状态查询</option>
@@ -117,6 +119,7 @@
             type: "POST",
             data: {
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.OrderCodeQuery))": $("#orderCodeQuery").val(),
+                "@(nameof(LogisticsOrderFirstModeListQueryParam.CustomerCodeQuery))": $("#customerCodeQuery").val(),
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.PayStatusQuery))": $("#payStatusQuery").val(),
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.FirstModeNameQuery))": $("#firstModeNameQuery").val(),
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.GoodsTypeQuery))": $("#goodsTypeQuery").val(),
@@ -196,6 +199,7 @@
             url: "@Url.Action("Export", "LogisticsOrderFirstMode")",
             data: {
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.OrderCodeQuery))": $("#orderCodeQuery").val(),
+                "@(nameof(LogisticsOrderFirstModeListQueryParam.CustomerCodeQuery))": $("#customerCodeQuery").val(),
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.PayStatusQuery))": $("#payStatusQuery").val(),
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.FirstModeNameQuery))": $("#firstModeNameQuery").val(),
                 "@(nameof(LogisticsOrderFirstModeListQueryParam.GoodsTypeQuery))": $("#goodsTypeQuery").val(),

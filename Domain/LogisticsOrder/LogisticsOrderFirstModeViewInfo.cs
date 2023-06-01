@@ -66,6 +66,11 @@ public class LogisticsOrderFirstModeViewInfo : Entity {
     /// 快递单号，这个是国际快递单号
     /// </summary>
     public virtual string TrackingNo { get; set; } = string.Empty;
+    
+    /// <summary>
+    /// 客户Id
+    /// </summary>
+    public virtual int CustomerId { get; set; } 
 
     /// <summary>
     /// 17TRACK快递单号

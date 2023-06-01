@@ -13,6 +13,11 @@ public class LogisticsOrderFirstModeListQueryParam : ListQueryParam {
     [BindNever]
     public int? OrderIdQuery { get; set; }
 
+    public string? CustomerCodeQuery { get; set; }
+
+    [BindNever]
+    public int? CustomerIdQuery { get; set; }
+
     [ModelBinder(typeof(PayStatusModelBinder))]
     public virtual PayStatus? PayStatusQuery { get; set; }
 
