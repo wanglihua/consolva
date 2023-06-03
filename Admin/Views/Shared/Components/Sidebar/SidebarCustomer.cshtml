@@ -4,8 +4,7 @@
 @{
     Layout = null;
 }
-@if (Model.HasOneOfPassRes(PassRes.Customer.All))
-{
+@if (Model.HasOneOfPassRes(PassRes.Customer.All)) {
     <li id="customer-menu">
         <a href="#" class="dropdown-toggle">
             <i class="menu-icon fa fa-users"></i>
@@ -15,8 +14,7 @@
         <b class="arrow"></b>
         <ul class="submenu">
 
-            @if (Model.HasPassRes(PassRes.Customer.CustomerList))
-            {
+            @if (Model.HasPassRes(PassRes.Customer.CustomerList)) {
                 <li id="customer-customer-index-menu">
                     <a asp-area="Customer" asp-controller="Customer" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -73,8 +71,7 @@
                     
                     *@
 
-            @if (Model.HasPassRes(PassRes.Customer.CustomerScoreLog))
-            {
+            @if (Model.HasPassRes(PassRes.Customer.CustomerScoreLog)) {
                 <li id="customer-customer-score-log-index-menu">
                     <a asp-area="Customer" asp-controller="CustomerScoreLog" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -84,8 +81,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.Customer.CustomerScoreRule))
-            {
+            @if (Model.HasPassRes(PassRes.Customer.CustomerScoreRule)) {
                 <li id="customer-customer-score-rule-index-menu">
                     <a asp-area="Customer" asp-controller="CustomerScoreRule" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -95,8 +91,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.Customer.CustomerAccountEntry))
-            {
+            @if (Model.HasPassRes(PassRes.Customer.CustomerAccountEntry)) {
                 <li id="customer-customer-account-entry-index-menu">
                     <a asp-area="Customer" asp-controller="CustomerAccountEntry" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -106,8 +101,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.Customer.SupperPassword))
-            {
+            @if (Model.HasPassRes(PassRes.Customer.SupperPassword)) {
                 <li id="customer-customer-supper-password-index-menu">
                     <a asp-area="Customer" asp-controller="CustomerSupperPassword" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -117,8 +111,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.Customer.CustomerVipDiscount))
-            {
+            @if (Model.HasPassRes(PassRes.Customer.CustomerVipDiscount)) {
                 <li id="customer-customer-vip-discount-index-menu">
                     <a asp-area="Customer" asp-controller="CustomerVipDiscount" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -128,8 +121,7 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.Customer.CustomerSuperVipDiscount))
-            {
+            @if (Model.HasPassRes(PassRes.Customer.CustomerSuperVipDiscount)) {
                 <li id="customer-customer-super-vip-discount-index-menu">
                     <a asp-area="Customer" asp-controller="CustomerSuperVipDiscount" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
@@ -139,12 +131,21 @@
                 </li>
             }
 
-            @if (Model.HasPassRes(PassRes.Customer.CustomerCharacter))
-            {
+            @if (Model.HasPassRes(PassRes.Customer.CustomerCharacter)) {
                 <li id="customer-customer-character-index-menu">
                     <a asp-area="Customer" asp-controller="CustomerCharacter" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
                         客户性质
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
+
+            @if (Model.Debug && Model.HasPassRes(PassRes.Customer.CustomerChargeAwardSetting)) {
+                <li id="customer-customer-charge-award-setting-menu">
+                    <a asp-area="Customer" asp-controller="CustomerChargeAwardSetting" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        充值优惠设置
                     </a>
                     <b class="arrow"></b>
                 </li>

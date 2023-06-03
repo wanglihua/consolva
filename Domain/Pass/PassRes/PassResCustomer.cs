@@ -22,6 +22,7 @@ public partial class PassRes {
             new PassResInfo { Id = CustomerScoreLog, Name = "会员积分日志", Cate = Cate },
             new PassResInfo { Id = CustomerVipDiscount, Name = "VIP折扣设置", Cate = Cate },
             new PassResInfo { Id = CustomerSuperVipDiscount, Name = "超级VIP折扣", Cate = Cate },
+            new PassResInfo { Id = CustomerChargeAwardSetting, Name = "客户充值奖励", Cate = Cate },
         };
 
         /// <summary>
@@ -93,5 +94,10 @@ public partial class PassRes {
         /// 超级VIP折扣
         /// </summary>
         public const int CustomerSuperVipDiscount = CateId + 2600;
+        
+        /// <summary>
+        /// 客户充值奖励
+        /// </summary>
+        public const int CustomerChargeAwardSetting = CateId + 2800;
     }
 }

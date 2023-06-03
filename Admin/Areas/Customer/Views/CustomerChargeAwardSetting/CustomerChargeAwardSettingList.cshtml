@@ -1,0 +1,102 @@
+@{
+    Layout = null;
+}
+@using shunda.Core.Web
+@using shunda.Domain.Customer
+@model shunda.Admin.Areas.Customer.Models.CustomerChargeAwardSetting.CustomerChargeAwardSettingListModel
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCustomerChargeAwardSettingList" }))
+
+<table id="tblCustomerChargeAwardSettingList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <div>
+                    <label for="customerChargeAwardSettingCheckAll"></label><input id="customerChargeAwardSettingCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                </div>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.CustomerChargeAwardSettingAlias).@(nameof(CustomerChargeAwardSettingInfo.AmountBegin))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerChargeAwardSettingList">最小充值金额</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.CustomerChargeAwardSettingAlias).@(nameof(CustomerChargeAwardSettingInfo.AmountEnd))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerChargeAwardSettingList">最大充值金额</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.CustomerChargeAwardSettingAlias).@(nameof(CustomerChargeAwardSettingInfo.Award))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerChargeAwardSettingList">奖励金额</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.CustomerChargeAwardSettingAlias).@(nameof(CustomerChargeAwardSettingInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerChargeAwardSettingList">创建时间</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.CustomerChargeAwardSettingAlias).@(nameof(CustomerChargeAwardSettingInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerChargeAwardSettingList">修改时间</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.CustomerChargeAwardSettingList.Count != 0) {
+            int index = 0;
+            foreach (CustomerChargeAwardSettingInfo customerChargeAwardSetting in Model.CustomerChargeAwardSettingList) {
+                <tr ondblclick="showCustomerChargeAwardSettingDetail(@(customerChargeAwardSetting.Id));">
+                    <td style="text-align: center;">
+                        <div>
+                            <label for="customerChargeAwardSettingCheck_@(customerChargeAwardSetting.Id)"></label><input id="customerChargeAwardSettingCheck_@(customerChargeAwardSetting.Id)" type="checkbox" class="ace" value="@customerChargeAwardSetting.Id" /><span class="lbl"></span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">@(Model.ItemBegin + index++)</td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(customerChargeAwardSetting.AmountBegin)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(customerChargeAwardSetting.AmountEnd)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(customerChargeAwardSetting.Award)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @customerChargeAwardSetting.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @customerChargeAwardSetting.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        } else {
+            <tr>
+                <td colspan="8">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCustomerChargeAwardSettingList" }))

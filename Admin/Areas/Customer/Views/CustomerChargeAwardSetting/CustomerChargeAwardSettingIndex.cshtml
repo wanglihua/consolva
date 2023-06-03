@@ -1,0 +1,164 @@
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Customer
+@model CustomerChargeAwardSettingIndexModel
+@using shunda.Admin.Areas.Customer.Models.CustomerChargeAwardSetting
+@{
+    ViewData[ViewDataKey.Title] = "客户充值优惠设置";
+    Layout = "_AdminLayout";
+}
+
+@section Breadcrumb {
+    <li class="parent" data-menu="customer-menu">客户管理</li>
+    <li class="active" data-menu="customer-customer-charge-award-setting-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadCustomerChargeAwardSettingList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showCustomerChargeAwardSettingDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteCustomerChargeAwardSetting()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+</div>
+
+<div id="customerChargeAwardSettingList" data-page-index="0" data-sort-field="@(nameof(CustomerChargeAwardSettingInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="customerChargeAwardSettingDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadCustomerChargeAwardSettingList();
+    });
+
+    function sortCustomerChargeAwardSettingList(sortField, sortDir) {
+        var list = $('#customerChargeAwardSettingList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadCustomerChargeAwardSettingList();
+    }
+
+    function loadCustomerChargeAwardSettingList(pageIndex) {
+        var list = $('#customerChargeAwardSettingList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "CustomerChargeAwardSetting")",
+            type: "POST",
+            data: {
+                "@(nameof(CustomerChargeAwardSettingListQueryParam.PageIndex))": pageIndex,
+                "@(nameof(CustomerChargeAwardSettingListQueryParam.SortField))": sortField,
+                "@(nameof(CustomerChargeAwardSettingListQueryParam.SortDir))": sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#customerChargeAwardSettingList').html(data);
+
+                initListTable("#tblCustomerChargeAwardSettingList");
+            }
+        });
+    }
+
+    function showCustomerChargeAwardSettingDetail(id) {
+        $("#customerChargeAwardSettingDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#customerChargeAwardSettingDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "CustomerChargeAwardSetting")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#customerChargeAwardSettingDetailDialogWrapper").html(data);
+                $("#customerChargeAwardSettingDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveCustomerChargeAwardSetting() {
+        var form = $("#customerChargeAwardSettingDetailForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "CustomerChargeAwardSetting")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    }
+
+                    $.msg.show(data.message);
+                    $('#customerChargeAwardSettingDetailDialog').modal('hide');
+                    loadCustomerChargeAwardSettingList();
+                }
+            });
+        }
+    }
+
+    function deleteCustomerChargeAwardSetting() {
+        var idList = getSelectIdList('#tblCustomerChargeAwardSettingList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "CustomerChargeAwardSetting")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        }
+
+                        $.msg.show(data.message);
+                        loadCustomerChargeAwardSettingList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>
