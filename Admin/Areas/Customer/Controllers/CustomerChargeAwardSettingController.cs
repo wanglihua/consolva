@@ -32,8 +32,6 @@ public class CustomerChargeAwardSettingController : Controller {
     [Route("/admin/customer/customer/charge/award/setting")]
     public IActionResult Index() {
         CustomerChargeAwardSettingIndexModel model = new CustomerChargeAwardSettingIndexModel();
-
-
         return View("CustomerChargeAwardSettingIndex", model);
     }
 
@@ -48,28 +46,17 @@ public class CustomerChargeAwardSettingController : Controller {
         ListPager listPager = new ListPager(queryParam, totalCount);
 
         var listQuery = GetQueryOver(queryParam);
-        if (listPager.IsAscending) {
-            listQuery = listQuery.OrderBy(Projections.Property(listPager.SortField)).Asc;
-        } else {
-            listQuery = listQuery.OrderBy(Projections.Property(listPager.SortField)).Desc;
-        }
+        listQuery = listQuery.OrderByAlias(() => customerChargeAwardSettingAlias!.AmountBegin).Asc;
 
-        listQuery = listQuery.ThenByAlias(() => customerChargeAwardSettingAlias!.Id).Desc;
-            
         IList<CustomerChargeAwardSettingInfo> customerChargeAwardSettingList = listQuery
             .Skip(listPager.Skip())
             .Take(listPager.Take())
             .List<CustomerChargeAwardSettingInfo>();
 
-        /*
-        foreach (CustomerChargeAwardSettingInfo customerChargeAwardSetting in customerChargeAwardSettingList) {
-        }
-        */
-
-        CustomerChargeAwardSettingListModel model = new CustomerChargeAwardSettingListModel(listPager);
-        model.CustomerChargeAwardSettingList = customerChargeAwardSettingList;
-        
-        model.CustomerChargeAwardSettingAlias = nameof(customerChargeAwardSettingAlias);        
+        CustomerChargeAwardSettingListModel model = new CustomerChargeAwardSettingListModel(listPager) {
+            CustomerChargeAwardSettingList = customerChargeAwardSettingList,
+            CustomerChargeAwardSettingAlias = nameof(customerChargeAwardSettingAlias)
+        };
 
         return View("CustomerChargeAwardSettingList", model);
     }
@@ -99,13 +86,12 @@ public class CustomerChargeAwardSettingController : Controller {
             }
         }
 
-        CustomerChargeAwardSettingDetailModel model = new CustomerChargeAwardSettingDetailModel();
-        model.CustomerChargeAwardSettingId = customerChargeAwardSetting.Id;
-
-        model.AmountBegin = customerChargeAwardSetting.AmountBegin;
-        model.AmountEnd = customerChargeAwardSetting.AmountEnd;
-        model.Award = customerChargeAwardSetting.Award;
-
+        CustomerChargeAwardSettingDetailModel model = new CustomerChargeAwardSettingDetailModel {
+            CustomerChargeAwardSettingId = customerChargeAwardSetting.Id,
+            AmountBegin = customerChargeAwardSetting.AmountBegin,
+            AmountEnd = customerChargeAwardSetting.AmountEnd,
+            Award = customerChargeAwardSetting.Award
+        };
 
         return View("CustomerChargeAwardSettingDetail", model);
     }
@@ -126,7 +112,7 @@ public class CustomerChargeAwardSettingController : Controller {
             customerChargeAwardSetting = new CustomerChargeAwardSettingInfo();
         } else {
             customerChargeAwardSetting = session.Get<CustomerChargeAwardSettingInfo>(customerChargeAwardSettingId);
-            if (customerChargeAwardSetting == null){
+            if (customerChargeAwardSetting == null) {
                 throw new ValidationException($"指定的 客户充值优惠设置#{customerChargeAwardSettingId} 不存在！");
             }
         }

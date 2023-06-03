@@ -57,91 +57,31 @@ public class CustomerChargeService {
         session.Update(customerCharge);
         session.Flush();
 
-        CustomerInfo? customer = customerCharge.Customer;
+        CustomerInfo customer = customerCharge.Customer;
 
         // 充值和余额日志
         customerAccountService.Change(CustomerAccountChangeType.Charge, customer.Id, amount, chargeDescription);
 
-        /* todo 这个充值奖励暂时禁用吧，舜达的不一定会是这样的优惠
-
         // 计算充值奖励
         {
-            // 判断是否是超级VIP
-
-            bool isSuperVip = false;
-            int customerId = customer?.Id ?? 0;
-            CustomerSuperVipDiscountInfo? customerSuperVipDiscount = session
-                .Query<CustomerSuperVipDiscountInfo>()
-                .Where(e => e.Customer.Id == customerId)
+            var chargeAwardSetting = session.Query<CustomerChargeAwardSettingInfo>()
+                .Where(e => e.AmountBegin <= amount && amount < e.AmountEnd)
+                .OrderBy(e => e.AmountBegin)
                 .Take(1)
                 .SingleOrDefault();
 
-            if (customerSuperVipDiscount != null)
-            {
-                isSuperVip = true;
-            }
+            decimal award = chargeAwardSetting?.Award ?? 0;
 
-            // 判断VIP级别
+            if (award > 0) {
+                // 设置奖励金额
+                customerCharge.Award = award;
+                session.Update(customerCharge);
+                session.Flush();
 
-            if (isSuperVip == false)
-            {
-                decimal customerTotalScore = customer?.TotalScore ?? 0;
-                int levelCount = session
-                    .Query<CustomerVipDiscountInfo>()
-                    .Where(e => e.Score <= customerTotalScore)
-                    .Count();
-
-                if (levelCount < 10) // VIP 10 级以内才计算奖励
-                {
-                    decimal award = 0m;
-                    if (amount < 10000)
-                    {
-                        award = 0m;
-                    }
-                    else if (amount >= 10000 && amount < 15000)
-                    {
-                        award = 500m;
-                    }
-                    else if (amount >= 15000 && amount < 20000)
-                    {
-                        award = 900m;
-                    }
-                    else if (amount >= 20000 && amount < 25000)
-                    {
-                        award = 1400m;
-                    }
-                    else if (amount >= 25000 && amount < 30000)
-                    {
-                        award = 2000m;
-                    }
-                    else if (amount >= 30000 && amount < 40000)
-                    {
-                        award = 3000m;
-                    }
-                    else if (amount >= 40000 && amount < 50000)
-                    {
-                        award = 6000m;
-                    }
-                    // else if (amount >= 50000 && amount < 60000)
-                    else if (amount >= 50000)
-                    {
-                        award = 10000m;
-                    }
-
-                    if (award > 0)
-                    {
-                        // 设置奖励金额
-                        customerCharge.Award = award;
-                        session.Update(customerCharge);
-                        session.Flush();
-
-                        // 充值和日志
-                        string awardDescription = $"充值奖惩，充值{amount.ToString("#0.00")}，奖励{award.ToString("#0.00")}";
-                        customerAccountService.Change(CustomerAccountChangeType.ChargeAward, customer?.Id ?? 0, award, awardDescription);
-                    }
-                }
+                // 充值和日志
+                string awardDescription = $"充值奖惩，充值{amount:#0.00}，奖励{award: #0.00}";
+                customerAccountService.Change(CustomerAccountChangeType.ChargeAward, customer.Id, award, awardDescription);
             }
         }
-        */
     }
 }
