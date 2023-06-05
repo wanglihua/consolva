@@ -141,7 +141,7 @@
                 </li>
             }
 
-            @if (Model.Debug && Model.HasPassRes(PassRes.Customer.CustomerChargeAwardSetting)) {
+            @if (Model.HasPassRes(PassRes.Customer.CustomerChargeAwardSetting)) {
                 <li id="customer-customer-charge-award-setting-menu">
                     <a asp-area="Customer" asp-controller="CustomerChargeAwardSetting" asp-action="Index">
                         <i class="menu-icon fa fa-caret-right"></i>
