@@ -13,7 +13,7 @@ namespace shunda.Core.Hibernate.MiniProfilerMySql;
 public class MiniProfilerMySqlClientBatchingBatcher : AbstractBatcher {
     private int batchSize;
     private int totalExpectedRowsAffected;
-    private MySqlClientSqlCommandSet currentBatch;
+    private MiniProfilerMySqlClientSqlCommandSet currentBatch;
     private StringBuilder currentBatchCommandsLog;
 
     public MiniProfilerMySqlClientBatchingBatcher(ConnectionManager connectionManager, IInterceptor interceptor)
@@ -57,7 +57,6 @@ public class MiniProfilerMySqlClientBatchingBatcher : AbstractBatcher {
         currentBatch.Append(((MiniProfilerMySqlDbCommand)currentCommand).Command);
 
         if (currentBatch.CountOfCommands >= batchSize) {
-            // DoExecuteBatch(currentCommand);
             ExecuteBatchWithTiming(currentCommand);
         }
     }
@@ -130,8 +129,8 @@ public class MiniProfilerMySqlClientBatchingBatcher : AbstractBatcher {
         }
     }
 
-    private MySqlClientSqlCommandSet CreateConfiguredBatch() {
-        return new MySqlClientSqlCommandSet(batchSize);
+    private MiniProfilerMySqlClientSqlCommandSet CreateConfiguredBatch() {
+        return new MiniProfilerMySqlClientSqlCommandSet();
     }
 
     private void ClearCurrentBatch() {
