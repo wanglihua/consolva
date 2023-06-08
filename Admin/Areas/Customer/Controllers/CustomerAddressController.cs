@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using NHibernate.Criterion;
 using shunda.Admin.Areas.Customer.Models.CustomerAddress;
 using shunda.Core;
+using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Domain;
 using shunda.Domain.Customer;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Customer;
@@ -65,10 +67,27 @@ public class CustomerAddressController : Controller {
 
     [HttpPost]
     [Route("/admin/customer/address/receive/detail")]
-    public IActionResult ReceiveDetail(int id) {
-        var address = session.Get<CustomerReceiveAddressInfo>(id);
-        if (address == null) {
-            throw new ValidationException($"指定的客户地址#{id}不存在！");
+    public IActionResult ReceiveDetail(CustomerAddressReceiveDetailParam param) {
+        ValidationUtil.Validate<CustomerAddressReceiveDetailParamValidator, CustomerAddressReceiveDetailParam>(param);
+
+        int id = param.Id;
+        int customerId = param.CustomerId;
+
+        CustomerReceiveAddressInfo address;
+        if (id > 0) {
+            address = session.Get<CustomerReceiveAddressInfo>(id);
+            if (address == null) {
+                throw new ValidationException($"指定的客户地址#{id}不存在！");
+            }
+        } else {
+            var customer = session.Get<CustomerInfo>(customerId);
+            if (customer == null) {
+                throw new ValidationException($"指定的客户#{customerId}不存在！");
+            }
+
+            address = new CustomerReceiveAddressInfo {
+                Customer = customer,
+            };
         }
 
         CustomerAddressReceiveDetailModel model = new CustomerAddressReceiveDetailModel {
@@ -85,6 +104,8 @@ public class CustomerAddressController : Controller {
             Zipcode = address.Zipcode,
             Tfn = address.Tfn,
             Company = address.Company,
+
+            CountryList = Country.GetList(),
         };
 
         return View("CustomerAddressReceiveDetail", model);
@@ -92,13 +113,19 @@ public class CustomerAddressController : Controller {
 
     [HttpPost]
     [Route("/admin/customer/address/receive/save")]
+    [Transactional]
     public IActionResult ReceiveSave(CustomerAddressReceiveSaveModel model) {
         ValidationUtil.Validate<CustomerAddressReceiveSaveModelValidator, CustomerAddressReceiveSaveModel>(model);
 
         int addressId = model.Id;
-        CustomerReceiveAddressInfo? address = session.Get<CustomerReceiveAddressInfo>(addressId);
-        if (address == null) {
-            throw new ValidationException($"指定的客户地址#{addressId}不存在！");
+        CustomerReceiveAddressInfo address;
+        if (addressId > 0) {
+            address = session.Get<CustomerReceiveAddressInfo>(addressId);
+            if (address == null) {
+                throw new ValidationException($"指定的客户地址#{addressId}不存在！");
+            }
+        } else {
+            address = new CustomerReceiveAddressInfo();
         }
 
         int customerId = model.CustomerId;
@@ -112,17 +139,17 @@ public class CustomerAddressController : Controller {
         address.FirstName = model.FirstName;
         address.LastName = model.LastName;
         address.Mobile = model.Mobile;
-        address.UnitLoc = model.UnitLoc;
+        address.UnitLoc = model.UnitLoc ?? string.Empty;
         address.Address = model.Address;
         address.City = model.City;
         address.State = model.State;
         address.Zipcode = model.Zipcode;
-        address.Tfn = model.Tfn;
-        address.Company = model.Company;
+        address.Tfn = model.Tfn ?? String.Empty;
+        address.Company = model.Company ?? string.Empty;
 
         customerReceiveAddressService.CheckAddress(address);
 
-        session.Update(address);
+        session.Save(address);
         session.Flush();
 
         return Json(new Dictionary<string, object>() {

@@ -3,10 +3,9 @@ using shunda.Domain.Customer;
 
 namespace shunda.Admin.Areas.Customer.Models.CustomerAddress;
 
-public class CustomerAddressIndexModel
-{
+public class CustomerAddressIndexModel {
     [BindNever]
-    public CustomerInfo Customer { get; set; } = new ();
+    public CustomerInfo Customer { get; set; } = new();
 
     [BindNever]
     public IList<CustomerReceiveAddressInfo> CustomerReceiveAddressList { get; set; } = new List<CustomerReceiveAddressInfo>();

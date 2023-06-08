@@ -122,7 +122,7 @@ public class CustomerMessageInternationalExpressStateUpdateService {
 
             if (clientShouldSend) {
                 if (setting.WechatSend) {
-                    string messageTitle = customerMessageCommonService.GetMessageTitle(messageType);
+                    string messageTitle = customerMessageCommonService.GetMessageTitle(messageType); // todo 这里修改空运海运标题
                     string customerCode = customerCodeService.GetCustomerCode(customer.Id);
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {

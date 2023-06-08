@@ -1,3 +1,5 @@
+@using System.Security.Policy
+@using shunda.Admin.Areas.Customer.Models.CustomerAddress
 @using shunda.Core.Web
 @using shunda.Domain
 @using shunda.Domain.Customer
@@ -22,6 +24,7 @@
 
 <div id="customerAddressList">
 
+    <a href="javascript:receiveDetail(0)">添加收货地址</a>
     @if (Model.CustomerReceiveAddressList != null && Model.CustomerReceiveAddressList.Count != 0) {
         int index = 1;
         foreach (CustomerReceiveAddressInfo customerAddress in Model.CustomerReceiveAddressList) {
@@ -246,7 +249,10 @@
         $.ajax({
             url: '@Url.Action("ReceiveDetail", "CustomerAddress")',
             type: "POST",
-            data: { "id": id },
+            data: { 
+                "@(nameof(CustomerAddressReceiveDetailParam.Id))": id,
+                "@(nameof(CustomerAddressReceiveDetailParam.CustomerId))": "@(Model.Customer.Id)",
+            },
             success: function(data) {
                 hideMask();
                 if (data.success === false) {
