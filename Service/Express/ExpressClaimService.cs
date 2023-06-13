@@ -51,8 +51,12 @@ public class ExpressClaimService {
 
         // 检查下状态，不能重复认领
         // if (express.Status != ExpressStatus.Expect && express.Status != ExpressStatus.WaitPick)
-        if (express.Status != ExpressStatus.WaitPick) {
-            throw new ValidationException("当前快递单号状态不是 待认领 或 录货值 状态！");
+        // if (express.Status != ExpressStatus.WaitPick) {
+        //     throw new ValidationException("当前快递单号状态不是 待认领 状态！");
+        // }
+
+        if (express.Customer != null) {
+            throw new ValidationException("当前快递单号之前已经被认领！");
         }
 
         if (express.GoodsValue <= 0) {
