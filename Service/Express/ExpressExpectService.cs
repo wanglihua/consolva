@@ -112,7 +112,10 @@ public class ExpressExpectService {
 
         if (express != null) {
             // 已认领
-            if (express.Customer != null && ExpressStatus.IsPacked(express.Status)) {
+            // if (express.Customer != null && ExpressStatus.IsPacked(express.Status)) {
+            // if (express.Customer != null && express.Status != ExpressStatus.WaitPick) {
+            // 就判断一个 Customer 字段是否有值应该也足够了
+            if (express.Customer != null) {
                 // 被他人认领
                 if (express.Customer!.Id != customerId) {
                     throw new ValidationException("预告快递单号对应的快递单已存在且已被他人认领，请检查是否录入有误！");

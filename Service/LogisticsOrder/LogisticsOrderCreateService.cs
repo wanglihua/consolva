@@ -136,8 +136,12 @@ public class LogisticsOrderCreateService {
 
         // 检查快递单号状态
         foreach (var express in expressList) {
-            if (ExpressStatus.IsOrderCreate(express.Status)) {
-                throw new ValidationException($"快递单号 {express.TrackingNo} 已创建订单，不能再次创建订单！");
+            // if (ExpressStatus.IsOrderCreate(express.Status)) {
+            //     throw new ValidationException($"快递单号 {express.TrackingNo} 已创建订单，不能再次创建订单！");
+            // }
+
+            if (ExpressStatus.CanCreateOrder(express.Status) == false) {
+                throw new ValidationException($"快递单号 {express.TrackingNo} 当前状态#{express.Status.Name}，不能创建订单！");
             }
         }
 

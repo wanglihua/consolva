@@ -256,6 +256,14 @@ public class ExpressStatus : CodeTypeBase {
         return true;
     }
 
+    public static bool CanCreateOrder(ExpressStatus status) {
+        if (status == Checkin) {
+            return true;
+        }
+        
+        return false;
+    }
+ 
     private static IReadOnlyList<ExpressStatus> codeTypePacked = new List<ExpressStatus>() {
         Pack,
         WaitTransport,
