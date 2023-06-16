@@ -12,7 +12,7 @@ namespace shunda.Core.Hibernate.MiniProfilerMySql;
 
 public class MiniProfilerMySqlClientBatchingBatcher : AbstractBatcher {
     private int batchSize;
-    // private int totalExpectedRowsAffected;
+    private int totalExpectedRowsAffected;
     private MiniProfilerMySqlClientSqlCommandSet currentBatch;
     private StringBuilder currentBatchCommandsLog;
 
@@ -37,7 +37,7 @@ public class MiniProfilerMySqlClientBatchingBatcher : AbstractBatcher {
             CheckReaders();
         }
 
-        // totalExpectedRowsAffected += expectation.ExpectedRowCount;
+        totalExpectedRowsAffected += expectation.ExpectedRowCount;
         DbCommand currentCommand = CurrentCommand;
         Prepare(currentCommand);
         Driver.AdjustCommand(currentCommand);
@@ -122,7 +122,7 @@ public class MiniProfilerMySqlClientBatchingBatcher : AbstractBatcher {
                 throw ADOExceptionHelper.Convert(Factory.SQLExceptionConverter, (Exception)ex, "could not execute batch command.");
             }
 
-            // Expectations.VerifyOutcomeBatched(totalExpectedRowsAffected, rowCount, cmd);
+            Expectations.VerifyOutcomeBatched(totalExpectedRowsAffected, rowCount, cmd);
         }
         finally {
             ClearCurrentBatch();
@@ -135,7 +135,7 @@ public class MiniProfilerMySqlClientBatchingBatcher : AbstractBatcher {
 
     private void ClearCurrentBatch() {
         currentBatch.Dispose();
-        // totalExpectedRowsAffected = 0;
+        totalExpectedRowsAffected = 0;
         currentBatch = CreateConfiguredBatch();
 
         if (Factory.Settings.SqlStatementLogger.IsDebugEnabled) {
@@ -152,7 +152,7 @@ public class MiniProfilerMySqlClientBatchingBatcher : AbstractBatcher {
             await configuredTaskAwaitable;
         }
 
-        // clientBatchingBatcher.totalExpectedRowsAffected += expectation.ExpectedRowCount;
+        clientBatchingBatcher.totalExpectedRowsAffected += expectation.ExpectedRowCount;
         DbCommand batchUpdate = clientBatchingBatcher.CurrentCommand;
         configuredTaskAwaitable = clientBatchingBatcher.PrepareAsync(batchUpdate, cancellationToken).ConfigureAwait(false);
         await configuredTaskAwaitable;
@@ -198,7 +198,7 @@ public class MiniProfilerMySqlClientBatchingBatcher : AbstractBatcher {
                 throw ADOExceptionHelper.Convert(clientBatchingBatcher.Factory.SQLExceptionConverter, (Exception)ex, "could not execute batch command.");
             }
 
-            // Expectations.VerifyOutcomeBatched(clientBatchingBatcher.totalExpectedRowsAffected, rowCount, cmd);
+            Expectations.VerifyOutcomeBatched(clientBatchingBatcher.totalExpectedRowsAffected, rowCount, cmd);
         }
         finally {
             clientBatchingBatcher.ClearCurrentBatch();

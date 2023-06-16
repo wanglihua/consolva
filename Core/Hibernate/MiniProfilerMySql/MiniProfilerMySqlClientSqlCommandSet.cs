@@ -6,7 +6,7 @@ public class MiniProfilerMySqlClientSqlCommandSet : IDisposable {
     private readonly IList<DbCommand> commandList = new List<DbCommand>();
 
     public void Append(DbCommand command) {
-        commandList.Add(command);
+        commandList.Add((DbCommand)((ICloneable)command).Clone());
     }
 
     public int ExecuteNonQuery() {
