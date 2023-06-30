@@ -184,6 +184,7 @@ public class LogisticsOrderCreateService {
         var order = new LogisticsOrderInfo {
             Code = orderCode,
             Country = createSelect.Country,
+            OrderCate = firstMode.OrderCate,
             Customer = customer,
             CustomerCode = customerCode,
             FeeMethod = LogisticsOrderFeeMethod.Pack, // 当前创建的订单都是打包后收费的
