@@ -17,6 +17,12 @@ public class CouponBatchStatus : CodeTypeBase {
     public static readonly CouponBatchStatus Release = new CouponBatchStatus(2000, "已投放", "已投放");
 
     /// <summary>
+    /// 停止发放
+    /// 这个状态现在只用在关注公众号优惠券赠送时的判断
+    /// </summary>
+    public static readonly CouponBatchStatus StopRelease = new CouponBatchStatus(2200, "停止发放", "停止发放");
+
+    /// <summary>
     /// 已领完
     /// </summary>
     public static readonly CouponBatchStatus Picked = new CouponBatchStatus(3000, "已领完", "已领完");
@@ -33,12 +39,6 @@ public class CouponBatchStatus : CodeTypeBase {
     public static readonly CouponBatchStatus Expire = new CouponBatchStatus(5000, "已过期", "已过期");
 
     /// <summary>
-    /// 已停用
-    /// 这个状态现在只用在关注公众号优惠券赠送时的判断
-    /// </summary>
-    public static readonly CouponBatchStatus Disabled = new CouponBatchStatus(6000, "已停用", "已停用");
-
-    /// <summary>
     /// None
     /// </summary>
     public static readonly CouponBatchStatus None = new CouponBatchStatus(0, "", "");
@@ -46,10 +46,10 @@ public class CouponBatchStatus : CodeTypeBase {
     private static readonly IReadOnlyList<CouponBatchStatus> codeTypeList = new List<CouponBatchStatus>() {
         New,
         Release,
+        StopRelease,
         Picked,
         Complete,
         Expire,
-        Disabled,
     };
 
     private static readonly IDictionary<int, CouponBatchStatus> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);

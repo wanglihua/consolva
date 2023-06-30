@@ -47,7 +47,7 @@ public class CouponFollowService {
                         && e.Status == CouponBatchStatus.Release) // 停用的就不会取到了
             .ToList();
 
-        batchFollowList = batchFollowList.Where(e => e.Status != CouponBatchStatus.Disabled).ToList(); // 再保证一下，停用的不会赠送
+        batchFollowList = batchFollowList.Where(e => e.Status != CouponBatchStatus.StopRelease).ToList(); // 再保证一下，停用的不会赠送
 
         var couponList = new List<CouponInfo>();
         foreach (var batch in batchFollowList) {

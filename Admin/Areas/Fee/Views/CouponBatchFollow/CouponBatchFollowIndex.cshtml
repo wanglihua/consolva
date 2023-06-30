@@ -255,5 +255,28 @@
             });
         });
     }
+    
+    function stopReleaseCouponBatch(batchId) {
+        $.msg.confirm("停止发放后客户将不能再获得优惠券，确认要停止发放客户吗？", function() {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("StopRelease", "CouponBatchFollow")',
+                type: "POST",
+                data: {
+                    batchId: batchId
+                },
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    }
+    
+                    $.msg.show(data.message);
+                    loadCouponBatchList();
+                }
+            });
+        });
+    }    
 
 </script>

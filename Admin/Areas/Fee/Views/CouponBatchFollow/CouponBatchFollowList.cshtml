@@ -48,7 +48,7 @@
                 </div>
                 <div>
                     <a field="@(nameof(CouponBatchInfo.ExpireMonth))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCouponBatchList">过期月份数</a>
-                </div>                
+                </div>
             </th>
 
             <th style="width: 100px; text-align: center;">
@@ -77,11 +77,9 @@
         </tr>
     </thead>
     <tbody>
-        @if (Model.CouponBatchList != null && Model.CouponBatchList.Count() != 0)
-        {
+        @if (Model.CouponBatchList != null && Model.CouponBatchList.Count() != 0) {
             int order = 1;
-            foreach (CouponBatchInfo couponBatch in Model.CouponBatchList)
-            {
+            foreach (CouponBatchInfo couponBatch in Model.CouponBatchList) {
                 <tr ondblclick="showCouponBatchDetail(@(couponBatch.Id));">
                     <td style="text-align: center;">
                         <div>
@@ -112,10 +110,19 @@
                     </td>
 
                     <td style="text-align: center;">
-
-                        <div style="color: blue;">
-                            @ListDataUtil.Render(couponBatch.Status.Name)
-                        </div>
+                        @if (couponBatch.Status == CouponBatchStatus.StopRelease) {
+                            <div style="color: red;">
+                                @ListDataUtil.Render(couponBatch.Status.Name)
+                            </div>
+                        } else if (couponBatch.Status == CouponBatchStatus.Release) {
+                            <div style="color: blue;">
+                                @ListDataUtil.Render(couponBatch.Status.Name)
+                            </div>
+                        } else {
+                            <div>
+                                @ListDataUtil.Render(couponBatch.Status.Name)
+                            </div>
+                        }
                     </td>
                     <td style="text-align: center;">
                         <div>
@@ -123,7 +130,7 @@
                         </div>
                         <div>
                             @ListDataUtil.Render(couponBatch.ExpireMonth)个月
-                        </div>                        
+                        </div>
                     </td>
                     <td style="text-align: center;">
                         <div>
@@ -143,13 +150,21 @@
                         </div>
                     </td>
                     <td style="text-align: center;">
-                        @if (couponBatch.Status.Released() == false)
-                        {
+                        @if (couponBatch.Status.Released() == false) {
                             <div>
                                 <a href="javascript:showCouponRule('@(couponBatch.Id)');">编辑规则</a>
                             </div>
+                        }
+
+                        @if (couponBatch.Status.Released() == false || couponBatch.Status == CouponBatchStatus.StopRelease) {
                             <div>
                                 <a href="javascript:releaseCouponBatch('@(couponBatch.Id)');">投放客户</a>
+                            </div>
+                        }
+
+                        @if (couponBatch.Status == CouponBatchStatus.Release) {
+                            <div>
+                                <a href="javascript:stopReleaseCouponBatch('@(couponBatch.Id)');">停止发放</a>
                             </div>
                         }
                         <div>
@@ -159,9 +174,7 @@
                     <td></td>
                 </tr>
             }
-        }
-        else
-        {
+        } else {
             <tr>
                 <td colspan="11">
                     暂时没有数据！

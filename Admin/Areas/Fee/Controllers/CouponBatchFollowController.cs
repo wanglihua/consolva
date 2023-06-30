@@ -214,7 +214,7 @@ public class CouponBatchFollowController : Controller {
                 throw new ValidationException($"优惠券批次#{batch.Name}已投放过，不能删除，可以选择停用！");
             }
         }
-        
+
         // 先删除对应的规则设置
         var batchIdList = batchList.Select(e => e.Id).ToList();
         var couponRuleDeductList = session.Query<CouponRuleDeductInfo>()
@@ -236,7 +236,7 @@ public class CouponBatchFollowController : Controller {
             .ToList();
         foreach (var couponRulePriceBreak in couponRulePriceBreakList) {
             session.Delete(couponRulePriceBreak);
-        }        
+        }
 
         foreach (var batch in batchList) {
             session.Delete(batch);
@@ -262,7 +262,7 @@ public class CouponBatchFollowController : Controller {
         // 检查规则是否已经编辑并且合法
         couponBatchService.CheckRuleValid(batchId);
 
-        if ((batch.Status?.Released() ?? false) == true) {
+        if (batch.Status.Released() && batch.Status != CouponBatchStatus.StopRelease) {
             throw new ValidationException($"优惠券批次#{batch.Name} 已经是投放客户或后续状态！");
         }
 
@@ -288,6 +288,34 @@ public class CouponBatchFollowController : Controller {
         return Json(new Dictionary<string, object>() {
             { "success", true },
             { "message", $"优惠券批次#{batch.Name} 投放客户成功！" },
+        });
+    }
+
+    [HttpPost]
+    [Route("/admin/coupon/batch/follow/stop/release")]
+    [Transactional]
+    public IActionResult StopRelease(int batchId) {
+        var batch = session.Get<CouponBatchInfo>(batchId);
+        if (batch == null) {
+            throw new ValidationException($"指定的优惠券批次#{batchId}不存在！");
+        }
+
+        if (batch.Status == CouponBatchStatus.StopRelease) {
+            throw new ValidationException($"优惠券批次#{batch.Name} 已经是停止发放状态！");
+        }
+
+        if (batch.Status != CouponBatchStatus.Release) {
+            throw new ValidationException($"优惠券批次#{batch.Name} 不是投放客户状态，不能停止发放！");
+        }
+
+        batch.Status = CouponBatchStatus.StopRelease;
+
+        session.Update(batch);
+        session.Flush();
+
+        return Json(new Dictionary<string, object>() {
+            { "success", true },
+            { "message", $"优惠券批次#{batch.Name} 禁用成功！" },
         });
     }
 
