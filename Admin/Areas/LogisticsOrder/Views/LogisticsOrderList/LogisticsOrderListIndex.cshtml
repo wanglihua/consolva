@@ -58,6 +58,14 @@
 
     <label for="mobileQuery">手机号</label>&nbsp;<input id="mobileQuery" autocomplete="off" style="width: 100px; height: 30px;" placeholder="手机号查询"/>&nbsp;
 
+    <label for="orderCateQuery">订单类别</label>&nbsp;
+    <select id="orderCateQuery" style="width: 100px; height: 30px;">
+        <option value="0">订单类别</option>
+        @foreach (var orderCate in Model.OrderCateList) {
+            <option value="@orderCate.Id">@orderCate.Name</option>
+        }
+    </select>&nbsp;
+
     <label for="orderStatusQuery">订单状态</label>&nbsp;
     <select id="orderStatusQuery" style="width: 100px; height: 30px;">
         <option value="0">订单状态</option>
@@ -118,6 +126,7 @@
                         data: {
                             '@(nameof(LogisticsOrderListQueryParam.MenuType))': '@(Model.MenuType)',
                             '@(nameof(LogisticsOrderListQueryParam.CountryQuery))': $('#countryQuery').val(),
+                            '@(nameof(LogisticsOrderListQueryParam.OrderCateQuery))': $('#orderCateQuery').val(),
                             '@(nameof(LogisticsOrderListQueryParam.OrderIdQuery))': $('#orderIdQuery').val(),
                             '@(nameof(LogisticsOrderListQueryParam.CodeQuery))': $('#codeQuery').val(),
                             '@(nameof(LogisticsOrderListQueryParam.TrackingNoQuery))': $('#trackingNoQuery').val(),
@@ -255,6 +264,7 @@
             data: {
                 '@(nameof(LogisticsOrderListQueryParam.MenuType))': '@(Model.MenuType)',
                 '@(nameof(LogisticsOrderListQueryParam.CountryQuery))': $('#countryQuery').val(),
+                '@(nameof(LogisticsOrderListQueryParam.OrderCateQuery))': $('#orderCateQuery').val(),
                 '@(nameof(LogisticsOrderListQueryParam.OrderIdQuery))': $('#orderIdQuery').val(),
                 '@(nameof(LogisticsOrderListQueryParam.CodeQuery))': $('#codeQuery').val(),
                 '@(nameof(LogisticsOrderListQueryParam.TrackingNoQuery))': $('#trackingNoQuery').val(),

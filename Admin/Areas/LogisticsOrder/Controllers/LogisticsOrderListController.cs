@@ -85,6 +85,7 @@ public class LogisticsOrderListController : Controller {
     [NonAction]
     private IActionResult IndexInternal(LogisticsOrderListIndexModel model) {
         model.CountryList = Country.GetList();
+        model.OrderCateList = LogisticsOrderCate.GetList();
         model.FirstModeTypeList = LogisticsModeType.GetList();
         model.OrderStatusList = LogisticsOrderStatus.GetList();
         model.PayStatusList = PayStatus.GetList();
@@ -189,6 +190,11 @@ public class LogisticsOrderListController : Controller {
             var country = queryParam.CountryQuery;
             criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.Country == country));
         }
+
+        if (queryParam.OrderCateQuery != null && queryParam.OrderCateQuery != LogisticsOrderCate.None) {
+            var orderCateQuery = queryParam.OrderCateQuery;
+            criteria = criteria.Add(Restrictions.Where<LogisticsOrderListViewInfo>(e => e.OrderCate == orderCateQuery));
+        }        
 
         if (queryParam.OrderIdQuery != 0) {
             int orderIdQuery = queryParam.OrderIdQuery;

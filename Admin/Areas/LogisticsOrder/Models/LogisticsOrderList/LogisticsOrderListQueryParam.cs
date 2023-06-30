@@ -12,6 +12,9 @@ public class LogisticsOrderListQueryParam : ListQueryParam {
     [ModelBinder(typeof(CountryModelBinder))]
     public Country? CountryQuery { get; set; }
 
+    [ModelBinder(typeof(LogisticsOrderCateModelBinder))]
+    public LogisticsOrderCate? OrderCateQuery { get; set; }
+
     public int OrderIdQuery { get; set; }
 
     public string? CodeQuery { get; set; }

@@ -12,6 +12,9 @@ public class LogisticsOrderListIndexModel {
     public IList<Country> CountryList { get; set; } = Country.GetList();
 
     [BindNever]
+    public IList<LogisticsOrderCate> OrderCateList { get; set; } = LogisticsOrderCate.GetList();
+
+    [BindNever]
     public IList<LogisticsOrderStatus> OrderStatusList { get; set; } = LogisticsOrderStatus.GetList();
 
     [BindNever]
