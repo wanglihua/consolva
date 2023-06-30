@@ -9,6 +9,7 @@ using shunda.Core.Util;
 using shunda.Core.Web;
 using shunda.Domain;
 using shunda.Domain.Logistics;
+using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
 using shunda.Domain.Storage;
 using shunda.Service.Storage;
@@ -172,6 +173,7 @@ public class LogisticsModeController : Controller {
 
         model.Id = logisticsMode.Id;
         model.Country = logisticsMode.Country;
+        model.OrderCate = logisticsMode.OrderCate;
         model.Type = logisticsMode.Type;
         model.PackSizeType = logisticsMode.PackSizeType;
         model.Code = logisticsMode.Code;
@@ -198,6 +200,7 @@ public class LogisticsModeController : Controller {
         }
 
         model.CountryList = Country.GetNoChinaList();
+        model.OrderCateList = LogisticsOrderCate.GetList();
         model.LogisticsModeTypeList = typeList;
         model.PackSizeTypeList = LogisticsModePackSizeType.GetList();
 
@@ -230,6 +233,10 @@ public class LogisticsModeController : Controller {
 
         if (model.Country == null || model.Country == Country.None) {
             throw new ValidationException("目的国家不能为空！");
+        }
+
+        if (model.OrderCate == null || model.OrderCate == LogisticsOrderCate.None) {
+            throw new ValidationException("订单类别不能为空！");
         }
 
         var repackTypeIdList = model.RepackTypeIdList;
@@ -290,6 +297,7 @@ public class LogisticsModeController : Controller {
             logisticsMode = session.Get<LogisticsModeInfo>(logisticsModeId);
 
         logisticsMode.Country = model.Country;
+        logisticsMode.OrderCate = model.OrderCate;
         logisticsMode.Type = model.Type;
 
         if (model.PackSizeType == null) {

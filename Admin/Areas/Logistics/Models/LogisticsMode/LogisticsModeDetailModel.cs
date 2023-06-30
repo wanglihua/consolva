@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Domain;
 using shunda.Domain.Logistics;
+using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Storage;
 
 namespace shunda.Admin.Areas.Logistics.Models.LogisticsMode;
@@ -21,6 +22,13 @@ public class LogisticsModeDetailModel {
     [Required(ErrorMessage = "国家不能为空！")]
     [ModelBinder(typeof(CountryModelBinder))]
     public Country Country { get; set; } = Country.None;
+
+    /// <summary>
+    /// 订单类别
+    /// </summary>
+    [Required(ErrorMessage = "订单类别不能为空！")]
+    [ModelBinder(typeof(LogisticsOrderCateModelBinder))]
+    public LogisticsOrderCate OrderCate { get; set; } = LogisticsOrderCate.None;
 
     /// <summary>
     /// 类型
@@ -139,6 +147,9 @@ public class LogisticsModeDetailModel {
 
     [BindNever]
     public IList<Country> CountryList { get; set; } = new List<Country>();
+
+    [BindNever]
+    public IList<LogisticsOrderCate> OrderCateList { get; set; } = new List<LogisticsOrderCate>();
 
     [BindNever]
     public IList<LogisticsModeType> LogisticsModeTypeList { get; set; } = new List<LogisticsModeType>();

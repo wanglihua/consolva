@@ -30,6 +30,15 @@ public class LogisticsOrderInfoMapping : EntityMapping<LogisticsOrderInfo> {
             }
         );
 
+        Property(
+            x => x.OrderCate,
+            map => {
+                map.Type<LogisticsOrderCateHibernateType>();
+                map.Column("order_cate_id");
+                map.NotNullable(true);
+            }
+        );
+
         ManyToOne(
             x => x.Customer,
             map => {

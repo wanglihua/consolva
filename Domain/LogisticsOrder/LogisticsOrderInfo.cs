@@ -31,6 +31,11 @@ public class LogisticsOrderInfo : Entity {
     public virtual Country Country { get; set; } = Country.None;
 
     /// <summary>
+    /// 订单类别
+    /// </summary>
+    public virtual LogisticsOrderCate OrderCate { get; set; } = LogisticsOrderCate.None;    
+
+    /// <summary>
     /// 客户，非空
     /// </summary>
     [Required(ErrorMessage = "客户不能为空！")]

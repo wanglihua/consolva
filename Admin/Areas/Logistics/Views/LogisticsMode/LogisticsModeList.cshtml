@@ -17,6 +17,9 @@
             <th style="width: 50px;" class="center">序号</th>
             <th style="width: 100px;" class="center">
                 <div>
+                    <a field="@(nameof(LogisticsModeInfo.OrderCate))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeList">订单类别</a>
+                </div>
+                <div>
                     <a field="@(nameof(LogisticsModeInfo.Type))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsModeList">类型</a>
                 </div>
                 <div>
@@ -76,6 +79,9 @@
                     <td class="center">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
 
                     <td class="center">
+                        <div>
+                            @logisticsMode.OrderCate.Name
+                        </div>
                         <div>
                             @logisticsMode.Type.Name
                         </div>

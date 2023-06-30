@@ -60,6 +60,28 @@
                                 </div>
                             </div>
                         </div>
+                        
+                        <div class="col-xs-12">
+                            <div class="form-group">
+                                <label asp-for="OrderCate" class="col-xs-2 control-label">订单类别</label>
+                                <div class="col-xs-10">
+                                    @if (isCreate) {
+                                        <select asp-for="OrderCate" class="input-sm form-control" required="required">
+                                            @foreach (var orderCate in Model.OrderCateList) {
+                                                <option value="@orderCate.Id">@orderCate.Name</option>
+                                            }
+                                        </select>
+                                    } else {
+                                        <input asp-for="OrderCate" type="hidden"/>
+                                        <select asp-for="OrderCate" class="input-sm form-control" disabled="disabled">
+                                            @foreach (var orderCate in Model.OrderCateList) {
+                                                <option value="@orderCate.Id">@orderCate.Name</option>
+                                            }
+                                        </select>
+                                    }
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="col-xs-12">
                             <div class="form-group">

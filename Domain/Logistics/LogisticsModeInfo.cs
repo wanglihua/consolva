@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using shunda.Core;
+using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Storage;
 
 namespace shunda.Domain.Logistics;
@@ -14,6 +15,11 @@ public class LogisticsModeInfo : Entity {
     /// 国家
     /// </summary>
     public virtual Country Country { get; set; } = Country.None;
+
+    /// <summary>
+    /// 订单类别
+    /// </summary>
+    public virtual LogisticsOrderCate OrderCate { get; set; } = LogisticsOrderCate.None;
 
     /// <summary>
     /// 类别

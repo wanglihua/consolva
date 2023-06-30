@@ -1,6 +1,7 @@
 using NHibernate;
 using NHibernate.Mapping.ByCode;
 using shunda.Core;
+using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Storage;
 
 namespace shunda.Domain.Logistics;
@@ -14,6 +15,15 @@ public class LogisticsModeInfoMapping : EntityMapping<LogisticsModeInfo> {
             map => {
                 map.Type<CountryHibernateType>();
                 map.Column("country_id");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
+            x => x.OrderCate,
+            map => {
+                map.Type<LogisticsOrderCateHibernateType>();
+                map.Column("order_cate_id");
                 map.NotNullable(true);
             }
         );
