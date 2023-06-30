@@ -16,6 +16,9 @@
             <th style="width: 50px; text-align: center;">序号</th>
             <th style="width: 120px; text-align: center;">
                 <div>
+                    <a field="@(nameof(LogisticsOrderListViewInfo.OrderCate))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">订单类别</a>
+                </div>
+                <div>
                     <a field="@(nameof(LogisticsOrderListViewInfo.Code))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortLogisticsOrderList">订单编号</a>
                 </div>
                 <div>
@@ -118,7 +121,12 @@
                         <label for="logisticsOrderCheck_@(order.Id)"></label><input id="logisticsOrderCheck_@(order.Id)" type="checkbox" class="ace" value="@order.Id"/><span class="lbl"></span>
                     </td>
                     <td style="text-align: center; background-color: @(order.ListColorCache);">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + orderNum++)</td>
-                    <td style="text-align: center;" class="break-word">
+                    <td style="text-align: center;">
+                        <div>
+                            <span>
+                                @order.OrderCate.Name
+                            </span>
+                        </div>
                         <div class="break-word">
                             <a asp-area="LogisticsOrder" asp-controller="LogisticsOrderDetail" asp-action="Index" asp-route-id="@(order.Id)" target="_blank">
                                 @order.Code

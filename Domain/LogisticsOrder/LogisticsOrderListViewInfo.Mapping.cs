@@ -12,6 +12,15 @@ public class LogisticsOrderListViewInfoMapping : EntityMapping<LogisticsOrderLis
         Mutable(false);
 
         Property(
+            x => x.OrderCate,
+            map => {
+                map.Type<LogisticsOrderCateHibernateType>();
+                map.Column("order_cate_id");
+                map.NotNullable(true);
+            }
+        );
+
+        Property(
             x => x.Code,
             map => {
                 map.Type(NHibernateUtil.String);

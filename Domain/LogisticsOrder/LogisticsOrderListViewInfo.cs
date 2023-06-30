@@ -1,12 +1,9 @@
 using System.ComponentModel.DataAnnotations;
-using shunda.Core;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Newtonsoft.Json;
-using shunda.Domain.Customer;
+using shunda.Core;
 using shunda.Domain.Fee;
 using shunda.Domain.Logistics;
-using shunda.Domain.Storage;
 
 namespace shunda.Domain.LogisticsOrder;
 
@@ -14,6 +11,12 @@ namespace shunda.Domain.LogisticsOrder;
 /// 物流订单
 /// </summary>
 public class LogisticsOrderListViewInfo : Entity {
+    
+    /// <summary>
+    /// 订单类别
+    /// </summary>
+    public virtual LogisticsOrderCate OrderCate { get; set; } = LogisticsOrderCate.None;
+
     /// <summary>
     /// 订单编号，非空
     /// </summary>
@@ -120,7 +123,7 @@ public class LogisticsOrderListViewInfo : Entity {
     /// 物流方式，非空
     /// </summary>
     [JsonProperty("firstModeCode")]
-    public virtual string FirstModeCode { get; set; } = string.Empty;    
+    public virtual string FirstModeCode { get; set; } = string.Empty;
 
     /// <summary>
     /// 物流方式，非空
@@ -202,5 +205,5 @@ public class LogisticsOrderListViewInfo : Entity {
     /// </summary>
     public virtual string FirstModeNameCache { get; set; } = string.Empty;
 
-    #endregion    
+    #endregion
 }
