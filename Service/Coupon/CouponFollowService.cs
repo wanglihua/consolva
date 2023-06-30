@@ -44,8 +44,10 @@ public class CouponFollowService {
 
         var batchFollowList = session.Query<CouponBatchInfo>()
             .Where(e => e.GetMethod == CouponGetMethod.Follow
-                        && e.Status == CouponBatchStatus.Release)
+                        && e.Status == CouponBatchStatus.Release) // 停用的就不会取到了
             .ToList();
+
+        batchFollowList = batchFollowList.Where(e => e.Status != CouponBatchStatus.Disabled).ToList(); // 再保证一下，停用的不会赠送
 
         var couponList = new List<CouponInfo>();
         foreach (var batch in batchFollowList) {

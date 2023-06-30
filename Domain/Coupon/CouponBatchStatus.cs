@@ -23,8 +23,7 @@ public class CouponBatchStatus : CodeTypeBase {
 
     /// <summary>
     /// 已完结
-    /// 这个状态现在还没用起来
-    /// 实际应该在使用优惠券时判断，在订单取消时判断，或者满减券计费时发现无效时
+    /// 这个现在还没用起来 
     /// </summary>
     public static readonly CouponBatchStatus Complete = new CouponBatchStatus(4000, "已完结", "已完结");
 
@@ -32,6 +31,12 @@ public class CouponBatchStatus : CodeTypeBase {
     /// 已过期
     /// </summary>
     public static readonly CouponBatchStatus Expire = new CouponBatchStatus(5000, "已过期", "已过期");
+
+    /// <summary>
+    /// 已停用
+    /// 这个状态现在只用在关注公众号优惠券赠送时的判断
+    /// </summary>
+    public static readonly CouponBatchStatus Disabled = new CouponBatchStatus(6000, "已停用", "已停用");
 
     /// <summary>
     /// None
@@ -44,6 +49,7 @@ public class CouponBatchStatus : CodeTypeBase {
         Picked,
         Complete,
         Expire,
+        Disabled,
     };
 
     private static readonly IDictionary<int, CouponBatchStatus> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);

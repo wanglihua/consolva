@@ -211,9 +211,32 @@ public class CouponBatchFollowController : Controller {
 
         foreach (var batch in batchList) {
             if (batch.Status.Released()) {
-                throw new ValidationException($"优惠券批次#{batch.Name}已投放不能删除！");
+                throw new ValidationException($"优惠券批次#{batch.Name}已投放过，不能删除，可以选择停用！");
             }
         }
+        
+        // 先删除对应的规则设置
+        var batchIdList = batchList.Select(e => e.Id).ToList();
+        var couponRuleDeductList = session.Query<CouponRuleDeductInfo>()
+            .Where(e => batchIdList.Contains(e.Batch.Id))
+            .ToList();
+        foreach (var couponRuleDeduct in couponRuleDeductList) {
+            session.Delete(couponRuleDeduct);
+        }
+
+        var couponRuleDiscountList = session.Query<CouponRuleDiscountInfo>()
+            .Where(e => batchIdList.Contains(e.Batch.Id))
+            .ToList();
+        foreach (var couponRuleDiscount in couponRuleDiscountList) {
+            session.Delete(couponRuleDiscount);
+        }
+
+        var couponRulePriceBreakList = session.Query<CouponRulePriceBreakInfo>()
+            .Where(e => batchIdList.Contains(e.Batch.Id))
+            .ToList();
+        foreach (var couponRulePriceBreak in couponRulePriceBreakList) {
+            session.Delete(couponRulePriceBreak);
+        }        
 
         foreach (var batch in batchList) {
             session.Delete(batch);
