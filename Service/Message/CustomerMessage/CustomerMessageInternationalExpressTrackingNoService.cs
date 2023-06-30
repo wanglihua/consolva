@@ -123,7 +123,16 @@ public class CustomerMessageInternationalExpressTrackingNoService {
 
             if (clientShouldSend) {
                 if (setting.WechatSend) {
-                    string messageTitle = customerMessageCommonService.GetMessageTitle(messageType, "订单跟踪单号提醒");
+                    string messageTitle = "订单跟踪单号提醒";
+                    if (order.OrderCate == LogisticsOrderCate.Air) {
+                        messageTitle = "空运订单跟踪单号提醒";
+                    }
+
+                    if (order.OrderCate == LogisticsOrderCate.Sea) {
+                        messageTitle = "海运订单跟踪单号提醒";
+                    }
+
+                    messageTitle = customerMessageCommonService.GetMessageTitle(messageType, messageTitle);
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
                         string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message1Id);

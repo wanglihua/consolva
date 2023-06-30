@@ -122,8 +122,16 @@ public class CustomerMessageInternationalExpressStateUpdateService {
 
             if (clientShouldSend) {
                 if (setting.WechatSend) {
-                    // string messageTitle = customerMessageCommonService.GetMessageTitle(messageType);
-                    string messageTitle = customerMessageCommonService.GetMessageTitle(messageType, "订单跟踪状态更新提醒");
+                    string messageTitle = "订单跟踪状态更新提醒";
+                    if (order.OrderCate == LogisticsOrderCate.Air) {
+                        messageTitle = "空运订单跟踪状态更新提醒";
+                    }
+
+                    if (order.OrderCate == LogisticsOrderCate.Sea) {
+                        messageTitle = "海运订单跟踪状态更新提醒";
+                    }
+
+                    messageTitle = customerMessageCommonService.GetMessageTitle(messageType, messageTitle);
                     string customerCode = customerCodeService.GetCustomerCode(customer.Id);
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
