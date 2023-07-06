@@ -39,6 +39,11 @@ public class Country : CodeTypeBase {
     /// </summary>
     public static readonly Country Malaysia = new Country(8000, "Malaysia", "马来西亚", "马来西亚", CurrencyType.MYR);
 
+    /// <summary>
+    /// 澳大利亚珀斯，12000
+    /// </summary>
+    public static readonly Country AuPerth = new Country(12000, "AuPerth", "澳大利亚珀斯", "澳大利亚珀斯", CurrencyType.AUD);
+
     /*
     暂时不开放
 
@@ -78,6 +83,7 @@ public class Country : CodeTypeBase {
         NewZealand,
         Singapore,
         Malaysia,
+        AuPerth,
 
         /*
         Britain,
