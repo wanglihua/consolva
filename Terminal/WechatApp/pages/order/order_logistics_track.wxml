@@ -8,7 +8,13 @@
         <van-cell title="订单编号" value="{{ orderCode }}" border="{{ false }}" custom-class="item" />
         <van-cell title="物流名称" value="{{ firstModeName }}" border="{{ false }}" custom-class="item" />
         <van-cell title="物品类型" value="{{ goodsType }}" border="{{ false }}" custom-class="item" />
-        <van-cell title="国际单号" value="{{ trackingNo }}" border="{{ false }}" custom-class="item" />
+        <van-cell title="国际单号" value="{{ trackingNo }}" border="{{ false }}" custom-class="item" clickable="{{ true }}" bind:click="onTrackingNoClick">
+            <view slot="right-icon">
+                <view style="margin-left: 5px;">
+                    <van-button type="info" size="mini" plain block round bind:click="onTrackingNoClick">复制</van-button>
+                </view>
+            </view>
+        </van-cell>
         <van-cell title="运输商" value="{{ carrierName }}" border="{{ false }}" custom-class="item" />
         <view class="item-last-vspace" />
     </view>

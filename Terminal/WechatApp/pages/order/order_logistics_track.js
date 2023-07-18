@@ -26,5 +26,17 @@ Page({
                 eventList: res.data.eventList,
             });
         });
-    }
+    },
+
+    onTrackingNoClick(e) {
+        const that = this;
+        wx.setClipboardData({
+            data: that.data.trackingNo,
+            success: function (res) {
+                wx.showToast({
+                    title: "复制成功！",
+                });
+            }
+        });
+    },
 })

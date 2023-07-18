@@ -119,12 +119,12 @@ public class CustomerMessageType : CodeTypeBase {
     /// <summary>
     /// 国际快递单号提醒
     /// </summary>
-    public static readonly CustomerMessageType InternationalExpressTrackingNo = new CustomerMessageType(25000, "空运订单跟踪单号提醒", "空运订单跟踪单号提醒");
+    public static readonly CustomerMessageType InternationalExpressTrackingNo = new CustomerMessageType(25000, "订单跟踪单号提醒", "订单跟踪单号提醒");
 
     /// <summary>
     /// 国际快递更新提醒
     /// </summary>
-    public static readonly CustomerMessageType InternationalExpressStateUpdate = new CustomerMessageType(26000, "空运订单状态更新提醒", "空运订单状态更新提醒");
+    public static readonly CustomerMessageType InternationalExpressStateUpdate = new CustomerMessageType(26000, "订单状态更新提醒", "订单状态更新提醒");
 
     /// <summary>
     /// 订单未支付提醒
@@ -142,9 +142,9 @@ public class CustomerMessageType : CodeTypeBase {
     public static readonly CustomerMessageType CnStorageOverdue = new CustomerMessageType(29000, "国内仓储即将超期提醒", "国内仓储即将超期提醒");
 
     /// <summary>
-    /// 空运包裹签收提醒
+    /// 订单包裹签收提醒
     /// </summary>
-    public static readonly CustomerMessageType OrderDelivered = new CustomerMessageType(30000, "空运包裹签收提醒", "空运包裹签收提醒");
+    public static readonly CustomerMessageType OrderDelivered = new CustomerMessageType(30000, "订单包裹签收提醒", "订单包裹签收提醒");
 
     /// <summary>
     /// None
