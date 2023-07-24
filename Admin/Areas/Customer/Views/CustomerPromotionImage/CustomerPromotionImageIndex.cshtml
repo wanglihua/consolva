@@ -1,0 +1,194 @@
+@using shunda.Core
+@using shunda.Core.Web
+@using shunda.Domain.Customer
+@model CustomerPromotionImageIndexModel
+@using shunda.Admin.Areas.Customer.Models.CustomerPromotionImage
+@{
+    ViewData[ViewDataKey.Title] = "客户推广图片";
+    Layout = "_AdminLayout";
+}
+
+@*
+
+        <li id="customer-menu">
+            <a href="#" class="dropdown-toggle">
+                <i class="menu-icon fa fa-copy"></i>
+                <span class="menu-text">客户管理</span>
+                <b class="arrow fa fa-angle-down"></b>
+            </a>
+            <b class="arrow"></b>
+            <ul class="submenu">
+
+                <li id="customer-customer-promotion-image-menu">
+                    <a asp-area="Customer" asp-controller="CustomerPromotionImage" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>客户推广图片
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+
+            </ul>
+        </li>
+
+*@
+
+@section Breadcrumb {
+    <li class="parent" data-menu="customer-menu">客户管理</li>
+    <li class="active" data-menu="customer-customer-promotion-image-menu">@(ViewData[ViewDataKey.Title])</li>
+}
+
+<div class="gridToolBar clearfix">
+    <button type="button" class="btn btn-primary btn-sm" onclick="loadCustomerPromotionImageList(0)">
+        <i class="ace-icon fa fa-refresh"></i>
+        刷新
+    </button>
+    <button type="button" class="btn btn-success btn-sm" onclick="showCustomerPromotionImageDetail(0)">
+        <i class="ace-icon fa fa-plus"></i>
+        新增
+    </button>
+    <button type="button" class="btn btn-danger btn-sm" onclick="deleteCustomerPromotionImage()">
+        <i class="ace-icon fa fa-trash-o"></i>
+        删除
+    </button>
+</div>
+
+<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+
+    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadCustomerPromotionImageList(0)">
+        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
+    </button>
+</div>
+
+<div id="customerPromotionImageList" data-page-index="0" data-sort-field="@(nameof(CustomerPromotionImageInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
+</div>
+
+<div id="customerPromotionImageDetailDialogWrapper"></div>
+<script type="text/javascript">
+
+    $(function() {
+        loadCustomerPromotionImageList();
+    });
+
+    function sortCustomerPromotionImageList(sortField, sortDir) {
+        var list = $('#customerPromotionImageList');
+        list.data('sort-field', sortField);
+        list.data('sort-dir', sortDir);
+
+        loadCustomerPromotionImageList();
+    }
+
+    function loadCustomerPromotionImageList(pageIndex) {
+        var list = $('#customerPromotionImageList');
+
+        if (pageIndex === null || pageIndex === undefined) {
+            pageIndex = list.data("page-index");
+        } else {
+            list.data("page-index", pageIndex);
+        }
+
+        var sortField = list.data('sort-field');
+        var sortDir = list.data('sort-dir');
+
+        showMask("数据加载中，请稍候");
+
+        $.ajax({
+            url: "@Url.Action("List", "CustomerPromotionImage")",
+            type: "POST",
+            data: {
+                "@(nameof(CustomerPromotionImageListQueryParam.PageIndex))": pageIndex,
+                "@(nameof(CustomerPromotionImageListQueryParam.SortField))": sortField,
+                "@(nameof(CustomerPromotionImageListQueryParam.SortDir))": sortDir
+            },
+            success: function(data) {
+                hideMask();
+
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $('#customerPromotionImageList').html(data);
+
+                initListTable("#tblCustomerPromotionImageList");
+            }
+        });
+    }
+
+    function showCustomerPromotionImageDetail(id) {
+        $("#customerPromotionImageDetailDialogWrapper").html("");
+
+        showMask("加载中...");
+        // $("#customerPromotionImageDetailForm").clearValidation();
+
+        $.ajax({
+            url: '@Url.Action("Detail", "CustomerPromotionImage")',
+            type: "POST",
+            data: { "id": id },
+            success: function(data) {
+                hideMask();
+                if (data.success === false) {
+                    $.msg.error(data.message);
+                    return;
+                }
+
+                $("#customerPromotionImageDetailDialogWrapper").html(data);
+                $("#customerPromotionImageDetailDialog").modal(modalOptions);
+            }
+        });
+    }
+
+    function saveCustomerPromotionImage() {
+        var form = $("#customerPromotionImageDetailForm");
+        var valid = validate(form);
+
+        if (valid) {
+            showMask("提交中...");
+            $.ajax({
+                url: '@Url.Action("Save", "CustomerPromotionImage")',
+                type: "POST",
+                data: form.serialize(),
+                success: function(data) {
+                    hideMask();
+                    if (data.success === false) {
+                        $.msg.error(data.message);
+                        return;
+                    }
+
+                    $.msg.show(data.message);
+                    $('#customerPromotionImageDetailDialog').modal('hide');
+                    loadCustomerPromotionImageList();
+                }
+            });
+        }
+    }
+
+    function deleteCustomerPromotionImage() {
+        var idList = getSelectIdList('#tblCustomerPromotionImageList');
+
+        if (idList.length === 0) {
+            $.msg.alert("请选择数据！");
+            return;
+        }
+
+        $.msg.confirm("确认要删除吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("Delete", "CustomerPromotionImage")',
+                    type: "POST",
+                    data: { "idList": idList },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        }
+
+                        $.msg.show(data.message);
+                        loadCustomerPromotionImageList();
+                    }
+                });
+            }
+        );
+    }
+
+</script>

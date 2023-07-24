@@ -1,0 +1,91 @@
+@{
+    Layout = null;
+}
+@using shunda.Core.Web
+@using shunda.Domain.Customer
+@model shunda.Admin.Areas.Customer.Models.CustomerPromotionImage.CustomerPromotionImageListModel
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCustomerPromotionImageList" }))
+
+<table id="tblCustomerPromotionImageList" class="data-list-table table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th style="width: 40px; text-align: center;">
+                <div>
+                    <label for="customerPromotionImageCheckAll"></label><input id="customerPromotionImageCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
+                </div>
+            </th>
+            <th style="width: 50px; text-align: center;">序号</th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.CustomerPromotionImageAlias).@(nameof(CustomerPromotionImageInfo.ImageNum))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerPromotionImageList">图片序号</a>
+                </div>
+            </th>
+
+            <th style="width: 100px; text-align: center;">
+                <div>
+                    <a field="@(Model.CustomerPromotionImageAlias).@(nameof(CustomerPromotionImageInfo.ImageFileName))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerPromotionImageList">图片文件名</a>
+                </div>
+            </th>
+
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.CustomerPromotionImageAlias).@(nameof(CustomerPromotionImageInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerPromotionImageList">创建时间</a>
+                </div>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <div>
+                    <a field="@(Model.CustomerPromotionImageAlias).@(nameof(CustomerPromotionImageInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerPromotionImageList">修改时间</a>
+                </div>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.CustomerPromotionImageList.Count != 0) {
+            int index = 0;
+            foreach (CustomerPromotionImageInfo customerPromotionImage in Model.CustomerPromotionImageList) {
+                <tr ondblclick="showCustomerPromotionImageDetail(@(customerPromotionImage.Id));">
+                    <td style="text-align: center;">
+                        <div>
+                            <label for="customerPromotionImageCheck_@(customerPromotionImage.Id)"></label><input id="customerPromotionImageCheck_@(customerPromotionImage.Id)" type="checkbox" class="ace" value="@customerPromotionImage.Id" /><span class="lbl"></span>
+                        </div>
+                    </td>
+                    <td style="text-align: center;">@(Model.ItemBegin + index++)</td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(customerPromotionImage.ImageNum)
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @ListDataUtil.Render(customerPromotionImage.ImageFileName)
+                        </div>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <div>
+                            @customerPromotionImage.CreateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div>
+                            @customerPromotionImage.UpdateTime.ToString("yyyy-MM-dd HH:mm")
+                        </div>
+                    </td>
+                    <td></td>
+                </tr>
+            }
+        } else {
+            <tr>
+                <td colspan="7">
+                    暂时没有数据！
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCustomerPromotionImageList" }))
