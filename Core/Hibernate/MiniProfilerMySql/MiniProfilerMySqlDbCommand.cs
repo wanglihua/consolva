@@ -83,9 +83,9 @@ public class MiniProfilerMySqlDbCommand : ProfiledDbCommand {
 
         commandText = commandText.Trim().ToLower();
         
-        // todo 这个可以用正则表达式来改进
+        // 这个可以用正则表达式来改进
 
-        if (commandText.Contains("insert ") && commandText.Contains("into ") && (commandText.Contains("values ") || commandText.Contains("value "))) {
+        if (commandText.Contains("insert ") && commandText.Contains("into ") && (commandText.Contains("values") || commandText.Contains("value"))) {
             return true;
         }
 
