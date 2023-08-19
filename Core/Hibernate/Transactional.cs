@@ -39,4 +39,41 @@ public class Transactional {
             throw;
         }
     }
+
+    public delegate T TransactionAction<out T>();
+
+    public static T Wrap<T>(ISession session, TransactionAction<T> action) {
+        bool transactionBegin = false;
+
+        ITransaction? transaction = null;
+
+        try {
+            transaction = session.GetCurrentTransaction();
+            if (transaction == null) {
+                transaction = session.BeginTransaction();
+                transactionBegin = true;
+            }
+
+            // 执行业务代码
+            T t = action();
+            session.Flush();
+
+            if (transactionBegin == true) {
+                transaction.Commit();
+            }
+
+            return t;
+        }
+        catch (Exception exp) {
+            if (exp is ValidationException == false) {
+                log.Error(exp);
+            }
+
+            if (transactionBegin == true) {
+                transaction?.Rollback();
+            }
+
+            throw;
+        }
+    }
 }
