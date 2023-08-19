@@ -8,29 +8,6 @@
     Layout = "_AdminLayout";
 }
 
-@*
-
-        <li id="customer-menu">
-            <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-copy"></i>
-                <span class="menu-text">客户管理</span>
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-            <b class="arrow"></b>
-            <ul class="submenu">
-
-                <li id="customer-customer-promotion-menu">
-                    <a asp-area="Customer" asp-controller="CustomerPromotion" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>客户推广
-                    </a>
-                    <b class="arrow"></b>
-                </li>
-
-            </ul>
-        </li>
-
-*@
-
 @section Breadcrumb {
     <li class="parent" data-menu="customer-menu">客户管理</li>
     <li class="active" data-menu="customer-customer-promotion-menu">@(ViewData[ViewDataKey.Title])</li>

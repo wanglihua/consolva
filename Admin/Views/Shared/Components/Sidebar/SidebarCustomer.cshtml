@@ -150,6 +150,25 @@
                     <b class="arrow"></b>
                 </li>
             }
+            
+            @if (Model.HasPassRes(PassRes.Customer.CustomerPromotion)) {
+                <li id="customer-customer-promotion-menu">
+                    <a asp-area="Customer" asp-controller="CustomerPromotion" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>客户推广
+                    </a>
+                    <b class="arrow"></b>
+                </li>                
+            }            
+
+            @if (Model.HasPassRes(PassRes.Customer.CustomerPromotionImage)) {
+                <li id="customer-customer-promotion-image-index-menu">
+                    <a asp-area="Customer" asp-controller="CustomerPromotionImage" asp-action="Index">
+                        <i class="menu-icon fa fa-caret-right"></i>
+                        推广图片
+                    </a>
+                    <b class="arrow"></b>
+                </li>
+            }
 
         </ul>
     </li>
