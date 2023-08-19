@@ -18,17 +18,24 @@
         <i class="ace-icon fa fa-refresh"></i>
         刷新
     </button>
-    <button type="button" class="btn btn-success btn-sm" onclick="showCustomerPromotionDetail(0)">
-        <i class="ace-icon fa fa-plus"></i>
-        新增
+
+    <button class="btn btn-pink btn-sm" onclick="updateChildPayAmount()">
+        <i class="ace-icon fa fa-gear"></i>
+        更新下家支付总额
     </button>
-    <button type="button" class="btn btn-danger btn-sm" onclick="deleteCustomerPromotion()">
-        <i class="ace-icon fa fa-trash-o"></i>
-        删除
+
+    <button type="button" class="btn btn-purple btn-sm" onclick="exportData()">
+        <i class="ace-icon fa fa-file-excel-o"></i>
+        导出
     </button>
 </div>
 
 <div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
+    <label for="parentCustomerCode">上家会员</label>&nbsp;<input id="parentCustomerCode" name="parentCustomerCode" style="width: 100px; height: 30px;" placeholder="上家会员ID查询"/>&nbsp;
+    <label for="childCustomerCode">下家会员Id</label>&nbsp;<input id="childCustomerCode" name="childCustomerCode" style="width: 100px; height: 30px;" placeholder="下家会员ID查询"/>&nbsp;
+    <label for="childCustomerCode">下家OpenId</label>&nbsp;<input id="childOpenId" name="childOpenId" style="width: 150px; height: 30px;" placeholder="下家OpenId查询"/>&nbsp;
+    <label for="beginDateQuery">开始日期</label>&nbsp;<input id="beginDateQuery" name="beginDateQuery" style="width: 90px; height: 30px;" placeholder="开始日期" autocomplete="off"/>&nbsp;
+    <label for="endDateQuery">截止日期</label>&nbsp;<input id="endDateQuery" name="endDateQuery" style="width: 90px; height: 30px;" placeholder="截止日期" autocomplete="off"/>&nbsp;
 
     <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadCustomerPromotionList(0)">
         &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
@@ -42,6 +49,25 @@
 <script type="text/javascript">
 
     $(function() {
+        $('#beginDateQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L'
+        });
+
+        $('#endDateQuery').datetimepicker({
+            locale: "zh-cn",
+            format: 'L',
+            useCurrent: false
+        });
+
+        $("#beginDateQuery").on("dp.change", function (e) {
+            $('#endDateQuery').data("DateTimePicker").minDate(e.date);
+        });
+
+        $("#endDateQuery").on("dp.change", function (e) {
+            $('#beginDateQuery').data("DateTimePicker").maxDate(e.date);
+        });
+
         loadCustomerPromotionList();
     });
 
@@ -52,6 +78,7 @@
 
         loadCustomerPromotionList();
     }
+
 
     function loadCustomerPromotionList(pageIndex) {
         var list = $('#customerPromotionList');
@@ -71,9 +98,14 @@
             url: "@Url.Action("List", "CustomerPromotion")",
             type: "POST",
             data: {
-                "@(nameof(CustomerPromotionListQueryParam.PageIndex))": pageIndex,
-                "@(nameof(CustomerPromotionListQueryParam.SortField))": sortField,
-                "@(nameof(CustomerPromotionListQueryParam.SortDir))": sortDir
+                '@(nameof(CustomerPromotionListQueryParam.ChildOpenId))': $("#childOpenId").val(),
+                '@(nameof(CustomerPromotionListQueryParam.ParentCustomerCode))': $("#parentCustomerCode").val(),
+                '@(nameof(CustomerPromotionListQueryParam.ChildCustomerCode))': $("#childCustomerCode").val(),
+                '@(nameof(CustomerPromotionListQueryParam.BeginDateQuery))': $('#beginDateQuery').val(),
+                '@(nameof(CustomerPromotionListQueryParam.EndDateQuery))': $('#endDateQuery').val(),                
+                '@(nameof(CustomerPromotionListQueryParam.PageIndex))': pageIndex,
+                '@(nameof(CustomerPromotionListQueryParam.SortField))': sortField,
+                '@(nameof(CustomerPromotionListQueryParam.SortDir))': sortDir
             },
             success: function(data) {
                 hideMask();
@@ -90,82 +122,39 @@
         });
     }
 
-    function showCustomerPromotionDetail(id) {
-        $("#customerPromotionDetailDialogWrapper").html("");
-
-        showMask("加载中...");
-        // $("#customerPromotionDetailForm").clearValidation();
+    function exportData() {
+        downLoadFile({
+            url: "@Url.Action("Export", "CustomerPromotion")",
+            data: {
+                '@(nameof(CustomerPromotionListQueryParam.ChildOpenId))': $("#childOpenId").val(),
+                '@(nameof(CustomerPromotionListQueryParam.ParentCustomerCode))': $("#parentCustomerCode").val(),
+                '@(nameof(CustomerPromotionListQueryParam.ChildCustomerCode))': $("#childCustomerCode").val(),
+                '@(nameof(CustomerPromotionListQueryParam.BeginDateQuery))': $('#beginDateQuery').val(),
+                '@(nameof(CustomerPromotionListQueryParam.EndDateQuery))': $('#endDateQuery').val()
+            }
+        });
+    }
+    
+    function  updateChildPayAmount() {
+        showMask("处理中，请稍候");
 
         $.ajax({
-            url: '@Url.Action("Detail", "CustomerPromotion")',
+            url: "@Url.Action("UpdateChildPayAmount", "CustomerPromotion")",
             type: "POST",
-            data: { "id": id },
+            data: {
+            },
             success: function(data) {
                 hideMask();
+
                 if (data.success === false) {
                     $.msg.error(data.message);
                     return;
                 }
 
-                $("#customerPromotionDetailDialogWrapper").html(data);
-                $("#customerPromotionDetailDialog").modal(modalOptions);
+                $.msg.show(data.message);
+                loadCustomerPromotionList();
             }
         });
-    }
-
-    function saveCustomerPromotion() {
-        var form = $("#customerPromotionDetailForm");
-        var valid = validate(form);
-
-        if (valid) {
-            showMask("提交中...");
-            $.ajax({
-                url: '@Url.Action("Save", "CustomerPromotion")',
-                type: "POST",
-                data: form.serialize(),
-                success: function(data) {
-                    hideMask();
-                    if (data.success === false) {
-                        $.msg.error(data.message);
-                        return;
-                    }
-
-                    $.msg.show(data.message);
-                    $('#customerPromotionDetailDialog').modal('hide');
-                    loadCustomerPromotionList();
-                }
-            });
-        }
-    }
-
-    function deleteCustomerPromotion() {
-        var idList = getSelectIdList('#tblCustomerPromotionList');
-
-        if (idList.length === 0) {
-            $.msg.alert("请选择数据！");
-            return;
-        }
-
-        $.msg.confirm("确认要删除吗？",
-            function() {
-                showMask("提交中...");
-                $.ajax({
-                    url: '@Url.Action("Delete", "CustomerPromotion")',
-                    type: "POST",
-                    data: { "idList": idList },
-                    success: function(data) {
-                        hideMask();
-                        if (data.success === false) {
-                            $.msg.error(data.message);
-                            return;
-                        }
-
-                        $.msg.show(data.message);
-                        loadCustomerPromotionList();
-                    }
-                });
-            }
-        );
     }
 
 </script>

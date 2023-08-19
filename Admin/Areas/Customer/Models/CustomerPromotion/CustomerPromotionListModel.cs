@@ -9,13 +9,10 @@ public class CustomerPromotionListModel : ListModel {
     }
 
     [BindNever]
-    public string CustomerPromotionAlias { get; set; } = string.Empty;
-
-    [BindNever]
     public string ParentAlias { get; set; } = string.Empty;
 
     [BindNever]
-    public string ChildAlias { get; set; } = string.Empty;    
+    public string ChildAlias { get; set; } = string.Empty;
 
     [BindNever]
     public IList<CustomerPromotionInfo> CustomerPromotionList { get; set; } = new List<CustomerPromotionInfo>();
