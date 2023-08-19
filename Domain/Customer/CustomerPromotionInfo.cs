@@ -13,12 +13,13 @@ public class CustomerPromotionInfo : Entity {
     public virtual CustomerInfo Parent { get; set; } = new CustomerInfo();
 
     /// <summary>
-    /// 子id，可空
+    /// 子id，可空， 实际数据一般非空
     /// </summary>
     public virtual CustomerInfo? Child { get; set; } = null;
 
     /// <summary>
-    /// open id，可空
+    /// open id，可空, 实际数据一般非空
+    /// 这个是公众号的 open id
     /// </summary>
     public virtual string? OpenId { get; set; } = null;
 
