@@ -5,104 +5,61 @@
 @using shunda.Domain.Customer
 @model shunda.Admin.Areas.Customer.Models.CustomerPromotion.CustomerPromotionListModel
 
-@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCustomerPromotionList" }))
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCustomerPromotionList" })
 
 <table id="tblCustomerPromotionList" class="data-list-table table table-striped table-bordered table-hover">
     <thead>
         <tr>
-            <th style="width: 40px; text-align: center;">
-                <div>
-                    <label for="customerPromotionCheckAll"></label><input id="customerPromotionCheckAll" type="checkbox" class="ace checkall" /><span class="lbl"></span>
-                </div>
-            </th>
             <th style="width: 50px; text-align: center;">序号</th>
-
-            <th style="width: 100px; text-align: center;">
-                <div>
-                    <a field="@(Model.ParentAlias).@(nameof(CustomerPromotionInfo.Parent.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerPromotionList">父id</a>
-                </div>
-            </th>
-
-            <th style="width: 100px; text-align: center;">
-                <div>
-                    <a field="@(Model.ChildAlias).@(nameof(CustomerPromotionInfo.Child.Id))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerPromotionList">子id</a>
-                </div>
-            </th>
-
-            <th style="width: 100px; text-align: center;">
-                <div>
-                    <a field="@(Model.CustomerPromotionAlias).@(nameof(CustomerPromotionInfo.OpenId))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerPromotionList">open id</a>
-                </div>
-            </th>
-
-            <th style="width: 100px; text-align: center;">
-                <div>
-                    <a field="@(Model.CustomerPromotionAlias).@(nameof(CustomerPromotionInfo.ChildPayAmount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerPromotionList">下家消费金额</a>
-                </div>
-            </th>
-
             <th style="width: 120px; text-align: center;">
-                <div>
-                    <a field="@(Model.CustomerPromotionAlias).@(nameof(CustomerPromotionInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerPromotionList">创建时间</a>
-                </div>
+                <a field="@($"{Model.ParentAlias}.{nameof(CustomerInfo.Id)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerPromotionList">上家会员</a>
             </th>
             <th style="width: 120px; text-align: center;">
-                <div>
-                    <a field="@(Model.CustomerPromotionAlias).@(nameof(CustomerPromotionInfo.UpdateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerPromotionList">修改时间</a>
-                </div>
+                <a field="@($"{Model.ChildAlias}.{nameof(CustomerInfo.Id)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerPromotionList">下家会员ID</a>
+            </th>
+            <th style="width: 180px; text-align: center;">
+                <a field="@($"{nameof(CustomerPromotionInfo.OpenId)}")" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerPromotionList">下家OpenID</a>
+            </th>
+            <th style="width: 120px; text-align: center;">
+                <a field="@(nameof(CustomerPromotionInfo.CreateTime))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerPromotionList">关注时间</a>
+            </th>
+            <th style="width: 120px; text-align: right;">
+                <a field="@(nameof(CustomerPromotionInfo.ChildPayAmount))" sort-field="@Model.ListPager.SortField" sort-dir="@Model.ListPager.SortDir" sort-list-func="sortCustomerPromotionList">下家支付总额</a>
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @if (Model.CustomerPromotionList.Count != 0) {
-            int index = 0;
+        @if (Model.CustomerPromotionList != null && Model.CustomerPromotionList.Count() != 0) {
+            int order = 1;
             foreach (CustomerPromotionInfo customerPromotion in Model.CustomerPromotionList) {
-                <tr ondblclick="showCustomerPromotionDetail(@(customerPromotion.Id));">
+                <tr>
+                    <td style="text-align: center;">@(Model.ListPager.PageIndex * Model.ListPager.PageSize + order++)</td>
                     <td style="text-align: center;">
-                        <div>
-                            <label for="customerPromotionCheck_@(customerPromotion.Id)"></label><input id="customerPromotionCheck_@(customerPromotion.Id)" type="checkbox" class="ace" value="@customerPromotion.Id" /><span class="lbl"></span>
-                        </div>
-                    </td>
-                    <td style="text-align: center;">@(Model.ItemBegin + index++)</td>
-
-                    <td style="text-align: center;">
-                        <div>
-                            @ListDataUtil.Render(customerPromotion.Parent?.Id)
-                        </div>
+                        <a href="@Url.Action("Detail", "Customer", new { id = customerPromotion.Parent.Id })" target="_blank">
+                            @ListDataUtil.Render(customerPromotion.Parent.CustomerCodeCache)
+                        </a>
                     </td>
                     <td style="text-align: center;">
-                        <div>
-                            @ListDataUtil.Render(customerPromotion.Child?.Id)
-                        </div>
+                        @if (customerPromotion.Child != null) {
+                            <a href="@Url.Action("Detail", "Customer", new { id = customerPromotion.Child.Id })" target="_blank">
+                                @ListDataUtil.Render(customerPromotion.Child.CustomerCodeCache)
+                            </a>
+                        }
                     </td>
                     <td style="text-align: center;">
-                        <div>
-                            @ListDataUtil.Render(customerPromotion.OpenId)
-                        </div>
+                        @customerPromotion.OpenId
                     </td>
-                    <td style="text-align: center;">
-                        <div>
-                            @ListDataUtil.Render(customerPromotion.ChildPayAmount)
-                        </div>
-                    </td>
-
-                    <td style="text-align: center;">
-                        <div>
-                            @customerPromotion.CreateTime.ToString("yyyy-MM-dd HH:mm")
-                        </div>
-                    </td>
-                    <td style="text-align: center;">
-                        <div>
-                            @customerPromotion.UpdateTime.ToString("yyyy-MM-dd HH:mm")
-                        </div>
+                    <td style="text-align: center;">@customerPromotion.CreateTime.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td style="text-align: right;">
+                        @((customerPromotion.ChildPayAmount ?? 0).ToString("#0.00"))
                     </td>
                     <td></td>
                 </tr>
             }
         } else {
             <tr>
-                <td colspan="9">
+                <td colspan="7">
                     暂时没有数据！
                 </td>
             </tr>
@@ -110,4 +67,4 @@
     </tbody>
 </table>
 
-@(await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCustomerPromotionList" }))
+@await Component.InvokeAsync("ListPager", new { model = Model, loadListFunc = "loadCustomerPromotionList" })

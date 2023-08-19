@@ -63,10 +63,19 @@ public class CustomerPromotionController : Controller {
             .SetMaxResults(listPager.PageSize)
             .List<CustomerPromotionInfo>();
 
-        CustomerPromotionListModel model = new CustomerPromotionListModel(listPager);
-        model.CustomerPromotionList = customerPromotionList;
-        model.ParentAlias = parentAlias;
-        model.ChildAlias = childAlias;
+        foreach (var promotion in customerPromotionList) {
+            promotion.Parent.CustomerCodeCache = customerCodeService.GetCustomerCode(promotion.Parent.Id);
+
+            if (promotion.Child != null) {
+                promotion.Child.CustomerCodeCache = customerCodeService.GetCustomerCode(promotion.Child.Id);
+            }
+        }
+
+        CustomerPromotionListModel model = new CustomerPromotionListModel(listPager) {
+            CustomerPromotionList = customerPromotionList,
+            ParentAlias = parentAlias,
+            ChildAlias = childAlias
+        };
 
         return View("CustomerPromotionList", model);
     }

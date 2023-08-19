@@ -123,7 +123,7 @@
     }
 
     function exportData() {
-        downLoadFile({
+        downloadFile({
             url: "@Url.Action("Export", "CustomerPromotion")",
             data: {
                 '@(nameof(CustomerPromotionListQueryParam.ChildOpenId))': $("#childOpenId").val(),
