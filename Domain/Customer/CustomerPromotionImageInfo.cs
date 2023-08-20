@@ -20,4 +20,12 @@ public class CustomerPromotionImageInfo : Entity {
     public override void Validate() {
         ValidationUtil.ValidateEntity<CustomerPromotionImageInfoValidator, CustomerPromotionImageInfo>(this);
     }
+
+    #region Cache
+
+    public virtual string ImageFileUrlCache { get; set; } = string.Empty;
+
+    public virtual string SmallImageFileUrlCache { get; set; } = string.Empty;
+
+    #endregion
 }

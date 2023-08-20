@@ -76,43 +76,6 @@
         loadCustomerPromotionImageList();
     }
 
-    function loadCustomerPromotionImageList(pageIndex) {
-        var list = $('#customerPromotionImageList');
-
-        if (pageIndex === null || pageIndex === undefined) {
-            pageIndex = list.data("page-index");
-        } else {
-            list.data("page-index", pageIndex);
-        }
-
-        var sortField = list.data('sort-field');
-        var sortDir = list.data('sort-dir');
-
-        showMask("数据加载中，请稍候");
-
-        $.ajax({
-            url: "@Url.Action("List", "CustomerPromotionImage")",
-            type: "POST",
-            data: {
-                "@(nameof(CustomerPromotionImageListQueryParam.PageIndex))": pageIndex,
-                "@(nameof(CustomerPromotionImageListQueryParam.SortField))": sortField,
-                "@(nameof(CustomerPromotionImageListQueryParam.SortDir))": sortDir
-            },
-            success: function(data) {
-                hideMask();
-
-                if (data.success === false) {
-                    $.msg.error(data.message);
-                    return;
-                }
-
-                $('#customerPromotionImageList').html(data);
-
-                initListTable("#tblCustomerPromotionImageList");
-            }
-        });
-    }
-
     function showCustomerPromotionImageDetail(id) {
         $("#customerPromotionImageDetailDialogWrapper").html("");
 
