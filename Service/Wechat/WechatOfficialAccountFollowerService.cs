@@ -61,7 +61,7 @@ public class WechatOfficialAccountFollowerService {
     /// <param name="unionId">union id</param>
     /// <param name="nickName">微信昵称</param>
     /// <param name="sceneId">场景Id</param>
-    public void NewFollow(string openId, string unionId, string nickName, int? sceneId) {
+    public void NewFollow(string openId, string unionId, string nickName, int sceneId) {
         // 一个 openid 一般【只】对应一个 WechatOfficialAccountFollowerInfo，不会有多于两个的情况
         var follower = session.Query<WechatOfficialAccountFollowerInfo>()
             .Where(e => e.OpenId == openId)
@@ -118,26 +118,30 @@ public class WechatOfficialAccountFollowerService {
         // 通过从公众号下载的关注用户，这里的逻辑也不会走
         // todo 在这里可以加上公众号关注奖励等等的逻辑 
 
-        if (sceneId != null && sceneId.Value != 0) {
-            // log.Warn($"WechatFollowService.NewFellow 00400, {sceneId.Value}");
+        // 首次启用，防止出错
+        try {
+            if (sceneId > 0) {
+                // log.Warn($"WechatFollowService.NewFellow 00400, {sceneId.Value}");
+                // 场景关注处理
 
-            // 场景关注处理
+                var weiXinScene = session.Query<WechatSceneInfo>()
+                    .Where(e => e.SceneId == sceneId)
+                    .Take(1)
+                    .SingleOrDefault();
 
-            int sceneIdValue = sceneId.Value;
-            var weiXinScene = session.Query<WechatSceneInfo>()
-                .Where(e => e.SceneId == sceneIdValue)
-                .Take(1)
-                .SingleOrDefault();
+                // log.Warn($"WechatFollowService.NewFellow 00500, {sceneId.Value}");
 
-            // log.Warn($"WechatFollowService.NewFellow 00500, {sceneId.Value}");
+                // 客户推广逻辑
+                if (weiXinScene != null && weiXinScene.Type == WechatSceneType.CustomerPromotion) {
+                    // log.Warn("WechatFollowService.NewFellow 00600");
 
-            // 客户推广逻辑
-            if (weiXinScene != null && weiXinScene.Type == WechatSceneType.CustomerPromotion) {
-                // log.Warn("WechatFollowService.NewFellow 00600");
-
-                // 是客户推广的场景值
-                customerPromotionService.NewFellow(openId, unionId, sceneIdValue);
+                    // 是客户推广的场景值
+                    customerPromotionService.NewFellow(openId, unionId, sceneId);
+                }
             }
+        }
+        catch (Exception exp) {
+            log.Error(exp);
         }
     }
 
@@ -148,7 +152,7 @@ public class WechatOfficialAccountFollowerService {
     /// <param name="unionId">union id</param>
     /// <param name="nickName">微信昵称</param>
     public void NewFollow(string openId, string unionId, string nickName) {
-        NewFollow(openId, unionId, nickName, null);
+        NewFollow(openId, unionId, nickName, 0);
     }
 
     /// <summary>

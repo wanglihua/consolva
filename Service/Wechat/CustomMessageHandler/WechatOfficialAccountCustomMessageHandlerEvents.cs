@@ -45,9 +45,10 @@ public partial class WechatOfficialAccountCustomMessageHandler {
             unionId = string.Empty;
         }
 
-        int? sceneId = null;
+        int sceneId = 0;
         if (!string.IsNullOrEmpty(eventKey)) {
-            sceneId = int.Parse(eventKey.Replace("qrscene_", ""));
+            // sceneId = int.Parse(eventKey.Replace("qrscene_", ""));
+            int.TryParse(eventKey.Replace("qrscene_", ""), out sceneId);
         }
 
         wechatOfficialAccountFollowerService.NewFollow(openId, unionId, nickName, sceneId);
