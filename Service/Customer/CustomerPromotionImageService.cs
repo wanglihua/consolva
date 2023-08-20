@@ -18,8 +18,8 @@ namespace shunda.Service.Customer;
 public class CustomerPromotionImageService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    public static string ImageUploadFolder = Path.Combine("static", "upload", "images", "promotion");
-    public static string ImageUploadUrl = ImageUploadFolder.Replace("\\", "/");
+    public static string ImageUploadFolder = Path.Combine("wwwroot", "static", "upload", "images", "promotion");
+    public static string ImageUploadUrl = "/static/upload/images/promotion/";
 
     private readonly IWebHostEnvironment webHostEnvironment;
     private readonly ISession session;
@@ -82,7 +82,7 @@ public class CustomerPromotionImageService {
     }
 
     public string GetFullImageUrl(string imageFileName) {
-        return "/" + ImageUploadUrl + "/" + imageFileName;
+        return ImageUploadUrl + imageFileName;
     }
 
     public string GetFullImageFileName(string imageFileName) {
