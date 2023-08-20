@@ -1,112 +1,147 @@
-@using shunda.Core
+@using shunda.Admin.Areas.Customer.Models.CustomerPromotionImage
 @using shunda.Core.Web
 @using shunda.Domain.Customer
-@model CustomerPromotionImageIndexModel
-@using shunda.Admin.Areas.Customer.Models.CustomerPromotionImage
+@model shunda.Admin.Areas.Customer.Models.CustomerPromotionImage.CustomerPromotionImageIndexModel
 @{
-    ViewData[ViewDataKey.Title] = "客户推广图片";
+    ViewData[ViewDataKey.Title] = "推广图片";
     Layout = "_AdminLayout";
 }
-
-@*
-
-        <li id="customer-menu">
-            <a href="#" class="dropdown-toggle">
-                <i class="menu-icon fa fa-copy"></i>
-                <span class="menu-text">客户管理</span>
-                <b class="arrow fa fa-angle-down"></b>
-            </a>
-            <b class="arrow"></b>
-            <ul class="submenu">
-
-                <li id="customer-customer-promotion-image-menu">
-                    <a asp-area="Customer" asp-controller="CustomerPromotionImage" asp-action="Index">
-                        <i class="menu-icon fa fa-caret-right"></i>客户推广图片
-                    </a>
-                    <b class="arrow"></b>
-                </li>
-
-            </ul>
-        </li>
-
-*@
 
 @section Breadcrumb {
     <li class="parent" data-menu="customer-menu">客户管理</li>
     <li class="active" data-menu="customer-customer-promotion-image-menu">@(ViewData[ViewDataKey.Title])</li>
 }
 
-<div class="gridToolBar clearfix">
-    <button type="button" class="btn btn-primary btn-sm" onclick="loadCustomerPromotionImageList(0)">
-        <i class="ace-icon fa fa-refresh"></i>
-        刷新
-    </button>
-    <button type="button" class="btn btn-success btn-sm" onclick="showCustomerPromotionImageDetail(0)">
-        <i class="ace-icon fa fa-plus"></i>
-        新增
-    </button>
-    <button type="button" class="btn btn-danger btn-sm" onclick="deleteCustomerPromotionImage()">
-        <i class="ace-icon fa fa-trash-o"></i>
-        删除
-    </button>
+<div style="width: 660px;">
+
+    <div >
+        @foreach (CustomerPromotionImageInfo promotionImage in Model.CustomerPromotionImageList) {
+            <div style="width: 210px; margin: 5px; float: left;">
+                <div style="margin: 5px;">
+                    @if (promotionImage.ImageNum > 0) {
+                        <button id="@("btnUpload" + promotionImage.ImageNum)" type="button" class="btn btn-primary btn-sm">
+                            上传第@(promotionImage.ImageNum)张图片
+                        </button>
+                    } else {
+                        <button id="@("btnUpload" + promotionImage.ImageNum)" type="button" class="btn btn-primary btn-sm" style="visibility: hidden;">
+                            上传第@(promotionImage.ImageNum)张图片
+                        </button>
+                    }
+                </div>
+                <div style="margin: 5px;">
+                    @if (string.IsNullOrWhiteSpace(promotionImage.ImageFileUrlCache) == false) {
+                        <a href="@(promotionImage.ImageFileUrlCache)" target="_blank">
+                            <img id="@("img" + promotionImage.ImageNum)" src="@(promotionImage.ImageFileUrlCache)" alt="" style="width: 200px; height: 200px; border: 0; cursor: pointer;"/>
+                        </a>
+                    } else {
+                        <a>
+                            <div id="@("img" + promotionImage.ImageNum)" alt="" style="width: 200px; height: 200px; border: 1px solid lightgray; cursor: pointer;"></div>
+                        </a>
+                    }
+                </div>
+            </div>
+        }
+        <div style="clear: both;"></div>
+    </div>
+
+    <div>
+        <form id="customerPromotionImageDesc" class="form-horizontal" role="form">
+            <div class="row">
+                <div class="col-xs-12">
+                    <span style="line-height: 25px;">图片描述:</span>
+                </div>
+                <div class="col-xs-12">
+                    <textarea id="promotionImageDesc" name="@(nameof(CustomerPromotionImageSettingModel.PromotionImageDesc))" rows="10"  class="input-sm form-control">@(Model.PromotionImageDesc)</textarea>
+                </div>
+
+                <div class="col-xs-12" style="margin-top: 20px;">
+                    <span style="line-height: 25px;">是否客户端展现客户推广:</span>
+                </div>
+                <div class="col-xs-12">
+                    <select id="promotionClientShow" name="@(nameof(CustomerPromotionImageSettingModel.PromotionClientShow))" asp-for="PromotionClientShow" class="input-sm form-control">
+                        <option value="@(true.ToString())">是，客户端展现客户推广</option>
+                        <option value="@(false.ToString())">否，客户端不展现客户推广</option>
+                    </select>
+                </div>
+                <div class="col-xs-12" style="text-align: right; margin: 12px 0;">
+                    <button id="btnSavePromotionImageDesc" type="button" class="btn btn-purple btn-sm" onclick="saveCustomerPromotionImageDesc()">保存设置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
 </div>
 
-<div id="query" style="margin-top: 10px; margin-bottom: 10px; line-height: 40px;">
-
-    <button type="button" class="btn btn-mini btn-primary" style="margin-bottom: 3px; height: 30px;" onclick="loadCustomerPromotionImageList(0)">
-        &nbsp;<i class="ace-icon fa fa-search"></i>查&nbsp;询&nbsp;
-    </button>
-</div>
-
-<div id="customerPromotionImageList" data-page-index="0" data-sort-field="@(nameof(CustomerPromotionImageInfo.Id))" data-sort-dir="@(SortDirection.Desc)">
-</div>
-
-<div id="customerPromotionImageDetailDialogWrapper"></div>
 <script type="text/javascript">
 
-    $(function() {
-        loadCustomerPromotionImageList();
+    $(function () {
+        for(var imageNum = 1; imageNum <= 8; imageNum++) {
+            initUploader(imageNum);
+        }
     });
 
-    function sortCustomerPromotionImageList(sortField, sortDir) {
-        var list = $('#customerPromotionImageList');
-        list.data('sort-field', sortField);
-        list.data('sort-dir', sortDir);
+    function initUploader(imageNum) {
+        var uploader = new plupload.Uploader({
+            runtimes: 'html5,flash,html4',
 
-        loadCustomerPromotionImageList();
-    }
+            browse_button: 'btnUpload' + imageNum,
+            // browse_button: 'img' + imageNum,
+            file_data_name: "imageFile",
 
-    function showCustomerPromotionImageDetail(id) {
-        $("#customerPromotionImageDetailDialogWrapper").html("");
+            url: '@Url.Action("UploadCustomerPromotionImage", "CustomerPromotionImage")',
 
-        showMask("加载中...");
-        // $("#customerPromotionImageDetailForm").clearValidation();
+            filters: {
+                max_file_size: '1000kb',
+                mime_types: [
+                    {title: "图像文件", extensions: "jpg,png"}
+                ]
+            },
 
-        $.ajax({
-            url: '@Url.Action("Detail", "CustomerPromotionImage")',
-            type: "POST",
-            data: { "id": id },
-            success: function(data) {
-                hideMask();
-                if (data.success === false) {
-                    $.msg.error(data.message);
-                    return;
+            flash_swf_url: '/plupload/js/Moxie.swf',
+
+            init: {
+                FilesAdded: function () {
+                    showMask("上传中，请稍候...");
+                    uploader.start();
+                },
+                BeforeUpload:function(up,file) {
+                    uploader.setOption("multipart_params", {"imageNum": imageNum});
+                },
+                FileUploaded: function (up, file, response) {
+                    hideMask();
+                    var result = JSON.parse(response.response);
+                    if (result.success !== true) {
+                        $.msg.error(result.message);
+                        return;
+                    }
+
+                    $("#img" + imageNum).attr("src", result.imageFileUrl);
+                },
+                Error: function (up, err) {
+                    $.msg.error("上传发生错误：" + err.code + ", " + err.message);
                 }
-
-                $("#customerPromotionImageDetailDialogWrapper").html(data);
-                $("#customerPromotionImageDetailDialog").modal(modalOptions);
             }
         });
-    }
 
-    function saveCustomerPromotionImage() {
-        var form = $("#customerPromotionImageDetailForm");
-        var valid = validate(form);
+        uploader.init();
+    }
+    
+    function saveCustomerPromotionImageDesc() {
+        var promotionImageDesc = CKEDITOR.instances.promotionImageDesc.getData();
+        $("#promotionImageDesc").val(promotionImageDesc);
+            
+        var form = $("#customerPromotionImageDesc");
+        var valid = validate(form, {
+                'PromotionImageDesc': {
+                    required: true,
+                    maxlength: 10000
+                }
+            });
 
         if (valid) {
             showMask("提交中...");
             $.ajax({
-                url: '@Url.Action("Save", "CustomerPromotionImage")',
+                url: '@Url.Action("SettingSave", "CustomerPromotionImage")',
                 type: "POST",
                 data: form.serialize(),
                 success: function(data) {
@@ -117,41 +152,27 @@
                     }
 
                     $.msg.show(data.message);
-                    $('#customerPromotionImageDetailDialog').modal('hide');
-                    loadCustomerPromotionImageList();
                 }
             });
         }
     }
 
-    function deleteCustomerPromotionImage() {
-        var idList = getSelectIdList('#tblCustomerPromotionImageList');
+</script>
 
-        if (idList.length === 0) {
-            $.msg.alert("请选择数据！");
-            return;
-        }
 
-        $.msg.confirm("确认要删除吗？",
-            function() {
-                showMask("提交中...");
-                $.ajax({
-                    url: '@Url.Action("Delete", "CustomerPromotionImage")',
-                    type: "POST",
-                    data: { "idList": idList },
-                    success: function(data) {
-                        hideMask();
-                        if (data.success === false) {
-                            $.msg.error(data.message);
-                            return;
-                        }
-
-                        $.msg.show(data.message);
-                        loadCustomerPromotionImageList();
-                    }
-                });
-            }
-        );
+<script type="text/javascript">
+    if (CKEDITOR.env.ie && CKEDITOR.env.version < 9) {
+        CKEDITOR.tools.enableHtml5Elements(document);
     }
 
+    CKEDITOR.config.height = 280;
+    CKEDITOR.config.width = 'auto';
+
+    var initCkEditor = (function () {
+        return function () {
+            CKEDITOR.replace('promotionImageDesc');
+        };
+    })();
+
+    initCkEditor();
 </script>

@@ -50,10 +50,10 @@ public class CustomerPromotionImageController : Controller {
                 .SingleOrDefault();
 
             if (customerPromotionImage == null) {
-                customerPromotionImage = new CustomerPromotionImageInfo();
-                customerPromotionImage.ImageNum = num;
-
-                customerPromotionImage.ImageFileUrlCache = "/static/images/noimg.jpg";
+                customerPromotionImage = new CustomerPromotionImageInfo {
+                    ImageNum = num,
+                    ImageFileUrlCache = "/static/images/noimg.jpg"
+                };
             } else {
                 customerPromotionImage.ImageFileUrlCache = customerPromotionImageService.GetFullImageUrl(customerPromotionImage.ImageFileName);
             }
