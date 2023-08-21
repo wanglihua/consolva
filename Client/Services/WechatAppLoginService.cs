@@ -57,13 +57,17 @@ public class WechatAppLoginService {
         // 1311
         // oDVH44r0qF8bOoG6mlr2yD8k-E0U
         // oD-2d6ao6zGbr8kGABTBuXGibZo4
-        
+
         // 1101
         // oDVH44qkNd3wxYJu_4p5LfKsT6-w
         // oD-2d6Yik6k6s-_0EeR3f2EWyako
 
-        wechatAppOpenId = "oDVH44qkNd3wxYJu_4p5LfKsT6-w";
-        wechatUnionId = "oD-2d6Yik6k6s-_0EeR3f2EWyako";
+        // 297618
+        // oDVH44p0pICeKRCj-Hx2UFGDIf2U
+        // oD-2d6QbWTGaS72sv3UioiwSt2Ss
+
+        wechatAppOpenId = "oDVH44p0pICeKRCj-Hx2UFGDIf2U";
+        wechatUnionId = "oD-2d6QbWTGaS72sv3UioiwSt2Ss";
 #endif
 
         LoginResult loginResult = new LoginResult(LoginResultCode.AccountNotExist, null);
