@@ -44,7 +44,7 @@ public class WechatSceneService {
             throw new ValidationException("指定的客户Id不存在！");
         }
 
-        int sceneId = CreateOrGetCustomerPromotionWechatSceneId(customerId, useInnerTransaction: true);
+        int sceneId = CreateOrGetCustomerPromotionWechatSceneId(customerId);
 
         string qrCodeFileFullName = GetQrCodeLocalFileFullName(sceneId);
 
@@ -62,7 +62,7 @@ public class WechatSceneService {
             throw new ValidationException("指定的客户Id不存在！");
         }
 
-        int sceneId = CreateOrGetCustomerPromotionWechatSceneId(customerId, useInnerTransaction: true);
+        int sceneId = CreateOrGetCustomerPromotionWechatSceneId(customerId);
 
         string qrCodeFileFullName = GetQrCodeLocalFileFullName(sceneId);
 
@@ -80,9 +80,8 @@ public class WechatSceneService {
     /// 返回的信息不为空
     /// </summary>
     /// <param name="customerId"></param>
-    /// <param name="useInnerTransaction"></param>
     /// <returns>场景ID</returns>
-    public int CreateOrGetCustomerPromotionWechatSceneId(int customerId, bool useInnerTransaction) {
+    public int CreateOrGetCustomerPromotionWechatSceneId(int customerId) {
         lock (wechatSceneIdLockObj) // lock() 时，数据库事务应该是在内部，否则 lock() 后有时也没意义
         {
             return Transactional.Wrap(session, () => {
