@@ -9,6 +9,8 @@
                             width="100%"
                             height="200px"
                             src="{{ promotionImageList[0].smallImageUrl }}"
+                            data-item="{{ promotionImageList[0] }}"
+                            bind:click="onImageClick"
                     />
                 </van-col>
                 <van-col class="img-col" span="8">
@@ -17,6 +19,8 @@
                             width="100%"
                             height="200px"
                             src="{{ promotionImageList[1].smallImageUrl }}"
+                            data-item="{{ promotionImageList[1] }}"
+                            bind:click="onImageClick"
                     />
                 </van-col>
                 <van-col class="img-col" span="8">
@@ -25,6 +29,8 @@
                             width="100%"
                             height="200px"
                             src="{{ promotionImageList[2].smallImageUrl }}"
+                            data-item="{{ promotionImageList[2] }}"
+                            bind:click="onImageClick"
                     />
                 </van-col>
             </van-row>
@@ -36,6 +42,8 @@
                             width="100%"
                             height="200px"
                             src="{{ promotionImageList[3].smallImageUrl }}"
+                            data-item="{{ promotionImageList[3] }}"
+                            bind:click="onImageClick"
                     />
                 </van-col>
                 <van-col class="img-col" span="8">
@@ -44,6 +52,8 @@
                             width="100%"
                             height="200px"
                             src="{{ promotionImageList[4].smallImageUrl }}"
+                            data-item="{{ promotionImageList[4] }}"
+                            bind:click="onImageClick"
                     />
                 </van-col>
                 <van-col class="img-col" span="8">
@@ -52,6 +62,8 @@
                             width="100%"
                             height="200px"
                             src="{{ promotionImageList[5].smallImageUrl }}"
+                            data-item="{{ promotionImageList[5] }}"
+                            bind:click="onImageClick"
                     />
                 </van-col>
             </van-row>
@@ -63,6 +75,8 @@
                             width="100%"
                             height="200px"
                             src="{{ promotionImageList[6].smallImageUrl }}"
+                            data-item="{{ promotionImageList[6] }}"
+                            bind:click="onImageClick"
                     />
                 </van-col>
                 <van-col class="img-col" span="8">
@@ -71,6 +85,8 @@
                             width="100%"
                             height="200px"
                             src="{{ promotionImageList[7].smallImageUrl }}"
+                            data-item="{{ promotionImageList[7] }}"
+                            bind:click="onImageClick"
                     />
                 </van-col>
                 <van-col class="img-col" span="8">
@@ -79,6 +95,8 @@
                             width="100%"
                             height="200px"
                             src="{{ promotionImageList[8].smallImageUrl }}"
+                            data-item="{{ promotionImageList[8] }}"
+                            bind:click="onImageClick"
                     />
                 </van-col>
             </van-row>
