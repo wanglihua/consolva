@@ -87,24 +87,20 @@ Page({
                 });                
                 wx.saveImageToPhotosAlbum({
                     filePath: res.tempFilePath,
-                    success: function (data) {
+                    success: function (result) {
                         wx.showModal({
                             title: '提示',
                             content: '图片已保存到您的手机相册',
                             showCancel: false
                         });
                         
-                        console.log(data);
-
                         wx.openDocument({
                             filePath: res.tempFilePath,
                             showMenu: true,
                             fileType: "jpg",
-                            success: function (res) {
-                                console.log(res);
+                            success: function (result) {
                             },
                             fail: function (err) {
-                                console.log(err);
                             }
                         });
                     },
