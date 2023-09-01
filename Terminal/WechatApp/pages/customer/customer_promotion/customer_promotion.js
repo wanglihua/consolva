@@ -71,7 +71,80 @@ Page({
     },
 
     onImageClick(e) {
-        console.log(e.currentTarget.dataset.item.imageNum);
-        console.log(e.currentTarget.dataset.item.imageUrl);
+        let imageUrl = e.currentTarget.dataset.item.imageUrl;
+
+        wx.showLoading({
+            title: '图片下载中',
+            mask: true
+        });
+
+        wx.downloadFile({
+            url: imageUrl,
+            success: function (res) {
+                wx.hideLoading({
+                    fail() {
+                    }
+                });                
+                wx.saveImageToPhotosAlbum({
+                    filePath: res.tempFilePath,
+                    success: function (data) {
+                        wx.showModal({
+                            title: '提示',
+                            content: '图片已保存到您的手机相册',
+                            showCancel: false
+                        });
+                        
+                        console.log(data);
+
+                        wx.openDocument({
+                            filePath: res.tempFilePath,
+                            showMenu: true,
+                            fileType: "jpg",
+                            success: function (res) {
+                                console.log(res);
+                            },
+                            fail: function (err) {
+                                console.log(err);
+                            }
+                        });
+                    },
+                    fail: function (err) {
+                        if (err.errMsg === 'saveImageToPhotosAlbum:fail auth deny') {
+                            wx.openSetting({
+                                success(settingData) {
+                                    if (settingData.authSetting['scope.writePhotosAlbum']) {
+                                        wx.showModal({
+                                            title: '提示',
+                                            content: '获取图片保存权限成功!',
+                                            showCancel: false
+                                        });
+                                    } else {
+                                        wx.showModal({
+                                            title: '提示',
+                                            content: '获取图片保存权限失败!',
+                                            showCancel: false
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    },
+                });
+            },
+            fail: function (res) {
+                wx.hideLoading({
+                    fail() {
+                    }
+                });
+                wx.showModal({
+                    title: '错误',
+                    content: '下载图片失败！',
+                    showCancel: false
+                });                
+            },
+            complete: function (res) {
+
+            }
+        });
     }
 })
