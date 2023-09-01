@@ -2,22 +2,85 @@
 <view class="container">
     <view style="background-color: white; padding-bottom: 20px;">
         <van-cell-group title="客户推广">
-            <van-row gutter="20">
-                <van-col style="text-align: center;" span="8">span: 8</van-col>
-                <van-col style="text-align: center;" span="8">span: 8</van-col>
-                <van-col style="text-align: center;" span="8">span: 8</van-col>
+            <van-row gutter="10">
+                <van-col class="img-col" span="8">
+                    <van-image
+                            fit="fill"
+                            width="100%"
+                            height="200px"
+                            src="{{ promotionImageList[0].smallImageUrl }}"
+                    />
+                </van-col>
+                <van-col class="img-col" span="8">
+                    <van-image
+                            fit="fill"
+                            width="100%"
+                            height="200px"
+                            src="{{ promotionImageList[1].smallImageUrl }}"
+                    />
+                </van-col>
+                <van-col class="img-col" span="8">
+                    <van-image
+                            fit="fill"
+                            width="100%"
+                            height="200px"
+                            src="{{ promotionImageList[2].smallImageUrl }}"
+                    />
+                </van-col>
             </van-row>
             <view style="height:20px;"></view>
-            <van-row gutter="20">
-                <van-col style="text-align: center;" span="8">span: 8</van-col>
-                <van-col style="text-align: center;" span="8">span: 8</van-col>
-                <van-col style="text-align: center;" span="8">span: 8</van-col>
+            <van-row gutter="10">
+                <van-col class="img-col" span="8">
+                    <van-image
+                            fit="fill"
+                            width="100%"
+                            height="200px"
+                            src="{{ promotionImageList[3].smallImageUrl }}"
+                    />
+                </van-col>
+                <van-col class="img-col" span="8">
+                    <van-image
+                            fit="fill"
+                            width="100%"
+                            height="200px"
+                            src="{{ promotionImageList[4].smallImageUrl }}"
+                    />
+                </van-col>
+                <van-col class="img-col" span="8">
+                    <van-image
+                            fit="fill"
+                            width="100%"
+                            height="200px"
+                            src="{{ promotionImageList[5].smallImageUrl }}"
+                    />
+                </van-col>
             </van-row>
             <view style="height:20px;"/>
-            <van-row gutter="20">
-                <van-col style="text-align: center;" span="8">span: 8</van-col>
-                <van-col style="text-align: center;" span="8">span: 8</van-col>
-                <van-col style="text-align: center;" span="8">span: 8</van-col>
+            <van-row gutter="10">
+                <van-col class="img-col" span="8">
+                    <van-image
+                            fit="fill"
+                            width="100%"
+                            height="200px"
+                            src="{{ promotionImageList[6].smallImageUrl }}"
+                    />
+                </van-col>
+                <van-col class="img-col" span="8">
+                    <van-image
+                            fit="fill"
+                            width="100%"
+                            height="200px"
+                            src="{{ promotionImageList[7].smallImageUrl }}"
+                    />
+                </van-col>
+                <van-col class="img-col" span="8">
+                    <van-image
+                            fit="fill"
+                            width="100%"
+                            height="200px"
+                            src="{{ promotionImageList[8].smallImageUrl }}"
+                    />
+                </van-col>
             </van-row>
         </van-cell-group>
     </view>

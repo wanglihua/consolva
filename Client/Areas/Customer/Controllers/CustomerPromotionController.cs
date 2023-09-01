@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using NLog;
 using shunda.Client.Areas.Customer.Models.CustomerPromotion;
 using shunda.Client.Services;
+using shunda.Core.Config;
 using shunda.Core.Web;
 using shunda.Domain.Customer;
 using shunda.Service.Wechat;
@@ -31,9 +32,20 @@ public class CustomerPromotionController : Controller {
     [Route("/client/customer/promotion")]
     //[Transactional]
     public IActionResult CustomerPromotion() {
-        int customerId = loginCustomerService.GetLoginCustomerId();
+        // todo 检查是否关注过公众号
 
-        // 检查是否关注过公众号
+#if DEBUG
+        var promotionImageList = new List<CustomerPromotionImageItem>();
+
+        for (int num = 1; num <= 9; num++) {
+            promotionImageList.Add(new CustomerPromotionImageItem {
+                ImageNum = num,
+                ImageUrl = SiteConfig.SiteUrlBase + "/static/client/images/noimg.jpg",
+                SmallImageUrl = SiteConfig.SiteUrlBase + "/static/client/images/noimg.jpg",
+            });
+        }
+#else
+        int customerId = loginCustomerService.GetLoginCustomerId();
 
         // 在这里把微信场景确认创建好，后面显示图片的时候，调用生成 scene id 时，产生并发问题的可能性就大大减少了
         wechatSceneService.CreateOrGetCustomerPromotionWechatSceneId(customerId); // 使用内部事务
@@ -57,15 +69,15 @@ public class CustomerPromotionController : Controller {
 
             if (customerPromotionImage == null) {
                 promotionImageItem.ImageNum = num;
-                promotionImageItem.ImageUrl = "/static/images/noimg.jpg";
-                promotionImageItem.SmallImageUrl = "/static/images/noimg.jpg";
+                promotionImageItem.ImageUrl = SiteConfig.SiteUrlBase + "/static/client/images/noimg.jpg";
+                promotionImageItem.SmallImageUrl = SiteConfig.SiteUrlBase + "/static/client/images/noimg.jpg";
             } else {
                 string imageUrl = Url.Action("Index", "CustomerPromotionImage", new { imageNum = customerPromotionImage.ImageNum }) ?? string.Empty;
                 string smallImageUrl = Url.Action("SmallByHeight", "CustomerPromotionImage", new { imageNum = customerPromotionImage.ImageNum }) ?? string.Empty;
 
                 promotionImageItem.ImageNum = num;
-                promotionImageItem.ImageUrl = imageUrl;
-                promotionImageItem.SmallImageUrl = smallImageUrl;
+                promotionImageItem.ImageUrl = SiteConfig.SiteUrlBase + imageUrl;
+                promotionImageItem.SmallImageUrl = SiteConfig.SiteUrlBase + smallImageUrl;
             }
 
             promotionImageList.Add(promotionImageItem);
@@ -79,7 +91,7 @@ public class CustomerPromotionController : Controller {
                 });
             }
         }
-
+#endif
         var customerPromotionImageSetting = session.Query<CustomerPromotionImageSettingInfo>().Take(1).SingleOrDefault();
         string promotionImageDesc = customerPromotionImageSetting?.ImageDesc ?? string.Empty;
 
