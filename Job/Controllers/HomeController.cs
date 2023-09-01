@@ -18,6 +18,7 @@ public class HomeController : Controller {
     [NoLoginRequired]
     [HttpGet]
     [Route("/")]
+    [Route("/job")]
     public IActionResult Index() {
         HomeIndexModel model = new HomeIndexModel();
         return View("HomeIndex", model);

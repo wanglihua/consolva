@@ -1,7 +1,6 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Text;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using NHibernate;
 using NHibernate.Criterion;
@@ -19,19 +18,16 @@ namespace shunda.Service.Logistics;
 public class LogisticsGoodsImageService {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
-    public static string ImageUploadFolder = Path.Combine("static", "upload", "images", "goods");
+    public static string ImageUploadFolder = Path.Combine(SiteConfig.StaticFolder, "upload", "images", "goods");
     public static string ImageUploadUrl = "/static/upload/images/goods";
 
     private static readonly int MAX_WIDTH = 1024;
     private static readonly int MAX_HEIGHT = 768;
 
-    private readonly IWebHostEnvironment webHostEnvironment;
     private readonly ISession session;
 
     public LogisticsGoodsImageService(
-        IWebHostEnvironment webHostEnvironment,
         ISession session) {
-        this.webHostEnvironment = webHostEnvironment;
         this.session = session;
     }
 
@@ -44,7 +40,7 @@ public class LogisticsGoodsImageService {
         string fileExt = GetFileExt(formFile.FileName); // .jpg
         string newFileName = Guid.NewGuid().ToString("N") + fileExt;
         string subFolder = DateTime.Now.ToString("yyyyMM");
-        string fullUploadFolder = Path.Combine(webHostEnvironment.WebRootPath, ImageUploadFolder, subFolder);
+        string fullUploadFolder = Path.Combine(ImageUploadFolder, subFolder);
         string newFileFullName = Path.Combine(fullUploadFolder, newFileName);
 
         if (Directory.Exists(fullUploadFolder) == false) {
@@ -102,7 +98,7 @@ public class LogisticsGoodsImageService {
 
     public void DeleteFile(LogisticsGoodsImageInfo goodsImage) {
         try {
-            string fullImageName = Path.Combine(webHostEnvironment.WebRootPath, ImageUploadFolder, goodsImage.StorePath, goodsImage.StoreName);
+            string fullImageName = Path.Combine(ImageUploadFolder, goodsImage.StorePath, goodsImage.StoreName);
             File.Delete(fullImageName);
         }
         catch (Exception exp) {

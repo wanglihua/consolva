@@ -1,9 +1,9 @@
 using System.Drawing;
 using System.Drawing.Imaging;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using NLog;
 using shunda.Core;
+using shunda.Core.Config;
 using shunda.Core.Service;
 using shunda.Domain.Customer;
 using shunda.Service.Wechat;
@@ -18,19 +18,16 @@ namespace shunda.Service.Customer;
 public class CustomerPromotionImageService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
-    public static string ImageUploadFolder = Path.Combine("wwwroot", "static", "upload", "images", "promotion");
+    public static string ImageUploadFolder = Path.Combine(SiteConfig.StaticFolder, "upload", "images", "promotion");
     public static string ImageUploadUrl = "/static/upload/images/promotion/";
 
-    private readonly IWebHostEnvironment webHostEnvironment;
     private readonly ISession session;
     private readonly WechatSceneService wechatSceneService;
 
     public CustomerPromotionImageService(
-        IWebHostEnvironment webHostEnvironment,
         ISession session,
         WechatSceneService wechatSceneService
     ) {
-        this.webHostEnvironment = webHostEnvironment;
         this.session = session;
         this.wechatSceneService = wechatSceneService;
     }
@@ -43,11 +40,10 @@ public class CustomerPromotionImageService {
     public string SaveImageFile(IFormFile formFile) {
         string fileExt = new FileInfo(formFile.FileName).Extension; // .jpg
         string newFileName = Guid.NewGuid().ToString("N") + fileExt;
-        string fullUploadFolder = Path.Combine(webHostEnvironment.ContentRootPath, ImageUploadFolder);
-        string newFileFullName = Path.Combine(fullUploadFolder, newFileName);
+        string newFileFullName = Path.Combine(ImageUploadFolder, newFileName);
 
-        if (Directory.Exists(fullUploadFolder) == false) {
-            Directory.CreateDirectory(fullUploadFolder);
+        if (Directory.Exists(ImageUploadFolder) == false) {
+            Directory.CreateDirectory(ImageUploadFolder);
         }
 
         Stream newFileStream = File.Create(newFileFullName);
@@ -86,7 +82,7 @@ public class CustomerPromotionImageService {
     }
 
     public string GetFullImageFileName(string imageFileName) {
-        return Path.Combine(webHostEnvironment.ContentRootPath, ImageUploadFolder, imageFileName);
+        return Path.Combine(ImageUploadFolder, imageFileName);
     }
 
     #region 图片生成处理

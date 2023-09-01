@@ -5,6 +5,7 @@ using NLog;
 using Senparc.Weixin.MP;
 using Senparc.Weixin.MP.AdvancedAPIs;
 using shunda.Core;
+using shunda.Core.Config;
 using shunda.Core.Hibernate;
 using shunda.Core.Service;
 using shunda.Domain.Customer;
@@ -20,15 +21,13 @@ public class WechatSceneService {
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
-    private readonly IWebHostEnvironment webHostEnvironment;
     private readonly WechatOfficialAccountAccessTokenService wechatAccessTokenService;
 
-    public WechatSceneService(ISession session,
-        IWebHostEnvironment webHostEnvironment,
+    public WechatSceneService(
+        ISession session,
         WechatOfficialAccountAccessTokenService wechatAccessTokenService
     ) {
         this.session = session;
-        this.webHostEnvironment = webHostEnvironment;
         this.wechatAccessTokenService = wechatAccessTokenService;
     }
 
@@ -150,7 +149,7 @@ public class WechatSceneService {
 
     private string GetQrCodeLocalFileFullName(int sceneId) {
         string fileName = sceneId.ToString();
-        return Path.Combine(webHostEnvironment.ContentRootPath, "static", "upload", "images", "scene", fileName + ".jpg");
+        return Path.Combine(SiteConfig.StaticFolder, "upload", "images", "scene", fileName + ".jpg");
     }
 
     private string GetQrCodeLocalUrl(int sceneId) {
