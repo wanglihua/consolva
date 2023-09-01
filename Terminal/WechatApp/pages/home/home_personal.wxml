@@ -50,7 +50,7 @@
                     <view class="grid-text-sub"></view>
                 </view>
             </van-grid-item>
-            <van-grid-item icon-prefix="iconfont" icon="customer-promotion" icon-class="home-grid-icon" text-class="grid-text">
+            <van-grid-item icon-prefix="iconfont" icon="customer-promotion" icon-class="home-grid-icon" url="/pages/customer/customer_promotion/customer_promotion" text-class="grid-text">
                 <view slot="text">
                     <view class="grid-text-main">我的推广</view>
                     <view class="grid-text-sub"></view>

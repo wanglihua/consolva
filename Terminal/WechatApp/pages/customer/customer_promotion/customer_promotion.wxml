@@ -1,1 +1,24 @@
-
+<header/>
+<view class="container">
+    <view style="background-color: white; padding-bottom: 20px;">
+        <van-cell-group title="客户推广">
+            <van-row gutter="20">
+                <van-col style="text-align: center;" span="8">span: 8</van-col>
+                <van-col style="text-align: center;" span="8">span: 8</van-col>
+                <van-col style="text-align: center;" span="8">span: 8</van-col>
+            </van-row>
+            <view style="height:20px;"></view>
+            <van-row gutter="20">
+                <van-col style="text-align: center;" span="8">span: 8</van-col>
+                <van-col style="text-align: center;" span="8">span: 8</van-col>
+                <van-col style="text-align: center;" span="8">span: 8</van-col>
+            </van-row>
+            <view style="height:20px;"/>
+            <van-row gutter="20">
+                <van-col style="text-align: center;" span="8">span: 8</van-col>
+                <van-col style="text-align: center;" span="8">span: 8</van-col>
+                <van-col style="text-align: center;" span="8">span: 8</van-col>
+            </van-row>
+        </van-cell-group>
+    </view>
+</view>

@@ -1,4 +1,6 @@
 {
     "navigationBarTitleText": "客户推广",
-    "usingComponents": {}
+    "usingComponents": {
+        "header": "/components/header"
+    }
 }
