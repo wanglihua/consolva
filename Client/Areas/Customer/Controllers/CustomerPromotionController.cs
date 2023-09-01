@@ -28,7 +28,7 @@ public class CustomerPromotionController : Controller {
     }
 
     [HttpPost]
-    [Route("/mine/customer/promotion")]
+    [Route("/client/customer/promotion")]
     //[Transactional]
     public IActionResult CustomerPromotion() {
         int customerId = loginCustomerService.GetLoginCustomerId();
@@ -60,8 +60,8 @@ public class CustomerPromotionController : Controller {
                 promotionImageItem.ImageUrl = "/static/images/noimg.jpg";
                 promotionImageItem.SmallImageUrl = "/static/images/noimg.jpg";
             } else {
-                string imageUrl = Url.Action("Index", "PromotionImage", new { customerId = customerId, imageNum = customerPromotionImage.ImageNum }) ?? string.Empty;
-                string smallImageUrl = Url.Action("SmallByHeight", "PromotionImage", new { customerId = customerId, imageNum = customerPromotionImage.ImageNum }) ?? string.Empty;
+                string imageUrl = Url.Action("Index", "CustomerPromotionImage", new { imageNum = customerPromotionImage.ImageNum }) ?? string.Empty;
+                string smallImageUrl = Url.Action("SmallByHeight", "CustomerPromotionImage", new { imageNum = customerPromotionImage.ImageNum }) ?? string.Empty;
 
                 promotionImageItem.ImageNum = num;
                 promotionImageItem.ImageUrl = imageUrl;

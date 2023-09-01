@@ -17,6 +17,7 @@
         "pages/customer/customer_pay/customer_pay",
         "pages/customer/customer_score/customer_score",
         "pages/customer/customer_score/customer_score_log",
+        "pages/customer/customer_promotion/customer_promotion",
         "pages/express/express_checkin/express_checkin_list",
         "pages/express/express_checkin/express_checkin_detail",
         "pages/express/express_checkin/express_checkin_price",
