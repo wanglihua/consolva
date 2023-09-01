@@ -154,6 +154,6 @@ public class WechatSceneService {
 
     private string GetQrCodeLocalUrl(int sceneId) {
         string fileName = sceneId.ToString();
-        return "/static/upload/images/scene/" + fileName + ".jpg";
+        return SiteConfig.SiteUrlBase + "/static/upload/images/scene/" + fileName + ".jpg";
     }
 }
