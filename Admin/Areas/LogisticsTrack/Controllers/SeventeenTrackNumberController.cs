@@ -64,8 +64,8 @@ public class SeventeenTrackNumberController : Controller {
     [Transactional]
     public IActionResult ChangeCarrierTest() {
         var trackNumberList = session.Query<SeventeenTrackNumberInfo>()
-            .Where(e => e.TrackStatus != "Delivered"
-                        && e.Status != SeventeenTrackNumberStatus.Rejected)
+            .Where(e => e.TrackStatus != "Delivered")
+            // && e.Status != SeventeenTrackNumberStatus.Rejected)
             .ToList();
 
         var changeCarrierItemList = new List<SeventeenTrackChangeCarrierRequestItem>();
