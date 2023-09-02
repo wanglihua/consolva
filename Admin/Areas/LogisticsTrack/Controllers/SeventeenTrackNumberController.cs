@@ -53,6 +53,12 @@ public class SeventeenTrackNumberController : Controller {
         return View("SeventeenTrackNumberIndex", model);
     }
 
+    /// <summary>
+    /// 这个是更正了所有还没跟踪完毕的
+    /// 更正服务商跟手工指定的不一致的
+    /// 运行后 以 SeventeenTrackCarrierService.GetKeyByTrackingNo() 获得的服务商为准
+    /// </summary>
+    /// <returns></returns>
     [HttpGet]
     [Route("/admin/logistics/track/seventeen/track/number/change/carrier/test")]
     [Transactional]
