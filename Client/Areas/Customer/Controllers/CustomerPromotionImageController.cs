@@ -1,50 +1,45 @@
 using Microsoft.AspNetCore.Mvc;
-using shunda.Client.Services;
+using shunda.Core.Web;
 using shunda.Service.Customer;
 using ISession = NHibernate.ISession;
 
 namespace shunda.Client.Areas.Customer.Controllers;
 
+[NoLoginRequired]
 [CustomerArea]
 public class CustomerPromotionImageController : Controller {
     private readonly ISession session;
-    private readonly LoginCustomerService loginCustomerService;
     private readonly CustomerPromotionImageService customerPromotionImageService;
 
     public CustomerPromotionImageController(
         ISession session,
-        LoginCustomerService loginCustomerService,
         CustomerPromotionImageService customerPromotionImageService
     ) {
         this.session = session;
-        this.loginCustomerService = loginCustomerService;
         this.customerPromotionImageService = customerPromotionImageService;
     }
 
     [HttpGet]
-    [Route("/client/customer/promotion/image/{imageNum:int}")]
+    [Route("/client/customer/promotion/image/{customerId:int}/{imageNum:int}")]
     // [Transactional]
-    public IActionResult Index(int imageNum) {
-        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
-        byte[] bytes = customerPromotionImageService.GetPromotionImageContentByScale(loginCustomerId, imageNum, 1.0m);
+    public IActionResult Index(int customerId, int imageNum) {
+        byte[] bytes = customerPromotionImageService.GetPromotionImageContentByScale(customerId, imageNum, 1.0m);
         return new FileContentResult(bytes, "image/jpeg");
     }
 
     [HttpGet]
-    [Route("/client/customer/promotion/image/small/scale/{imageNum:int}")]
+    [Route("/client/customer/promotion/image/small/scale/{customerId:int}/{imageNum:int}")]
     // [Transactional]
-    public IActionResult SmallByScale(int imageNum) {
-        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
-        byte[] bytes = customerPromotionImageService.GetPromotionImageContentByScale(loginCustomerId, imageNum, 0.1m);
+    public IActionResult SmallByScale(int customerId, int imageNum) {
+        byte[] bytes = customerPromotionImageService.GetPromotionImageContentByScale(customerId, imageNum, 0.1m);
         return new FileContentResult(bytes, "image/jpeg");
     }
 
     [HttpGet]
-    [Route("/client/customer/promotion/image/small/height/{imageNum:int}")]
+    [Route("/client/customer/promotion/image/small/height/{customerId:int}/{imageNum:int}")]
     // [Transactional]
     public IActionResult SmallByHeight(int customerId, int imageNum) {
-        int loginCustomerId = loginCustomerService.GetLoginCustomerId();
-        byte[] bytes = customerPromotionImageService.GetPromotionImageContentByHeight(loginCustomerId, imageNum, 200);
+        byte[] bytes = customerPromotionImageService.GetPromotionImageContentByHeight(customerId, imageNum, 200);
         return new FileContentResult(bytes, "image/jpeg");
     }
 }

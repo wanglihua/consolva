@@ -72,8 +72,8 @@ public class CustomerPromotionController : Controller {
                 promotionImageItem.ImageUrl = SiteConfig.SiteUrlBase + "/static/client/images/noimg.jpg";
                 promotionImageItem.SmallImageUrl = SiteConfig.SiteUrlBase + "/static/client/images/noimg.jpg";
             } else {
-                string imageUrl = Url.Action("Index", "CustomerPromotionImage", new { imageNum = customerPromotionImage.ImageNum }) ?? string.Empty;
-                string smallImageUrl = Url.Action("SmallByHeight", "CustomerPromotionImage", new { imageNum = customerPromotionImage.ImageNum }) ?? string.Empty;
+                string imageUrl = Url.Action("Index", "CustomerPromotionImage", new { customerId = customerId, imageNum = customerPromotionImage.ImageNum }) ?? string.Empty;
+                string smallImageUrl = Url.Action("SmallByHeight", "CustomerPromotionImage", new { customerId = customerId, imageNum = customerPromotionImage.ImageNum }) ?? string.Empty;
 
                 promotionImageItem.ImageNum = num;
                 promotionImageItem.ImageUrl = SiteConfig.SiteUrlBase + imageUrl;
