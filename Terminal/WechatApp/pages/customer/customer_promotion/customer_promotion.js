@@ -84,7 +84,19 @@ Page({
                 wx.hideLoading({
                     fail() {
                     }
-                });                
+                });
+
+                wx.openDocument({
+                    filePath: res.tempFilePath,
+                    showMenu: true,
+                    fileType: "jpg",
+                    success: function (result) {
+                    },
+                    fail: function (err) {
+                    }
+                });
+
+                /*
                 wx.saveImageToPhotosAlbum({
                     filePath: res.tempFilePath,
                     success: function (result) {
@@ -94,15 +106,6 @@ Page({
                             showCancel: false
                         });
                         
-                        wx.openDocument({
-                            filePath: res.tempFilePath,
-                            showMenu: true,
-                            fileType: "jpg",
-                            success: function (result) {
-                            },
-                            fail: function (err) {
-                            }
-                        });
                     },
                     fail: function (err) {
                         if (err.errMsg === 'saveImageToPhotosAlbum:fail auth deny') {
@@ -123,9 +126,16 @@ Page({
                                     }
                                 }
                             });
+                        } else {
+                            wx.showModal({
+                                title: '提示',
+                                content: '图片保存失败!' + err.errMsg,
+                                showCancel: false
+                            });
                         }
                     },
                 });
+                */
             },
             fail: function (res) {
                 wx.hideLoading({
