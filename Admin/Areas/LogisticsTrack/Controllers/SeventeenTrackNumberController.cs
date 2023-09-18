@@ -67,8 +67,8 @@ public class SeventeenTrackNumberController : Controller {
     [Transactional]
     public IActionResult ChangeCarrierTest() {
         var trackNumberList = session.Query<SeventeenTrackNumberInfo>()
-            .Where(e => e.TrackStatus != "Delivered")
-            // && e.Status != SeventeenTrackNumberStatus.Rejected)
+            .Where(e => e.TrackStatus != "Delivered"
+                        && e.Status != SeventeenTrackNumberStatus.Rejected)
             .ToList();
 
         var changeCarrierItemList = new List<SeventeenTrackChangeCarrierRequestItem>();
@@ -84,6 +84,40 @@ public class SeventeenTrackNumberController : Controller {
         }
 
         seventeenTrackChangeCarrierService.ChangeCarrier(changeCarrierItemList);
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "操作成功！",
+        });
+    }
+
+    /// <summary>
+    /// 
+    /// 对注册被拒的重新注册
+    /// https://hk.shundaquanqiu.com/admin/logistics/track/seventeen/track/number/register/again/test
+    /// 
+    /// </summary>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("/admin/logistics/track/seventeen/track/number/register/again/test")]
+    [Transactional]
+    public IActionResult RegisterAgainTest() {
+        var trackNumberList = session.Query<SeventeenTrackNumberInfo>()
+            .Where(e => e.Status == SeventeenTrackNumberStatus.Rejected)
+            .ToList();
+
+        var registerRequestItemList = new List<SeventeenTrackRegisterRequestItem>();
+        foreach (var trackNumber in trackNumberList) {
+            int? carrierKey = seventeenTrackCarrierService.GetKeyByTrackingNo(trackNumber.TrackingNo);
+            if (carrierKey != null) {
+                registerRequestItemList.Add(new SeventeenTrackRegisterRequestItem {
+                    Number = trackNumber.TrackingNo,
+                    Carrier = carrierKey.Value,
+                });
+            }
+        }
+
+        seventeenTrackRegisterService.Register(registerRequestItemList);
 
         return Json(new JsonResultData {
             Success = true,
