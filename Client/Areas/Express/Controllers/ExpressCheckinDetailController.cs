@@ -88,8 +88,8 @@ public class ExpressCheckinDetailController : Controller {
         decimal totalActualWeight = 0m;
         int packageCount = 0;
         if (sizeWeightList.Count != 0) {
-            totalVolume = sizeWeightList.Sum(e => e.Length * e.Weight * e.Height);
-            totalActualWeight = sizeWeightList.Sum(e => e.Weight);
+            totalVolume = sizeWeightList.Sum(e => e.Length * e.Width * e.Height * e.PackageCount);
+            totalActualWeight = sizeWeightList.Sum(e => e.Weight * e.PackageCount);
             packageCount = sizeWeightList.Sum(e => e.PackageCount);
         }
 
