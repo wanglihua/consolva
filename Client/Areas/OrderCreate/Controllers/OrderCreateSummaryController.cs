@@ -49,9 +49,15 @@ public class OrderCreateSummaryController : Controller {
             .Where(e => expressIdList.Contains(e.Id))
             .ToList();
 
-        var expressListToRemove = expressList.Where(e => e.Status != ExpressStatus.Checkin).ToList();
-        foreach (var expressToRemove in expressListToRemove) {
-            session.Delete(expressToRemove);
+        var expressIdListToUnselect = expressList.Where(e => e.Status != ExpressStatus.Checkin).Select(e => e.Id).ToList();
+        foreach (var expressIdToUnselect in expressIdListToUnselect) {
+            var expressToUnselect = selectExpressList
+                .Where(e => e.ExpressId == expressIdToUnselect)
+                .Take(1)
+                .SingleOrDefault();
+            if (expressToUnselect != null) {
+                session.Delete(expressToUnselect);
+            }
         }
 
         session.Flush();
