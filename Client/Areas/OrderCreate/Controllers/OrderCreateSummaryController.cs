@@ -41,20 +41,29 @@ public class OrderCreateSummaryController : Controller {
 
         #region 快递单号
 
-        IList<int> expressIdList = session.Query<LogisticsOrderCreateSelectExpressInfo>()
+        var selectExpressList = session.Query<LogisticsOrderCreateSelectExpressInfo>()
             .Where(e => e.CustomerId == loginCustomerId)
-            .Select(e => e.ExpressId)
+            .ToList();
+        var expressIdList = selectExpressList.Select(e => e.ExpressId).ToList();
+        var expressList = session.Query<ExpressInfo>()
+            .Where(e => expressIdList.Contains(e.Id))
             .ToList();
 
-        var expressList = session.Query<ExpressInfo>()
-            .Where(e => expressIdList.Contains(e.Id)).OrderBy(e => e.Id)
-            .ToList();
+        var expressListToRemove = expressList.Where(e => e.Status != ExpressStatus.Checkin).ToList();
+        foreach (var expressToRemove in expressListToRemove) {
+            session.Delete(expressToRemove);
+        }
+
+        session.Flush();
+
+        expressList = expressList.Where(e => e.Status == ExpressStatus.Checkin).ToList();
 
         if (expressList.Count == 0) {
             throw new ValidationException("快递单列表不能为空，请先选择快递单号转运！");
         }
 
         foreach (ExpressInfo express in expressList) {
+            // 这个检查实际已经没用了
             if (express.Status != ExpressStatus.Checkin) {
                 throw new ValidationException($"快递单号#{express.TrackingNo}不是已入库状态，快递单选择选择数据有误！");
             }
