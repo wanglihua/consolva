@@ -1290,9 +1290,11 @@ public class LogisticsOrderGoodsPackController : Controller {
 
         int orderId = orderPack.Order.Id;
         string firstLogisticsTypeName = orderPack.OrderFirstMode.FirstMode.Name;
+        
+        var volumeWeightDenominator = logisticsModeSettingService.GetSetting().VolumeWeightDenominator;
 
         string weight = orderPack.Weight.ToString("#0.0") + "Kg";
-        string volumeWeight = (orderPack.Width * orderPack.Length * orderPack.Height / 5000m).ToString("#0.0") + "Kg";
+        string volumeWeight = (orderPack.Width * orderPack.Length * orderPack.Height / volumeWeightDenominator).ToString("#0.0") + "Kg";
         string volume = (orderPack.Width * orderPack.Length * orderPack.Height / 1000000m).ToString("#0.00") + "立方";
         string lwh = $"{orderPack.Length:#} x {orderPack.Width:#} x {orderPack.Height:#}CM";
         string userName = orderPack.PackUser.UserName;
@@ -1371,9 +1373,11 @@ public class LogisticsOrderGoodsPackController : Controller {
         }
 
         string firstLogisticsTypeName = orderPack.OrderFirstMode.FirstMode.Name;
+        
+        var volumeWeightDenominator = logisticsModeSettingService.GetSetting().VolumeWeightDenominator;
 
         string weight = orderPack.Weight.ToString("#0.0") + "Kg";
-        string volumeWeight = (orderPack.Width * orderPack.Length * orderPack.Height / 5000m).ToString("#0.0") + "Kg";
+        string volumeWeight = (orderPack.Width * orderPack.Length * orderPack.Height / volumeWeightDenominator).ToString("#0.0") + "Kg";
         string volume = (orderPack.Width * orderPack.Length * orderPack.Height / 1000000m).ToString("#0.00") + "方";
         string userName = orderPack.PackUser.UserName;
         string packTime = orderPack.PackTime.ToString("MM-dd HH:mm");
@@ -1448,9 +1452,11 @@ public class LogisticsOrderGoodsPackController : Controller {
             orderPackBoxNumList.Add(orderPackBox.BoxNum);
         }
 
+        var volumeWeightDenominator = logisticsModeSettingService.GetSetting().VolumeWeightDenominator;
+
         string firstLogisticsTypeName = orderPack.OrderFirstMode.FirstMode.Name;
         string weight = orderPack.Weight.ToString("#0.0") + "Kg";
-        string volumeWeight = (orderPack.Width * orderPack.Length * orderPack.Height / 5000m).ToString("#0.0") + "Kg";
+        string volumeWeight = (orderPack.Width * orderPack.Length * orderPack.Height / volumeWeightDenominator).ToString("#0.0") + "Kg";
         string volume = (orderPack.Width * orderPack.Length * orderPack.Height / 1000000m).ToString("#0.00") + "方";
         string userName = orderPack.PackUser?.UserName ?? "";
         string packTime = orderPack.PackTime.ToString("MM-dd HH:mm");
@@ -1512,9 +1518,11 @@ public class LogisticsOrderGoodsPackController : Controller {
         string customerCode = order.Customer.CheckinCode;
         string orderCode = order.Code;
 
+        var volumeWeightDenominator = logisticsModeSettingService.GetSetting().VolumeWeightDenominator;
+
         string firstLogisticsModeName = orderPack.OrderFirstMode.FirstMode.Name;
         string actualWeight = orderPack.Weight.ToString("#0.0") + "Kg";
-        string volumeWeight = (orderPack.Width * orderPack.Length * orderPack.Height / 5000m).ToString("#0.0") + "Kg";
+        string volumeWeight = (orderPack.Width * orderPack.Length * orderPack.Height / volumeWeightDenominator).ToString("#0.0") + "Kg";
         string volume = (orderPack.Width * orderPack.Length * orderPack.Height / 1000000m).ToString("#0.00") + "立方";
         string userName = orderPack.PackUser?.UserName ?? "";
         string packTime = orderPack.PackTime.ToString("MM-dd HH:mm");

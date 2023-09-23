@@ -15,9 +15,15 @@ public class ExpressCheckinDetailSizeWeightListItem {
     [JsonProperty("height")]
     public string Height { get; set; } = string.Empty;
 
+    /// <summary>
+    /// 单箱体积重
+    /// </summary>
     [JsonProperty("volumeWeight")]
     public string VolumeWeight { get; set; } = string.Empty;
 
+    /// <summary>
+    /// 单箱实际重
+    /// </summary>
     [JsonProperty("actualWeight")]
     public string ActualWeight { get; set; } = string.Empty;
 
