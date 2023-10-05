@@ -542,6 +542,16 @@ public class LogisticsOrderGoodsPackController : Controller {
             }
         }
 
+        var receiveAddress = session.Query<LogisticsOrderReceiveAddressInfo>()
+            .Where(e => e.Order.Id == nextOrderIdValue)
+            .Take(1)
+            .SingleOrDefault();
+        if (receiveAddress == null) {
+            throw new ValidationException($"订单#{nextOrderIdValue}没有指定收货地址，订单数据有问题！");
+        }
+
+        model.TargetCountryState = $"{receiveAddress.Country.Name} {receiveAddress.State}";
+
         return View("LogisticsOrderGoodsPackOrder", model);
     }
 
@@ -1290,7 +1300,7 @@ public class LogisticsOrderGoodsPackController : Controller {
 
         int orderId = orderPack.Order.Id;
         string firstLogisticsTypeName = orderPack.OrderFirstMode.FirstMode.Name;
-        
+
         var volumeWeightDenominator = logisticsModeSettingService.GetSetting().VolumeWeightDenominator;
 
         string weight = orderPack.Weight.ToString("#0.0") + "Kg";
@@ -1373,7 +1383,7 @@ public class LogisticsOrderGoodsPackController : Controller {
         }
 
         string firstLogisticsTypeName = orderPack.OrderFirstMode.FirstMode.Name;
-        
+
         var volumeWeightDenominator = logisticsModeSettingService.GetSetting().VolumeWeightDenominator;
 
         string weight = orderPack.Weight.ToString("#0.0") + "Kg";

@@ -60,6 +60,12 @@ public class LogisticsOrderGoodsPackOrderModel {
     [BindNever]
     public bool TrackingNoManualInputEnabled { get; set; }
 
+    /// <summary>
+    /// 目的国家和州
+    /// </summary>
+    [BindNever]
+    public string TargetCountryState { get; set; } = string.Empty;
+
 #if DEBUG
     public bool Debug { get; } = true;
 #else

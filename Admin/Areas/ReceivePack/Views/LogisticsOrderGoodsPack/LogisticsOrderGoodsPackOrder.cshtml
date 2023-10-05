@@ -1,7 +1,4 @@
-@using Microsoft.AspNetCore.Mvc.TagHelpers
-@using shunda.Admin.Areas.LogisticsOrder.Models.LogisticsOrderRemark
 @using shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack
-@using shunda.Core.Web
 @model shunda.Admin.Areas.ReceivePack.Models.LogisticsOrderGoodsPack.LogisticsOrderGoodsPackOrderModel
 
 @{
@@ -97,7 +94,12 @@
                                 头程物流
                             </td>
                             <td style="width: 259px; font-size: 10px;" class="break-word" colspan="3">
-                                <span style="font-size: 10px;">@(Model.Order.FirstMode.Name)(@(Model.Order.FirstModeType.Name))</span>
+                                <div>
+                                    <span>@(Model.TargetCountryState)</span>
+                                </div>
+                                <div>
+                                    <span style="font-size: 10px;">@(Model.Order.FirstMode.Name)(@(Model.Order.FirstModeType.Name))</span>
+                                </div>
                             </td>
                         </tr>
                         <tr>
