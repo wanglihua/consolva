@@ -12,13 +12,14 @@ public partial class PassRes {
             new PassResInfo { Id = OrderListActive, Name = "活动订单", Cate = Cate },
             new PassResInfo { Id = OrderListComplete, Name = "正常结束订单", Cate = Cate },
             new PassResInfo { Id = ImportOrder, Name = "导入订单", Cate = Cate },
-            new PassResInfo { Id = CancelOrder, Name = "订单作废", Cate = Cate },
+            // new PassResInfo { Id = CancelOrder, Name = "订单作废", Cate = Cate },
             new PassResInfo { Id = ImportOrderCheckinExpress, Name = "导入订单时登记快递单", Cate = Cate },
             new PassResInfo { Id = OrderListCancel, Name = "作废订单列表", Cate = Cate },
             new PassResInfo { Id = OrderPackBox, Name = "箱号跟踪", Cate = Cate },
             new PassResInfo { Id = LogisticsOrderFirstMode, Name = "国际单号", Cate = Cate },
             new PassResInfo { Id = OrderModifyReceiverAddress, Name = "修改订单收货地址", Cate = Cate },
             new PassResInfo { Id = OrderSetCancel, Name = "设置订单作废", Cate = Cate },
+            new PassResInfo { Id = OrderSetComplete, Name = "设置订单已完成", Cate = Cate },
             new PassResInfo { Id = OrderLogisticsModeChange, Name = "修改订单物流方式", Cate = Cate },
             new PassResInfo { Id = OrderRollbackSubmitPack, Name = "订单取消打包提交", Cate = Cate },
             new PassResInfo { Id = OrderExpressEdit, Name = "订单快递单号维护", Cate = Cate },
@@ -48,10 +49,10 @@ public partial class PassRes {
         /// </summary>
         public const int ImportOrder = CateId + 0600;
 
-        /// <summary>
-        /// 订单作废
-        /// </summary>
-        public const int CancelOrder = CateId + 0700;
+        // /// <summary>
+        // /// 订单作废 这个跟下面的设置订单作废重复了
+        // /// </summary>
+        // public const int CancelOrder = CateId + 0700;
 
         /// <summary>
         /// 导入订单时登记快递单
@@ -82,6 +83,11 @@ public partial class PassRes {
         /// 设置订单作废
         /// </summary>
         public const int OrderSetCancel = CateId + 1800;
+
+        /// <summary>
+        /// 设置订单已完成
+        /// </summary>
+        public const int OrderSetComplete = CateId + 1900;
 
         /// <summary>
         /// 修改订单物流方式

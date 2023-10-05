@@ -128,6 +128,8 @@ public class LogisticsOrderService {
     /// 完成订单
     /// </summary>
     public void CompleteOrder(LogisticsOrderCompleteParam param) {
+        ValidationUtil.Validate<LogisticsOrderCompleteParamValidator, LogisticsOrderCompleteParam>(param);
+
         int orderId = param.OrderId;
         int userId = param.UserId;
 
@@ -136,8 +138,9 @@ public class LogisticsOrderService {
             throw new ValidationException($"指定的订单#{orderId}不存在！");
         }
 
+        UserInfo? user = null;
         if (userId != 0) {
-            var user = session.Get<UserInfo>(userId);
+            user = session.Get<UserInfo>(userId);
             if (user == null) {
                 throw new ValidationException($"指定的用户#{userId}不存在！");
             }
@@ -147,11 +150,20 @@ public class LogisticsOrderService {
             throw new ValidationException($"指定的订单#{orderId}当前已经是完结状态！");
         }
 
+        var orderStatusListAdminCanComplete = LogisticsOrderStatus.GetAdminCanCompleteStatusList();
+        if (orderStatusListAdminCanComplete.Contains(order.OrderStatus) == false) {
+            throw new ValidationException("当前订单状态后台不能完成订单！");
+        }
+
         // 更新订单状态
         order.OrderStatus = LogisticsOrderStatus.Completed;
         session.Update(order);
 
-        logisticsOrderActionService.NewActionWithoutUserCustomer(orderId, LogisticsOrderActionType.DeliverComplete);
+        if (user == null) {
+            logisticsOrderActionService.NewActionWithoutUserCustomer(orderId, LogisticsOrderActionType.DeliverComplete);
+        } else {
+            logisticsOrderActionService.NewActionUser(orderId, LogisticsOrderActionType.DeliverComplete, userId);
+        }
 
         session.Flush();
 

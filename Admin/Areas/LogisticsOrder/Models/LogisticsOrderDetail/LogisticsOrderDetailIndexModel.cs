@@ -56,4 +56,7 @@ public class LogisticsOrderDetailIndexModel {
 
     [BindNever]
     public bool CanCancelOrder { get; set; }
+
+    [BindNever]
+    public bool CanCompleteOrder { get; set; }
 }

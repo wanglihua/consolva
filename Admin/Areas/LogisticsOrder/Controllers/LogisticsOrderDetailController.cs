@@ -155,8 +155,11 @@ public class LogisticsOrderDetailController : Controller {
             p.SmallImageFullUrlCache = expressPhotoFileService.GetSmallImageFullUrlForSite(p, OssSiteLocType.China);
         }
 
-        bool hasPressResCancelOrder = passResService.UserHasPassRes(loginUserId, PassRes.LogisticsOrder.CancelOrder);
+        bool hasPassResCancelOrder = passResService.UserHasPassRes(loginUserId, PassRes.LogisticsOrder.OrderSetCancel);
         bool statusCanCancelOrder = LogisticsOrderStatus.GetAdminCanCancelStatusList().Contains(order.OrderStatus);
+
+        bool hasPassResCompleteOrder = passResService.UserHasPassRes(loginUserId, PassRes.LogisticsOrder.OrderSetComplete);
+        bool statusCanCompleteOrder = LogisticsOrderStatus.GetAdminCanCompleteStatusList().Contains(order.OrderStatus);
 
         var model = new LogisticsOrderDetailIndexModel {
             MenuType = menuType,
@@ -175,13 +178,14 @@ public class LogisticsOrderDetailController : Controller {
             LogisticsOrderActionList = orderActionList,
             PhotoList = expressPhotoList,
             VolumeWeightDenominator = logisticsModeSettingService.GetSetting().VolumeWeightDenominator,
-            CanCancelOrder = hasPressResCancelOrder && statusCanCancelOrder,
+            CanCancelOrder = hasPassResCancelOrder && statusCanCancelOrder,
+            CanCompleteOrder = hasPassResCompleteOrder && statusCanCompleteOrder,
         };
 
         return View("LogisticsOrderDetailIndex", model);
     }
 
-    [AdminAuth(PassRes.LogisticsOrder.CancelOrder)]
+    [AdminAuth(PassRes.LogisticsOrder.OrderSetCancel)]
     [HttpPost]
     [Route("/admin/logistics/order/detail/cancel/order")]
     [Transactional]
@@ -200,7 +204,29 @@ public class LogisticsOrderDetailController : Controller {
 
         return Json(new JsonResultData {
             Success = true,
-            Message = "操作成功！",
+            Message = "作废订单成功！",
+        });
+    }
+
+    [AdminAuth(PassRes.LogisticsOrder.OrderSetComplete)]
+    [HttpPost]
+    [Route("/admin/logistics/order/detail/complete/order")]
+    [Transactional]
+    public IActionResult CompleteOrder(IdParam param) {
+        ValidationUtil.Validate<IdParamValidator, IdParam>(param);
+
+        int orderId = param.Id;
+
+        int loginUserId = loginUserService.GetLoginUserId();
+
+        logisticsOrderService.CompleteOrder(new LogisticsOrderCompleteParam {
+            OrderId = orderId,
+            UserId = loginUserId,
+        });
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = "完成订单成功！",
         });
     }
 }

@@ -99,6 +99,13 @@ public class LogisticsOrderStatus : CodeTypeBase {
         };
     }
 
+    public static IList<LogisticsOrderStatus> GetAdminCanCompleteStatusList() {
+        return new List<LogisticsOrderStatus>() {
+            Shipped,
+            Delivered,
+        };
+    }
+
     public static IList<LogisticsOrderStatus> GetPackedStatusList() {
         return new List<LogisticsOrderStatus>() {
             Packed,

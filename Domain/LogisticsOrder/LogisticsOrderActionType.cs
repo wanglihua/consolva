@@ -198,7 +198,7 @@ public class LogisticsOrderActionType : CodeTypeBase {
     /// <summary>
     /// 手动完成空运订单
     /// </summary>
-    public static readonly LogisticsOrderActionType AirOrderManualComplete = new LogisticsOrderActionType(40000, "手动完成空运订单", "手动完成空运订单");
+    public static readonly LogisticsOrderActionType ManualComplete = new LogisticsOrderActionType(40000, "手动完成空运订单", "手动完成空运订单");
 
     /// <summary>
     /// 箱号交付
@@ -264,7 +264,7 @@ public class LogisticsOrderActionType : CodeTypeBase {
         AirOrderCheckout,
         OrderFirstModeImportTrackingNo,
         OrderStockCheck,
-        AirOrderManualComplete,
+        ManualComplete,
         PackBoxPickup,
         PackBoxManualPickup,
         DeliverComplete,

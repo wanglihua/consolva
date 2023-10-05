@@ -60,6 +60,15 @@
     </div>
 }
 
+@if (Model.CanCompleteOrder) {
+    <div class="gridToolBar clearfix">
+        <button type="button" class="btn btn-purple btn-sm" onclick="completeOrder()">
+            <i class="ace-icon fa fa-gear"></i>
+            完成订单
+        </button>
+    </div>
+}
+
 <div class="widget-box" style="border-style: none; width: 1150px;">
     <div class="widget-body">
         <div class="widget-main">
@@ -1258,7 +1267,7 @@
 
                                                         <div style="@(backgroundColorStyle)">
                                                             @if (string.IsNullOrWhiteSpace(trackingNo) == false) {
-                                                                <div style="margin: 0 5px; font-size: 18px; line-height: 20px; font-weight: bold; border-bottom: 1px solid gray;">@(trackingNo)</div>
+                                                                <div style="margin: 0 5px; font-size: 18px; line-height: 20px; font-weight: bold; border-bottom: 1px solid rgb(128,128,128);">@(trackingNo)</div>
                                                             }
                                                             <div>
                                                                 @{
@@ -1364,6 +1373,32 @@
                 showMask("提交中...");
                 $.ajax({
                     url: '@Url.Action("CancelOrder", "LogisticsOrderDetail")',
+                    type: "POST",
+                    data: { "id": "@(Model.Order.Id)" },
+                    success: function(data) {
+                        hideMask();
+                        if (data.success === false) {
+                            $.msg.error(data.message);
+                            return;
+                        }
+
+                        $.msg.show(data.message);
+                        
+                        setTimeout(function() {
+                            window.location.reload();
+                        }, 1000);
+                    }
+                });
+            }
+        );
+    }
+
+    function completeOrder() {
+        $.msg.confirm("确认要完成订单吗？",
+            function() {
+                showMask("提交中...");
+                $.ajax({
+                    url: '@Url.Action("CompleteOrder", "LogisticsOrderDetail")',
                     type: "POST",
                     data: { "id": "@(Model.Order.Id)" },
                     success: function(data) {
