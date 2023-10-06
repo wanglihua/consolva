@@ -124,14 +124,15 @@ public class PackBoxController : Controller {
         }
 
         string packBoxCode = logisticsOrderPackBoxService.GetBoxCode(packBox.Id);
-        NHibernateUtil.Initialize(order.FirstMode);
+
+        string firstModeName = packBox.OrderPack.OrderFirstMode.FirstMode.Name;
 
         var model = new PackBoxShipModel {
             PackBoxCode = packBoxCode,
             OrderCode = order.Code,
             CustomerCode = order.CustomerCode,
             CountryName = order.Country.Name,
-            FirstModeName = order.FirstMode.Name,
+            FirstModeName = firstModeName,
             ArrearsAmount = arrearsAmount.ToString("#0.00"),
             HasArrears = hasArrears,
         };
