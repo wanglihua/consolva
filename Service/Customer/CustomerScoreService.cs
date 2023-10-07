@@ -194,17 +194,19 @@ public class CustomerScoreService {
             CustomerInfo promotionParentCustomer = customerPromotion.Parent;
 
             // 直接上家是不是超级会员
-            int promotionParentCustomerId = promotionParentCustomer.Id;
-            var superVipDiscount = session.Query<CustomerSuperVipDiscountInfo>()
-                .Where(e => e.Customer.Id == promotionParentCustomerId)
-                .Take(1)
-                .SingleOrDefault();
+            // int promotionParentCustomerId = promotionParentCustomer.Id;
+            // var superVipDiscount = session.Query<CustomerSuperVipDiscountInfo>()
+            //     .Where(e => e.Customer.Id == promotionParentCustomerId)
+            //     .Take(1)
+            //     .SingleOrDefault();
 
+            // 当前总是 有效积分
             bool isValidScorePromotion = true; // 是不是集运消费有效积分
+
             // 是超级VIP
-            if (superVipDiscount != null) {
-                isValidScorePromotion = false;
-            }
+            // if (superVipDiscount != null) {
+            //     isValidScorePromotion = false;
+            // }
 
             decimal promotionParentCustomerOldTotalScore = promotionParentCustomer.TotalScore;
             promotionParentCustomer.TotalScore = promotionParentCustomerOldTotalScore + promotionScore;
