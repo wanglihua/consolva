@@ -6,6 +6,7 @@ using shunda.Domain.Fee;
 using shunda.Domain.LogisticsOrder;
 using shunda.Service.Message.CustomerMessage;
 using ISession = NHibernate.ISession;
+using NHibernate.Linq;
 
 namespace shunda.Service.Customer;
 
@@ -117,9 +118,10 @@ public class CustomerScoreService {
 
         decimal orderCustomerNewTotalScore = orderCustomer.TotalScore;
 
+        // todo vip 升级的逻辑
         if (customerVipDiscountService.ShouldVipUpgrade(orderCustomerOldTotalScore, orderCustomerNewTotalScore, customerVipDiscountList)) {
-            var customerVipDiscount = customerVipDiscountService.GetDiscount(orderCustomerNewTotalScore, customerVipDiscountList);
-            var customerVipDiscountNextLevel = customerVipDiscountService.GetNextLevelDiscount(orderCustomerNewTotalScore, customerVipDiscountList);
+            // var customerVipDiscount = customerVipDiscountService.GetDiscount(orderCustomerNewTotalScore, customerVipDiscountList);
+            // var customerVipDiscountNextLevel = customerVipDiscountService.GetNextLevelDiscount(orderCustomerNewTotalScore, customerVipDiscountList);
 
             // CustomerMessageVipUpgradeParam customerMessageVipUpgradeParam = new CustomerMessageVipUpgradeParam();
             // customerMessageVipUpgradeParam.Customer = orderCustomer;
@@ -131,7 +133,7 @@ public class CustomerScoreService {
             //
             // customerMessageVipUpgradeParamList.Add(customerMessageVipUpgradeParam);
 
-            // todo 发送可能得VIP升级信息 customerMessage
+            // 发送可能得VIP升级信息 customerMessage
         }
 
         CustomerScoreLogInfo scoreLog = new CustomerScoreLogInfo {
@@ -157,17 +159,12 @@ public class CustomerScoreService {
 
         #endregion
 
-        /*
-         
-         会员推广的逻辑先不加上
-
         // 会员推广积分
 
         #region 会员推广积分
-        
+
         CustomerScoreRuleInfo? promotionRule = session.Query<CustomerScoreRuleInfo>()
-            // .Where(e => e.OrderCate == orderCate && e.Type == CustomerScoreType.Promotion)
-            .Where(e => e.Type == CustomerScoreType.Promotion) // 推广积分现在还是不按订单区分的
+            .Where(e => e.Type == CustomerScoreType.Promotion)
             .OrderBy(e => e.Id)
             .Take(1)
             .SingleOrDefault();
@@ -183,116 +180,106 @@ public class CustomerScoreService {
         if (promotionRule.Score <= 0) {
             throw new Exception("会员推广积分规则，集运积分设置小于等于零，不符合要求！");
         }
-        
-        
 
         decimal promotionScore = (amount / promotionRule.Amount) * promotionRule.Score;
 
-        IList<CustomerPromotionInfo> promotionList = session.Query<CustomerPromotionInfo>()
+        var customerPromotion = session.Query<CustomerPromotionInfo>()
             .Fetch(e => e.Parent)
-            .Where(e => e.Child.Id == orderCustomer.Id && e.Valid == true)
-            .ToList();
+            .Where(e => e.Child!.Id == orderCustomer.Id)
+            .Take(1)
+            .SingleOrDefault();
 
-        CustomerPromotionInfo promotionGapDirect = promotionList.Where(e => e.Gap == 1).Take(1).SingleOrDefault();
-        if (promotionGapDirect != null) {
-            // 直接上家的积分
-            decimal promotionDirectScore = promotionScore; // 直接上家获取所有积分，不再跟间接的分享积分
-
+        if (customerPromotion != null) {
             // 直接上家
-            CustomerInfo directParentCustomer = promotionGapDirect.Parent;
+            CustomerInfo promotionParentCustomer = customerPromotion.Parent;
 
             // 直接上家是不是超级会员
-            CustomerSuperVipDiscountInfo? superVipPromotion = session.Query<CustomerSuperVipDiscountInfo>()
-                .Where(e => e.Customer.Id == directParentCustomer.Id)
+            int promotionParentCustomerId = promotionParentCustomer.Id;
+            var superVipDiscount = session.Query<CustomerSuperVipDiscountInfo>()
+                .Where(e => e.Customer.Id == promotionParentCustomerId)
                 .Take(1)
                 .SingleOrDefault();
 
             bool isValidScorePromotion = true; // 是不是集运消费有效积分
-            if (superVipPromotion != null) // 是超级VIP
-            {
+            // 是超级VIP
+            if (superVipDiscount != null) {
                 isValidScorePromotion = false;
             }
 
-            decimal directParentCustomerOldTotalScore = directParentCustomer.TotalScore ?? 0m;
-
-            directParentCustomer.TotalScore = (directParentCustomer.TotalScore ?? 0m) + promotionDirectScore;
+            decimal promotionParentCustomerOldTotalScore = promotionParentCustomer.TotalScore;
+            promotionParentCustomer.TotalScore = promotionParentCustomerOldTotalScore + promotionScore;
 
             if (isValidScorePromotion) {
-                if (orderCate == LogisticsOrderCate.Sea) {
-                    directParentCustomer.ValidScore = (directParentCustomer.ValidScore ?? 0m) + promotionDirectScore;
-                }
-
-                if (orderCate == LogisticsOrderCate.Air) {
-                    directParentCustomer.ValidScoreAir = (directParentCustomer.ValidScoreAir ?? 0m) + promotionDirectScore;
-                }
+                promotionParentCustomer.ValidScore = promotionParentCustomer.ValidScore + promotionScore;
             }
 
-            session.Update(directParentCustomer);
+            session.Update(promotionParentCustomer);
             session.Flush();
 
-            decimal directParentCustomerNewTotalScore = directParentCustomer.TotalScore ?? 0m;
+            // todo vip 升级的逻辑
+            // decimal directParentCustomerNewTotalScore = promotionParentCustomer.TotalScore ?? 0m;
+            //
+            // if (customerVipDiscountService.IsVipUpgrade(promotionParentCustomerOldTotalScore, directParentCustomerNewTotalScore, customerVipDiscountList)) {
+            //     CustomerVipDiscountInfo customerVipDiscount = customerVipDiscountService.GetDiscount(directParentCustomerNewTotalScore, customerVipDiscountList);
+            //     CustomerVipDiscountInfo customerVipDiscountNextLevel = customerVipDiscountService.GetNextLevelDiscount(directParentCustomerNewTotalScore, customerVipDiscountList);
+            //
+            //     CustomerMessageVipUpgradeParam customerMessageVipUpgradeParam = new CustomerMessageVipUpgradeParam();
+            //     customerMessageVipUpgradeParam.Customer = promotionParentCustomer;
+            //     customerMessageVipUpgradeParam.NewVipLevel = customerVipDiscount?.LevelName;
+            //     customerMessageVipUpgradeParam.LogisticsFirstDiscount = $"{customerVipDiscount?.LogisticsFirstDiscount.ToString("#0.00")}%";
+            //     customerMessageVipUpgradeParam.LogisticsSecondDiscount = $"{customerVipDiscount?.LogisticsSecondDiscount.ToString("#0.00")}%";
+            //     customerMessageVipUpgradeParam.MallDiscount = $"{customerVipDiscount?.MallDiscount.ToString("#0.00")}%";
+            //     customerMessageVipUpgradeParam.NextVipLevel = customerVipDiscountNextLevel?.LevelName;
+            //
+            //     customerMessageVipUpgradeParamList.Add(customerMessageVipUpgradeParam);
+            // }
 
-            if (customerVipDiscountService.IsVipUpgrade(directParentCustomerOldTotalScore, directParentCustomerNewTotalScore, customerVipDiscountList)) {
-                CustomerVipDiscountInfo customerVipDiscount = customerVipDiscountService.GetDiscount(directParentCustomerNewTotalScore, customerVipDiscountList);
-                CustomerVipDiscountInfo customerVipDiscountNextLevel = customerVipDiscountService.GetNextLevelDiscount(directParentCustomerNewTotalScore, customerVipDiscountList);
+            CustomerScoreLogInfo promotionScoreLog = new CustomerScoreLogInfo {
+                Customer = promotionParentCustomer,
+                ScoreType = CustomerScoreType.Promotion,
+                Score = promotionScore,
+                Amount = amount,
+                IsValidScore = isValidScorePromotion,
+                LogisticsOrderPay = orderPay,
+                LogisticsOrder = order,
+                LogisticsOrderCode = order.Code,
+                LogisticsOrderCustomer = orderCustomer, // 订单的会员，这里跟 积分会员 不是 同一个
+                Description = ""
+            };
 
-                CustomerMessageVipUpgradeParam customerMessageVipUpgradeParam = new CustomerMessageVipUpgradeParam();
-                customerMessageVipUpgradeParam.Customer = directParentCustomer;
-                customerMessageVipUpgradeParam.NewVipLevel = customerVipDiscount?.LevelName;
-                customerMessageVipUpgradeParam.LogisticsFirstDiscount = $"{customerVipDiscount?.LogisticsFirstDiscount.ToString("#0.00")}%";
-                customerMessageVipUpgradeParam.LogisticsSecondDiscount = $"{customerVipDiscount?.LogisticsSecondDiscount.ToString("#0.00")}%";
-                customerMessageVipUpgradeParam.MallDiscount = $"{customerVipDiscount?.MallDiscount.ToString("#0.00")}%";
-                customerMessageVipUpgradeParam.NextVipLevel = customerVipDiscountNextLevel?.LevelName;
-
-                customerMessageVipUpgradeParamList.Add(customerMessageVipUpgradeParam);
-            }
-
-            CustomerScoreLogInfo promotionDirectScoreLog = new CustomerScoreLogInfo(); 
-            promotionDirectScoreLog.Customer = directParentCustomer;
-            promotionDirectScoreLog.ScoreType = CustomerScoreType.Promotion;
-            promotionDirectScoreLog.Score = promotionDirectScore;
-            promotionDirectScoreLog.Amount = amount;
-            promotionDirectScoreLog.IsValidScore = isValidScorePromotion;
-            promotionDirectScoreLog.LogisticsOrderPay = orderPay;
-            promotionDirectScoreLog.LogisticsOrder = order;
-            promotionDirectScoreLog.LogisticsOrderCode = order.Code;
-            promotionDirectScoreLog.LogisticsOrderCustomer = orderCustomer; // 订单的会员，这里跟 积分会员 不是 同一个
-            promotionDirectScoreLog.Description = "";
-
-            session.Save(promotionDirectScoreLog);
+            session.Save(promotionScoreLog);
             session.Flush();
 
-            if (isValidScorePromotion) // 有效积分时才发送
-            {
-                customerMessageMoneyEarnedService.SendMessage(directParentCustomer, orderCate, promotionDirectScore, 1);
+            // 有效积分时才发送
+            if (isValidScorePromotion) {
+                customerMessageMoneyEarnedService.SendMessage(promotionParentCustomer, promotionScore);
             }
         }
 
         #endregion
 
-        IList<int> custimerIdList = customerMessageVipUpgradeParamList.Select(e => e.Customer.Id).ToList();
-
-        // 这是更新所有的会员，如果可以的话，可以只更新当前的
-        // customerService.UpdateAllCustomerVip();
-
-        // 只更新指定的会员
-        customerService.UpdateCustomerVip(custimerIdList);
-
-        // 找出这里的超级VIP客户ID列表
-        IList<int> superVipCustomerIdList = session.Query<CustomerSuperVipDiscountInfo>()
-            .Where(e => custimerIdList.Contains(e.Customer.Id))
-            .Select(e => e.Customer.Id)
-            .ToList();
-
-        foreach (CustomerMessageVipUpgradeParam msgParam in customerMessageVipUpgradeParamList) {
-            if (superVipCustomerIdList.Contains(msgParam.Customer?.Id ?? 0) == false) // 不是超级VIP的才发送， 超级VIP不需要发送VIP升级消息
-            {
-                customerMessageService.SendMessageVipShengJi(msgParam.Customer, msgParam.NewVipLevel, msgParam.LogisticsFirstDiscount,
-                    msgParam.LogisticsSecondDiscount, msgParam.MallDiscount, msgParam.NextVipLevel);
-            }
-        }
-
-        */
+        // todo vip 升级的逻辑
+        // IList<int> custimerIdList = customerMessageVipUpgradeParamList.Select(e => e.Customer.Id).ToList();
+        //
+        // // 这是更新所有的会员，如果可以的话，可以只更新当前的
+        // // customerService.UpdateAllCustomerVip();
+        //
+        // // 只更新指定的会员
+        // customerService.UpdateCustomerVip(custimerIdList);
+        //
+        // // 找出这里的超级VIP客户ID列表
+        // IList<int> superVipCustomerIdList = session.Query<CustomerSuperVipDiscountInfo>()
+        //     .Where(e => custimerIdList.Contains(e.Customer.Id))
+        //     .Select(e => e.Customer.Id)
+        //     .ToList();
+        //
+        // foreach (CustomerMessageVipUpgradeParam msgParam in customerMessageVipUpgradeParamList) {
+        //     if (superVipCustomerIdList.Contains(msgParam.Customer?.Id ?? 0) == false) // 不是超级VIP的才发送， 超级VIP不需要发送VIP升级消息
+        //     {
+        //         customerMessageService.SendMessageVipShengJi(msgParam.Customer, msgParam.NewVipLevel, msgParam.LogisticsFirstDiscount,
+        //             msgParam.LogisticsSecondDiscount, msgParam.MallDiscount, msgParam.NextVipLevel);
+        //     }
+        // }
     }
 
     /// <summary>
