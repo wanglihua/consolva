@@ -19,6 +19,8 @@ namespace shunda.Admin.Areas.Customer.Controllers;
 [CustomerArea]
 [AdminAuth(PassRes.Customer.CustomerPromotionImage)]
 public class CustomerPromotionImageController : Controller {
+    private static readonly int PROMOTION_IMAGE_COUNT = 2;
+
     private static Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
@@ -43,7 +45,7 @@ public class CustomerPromotionImageController : Controller {
 
         var customerPromotionImageList = new List<CustomerPromotionImageInfo>();
 
-        for (int num = 1; num <= 8; num++) {
+        for (int num = 1; num <= PROMOTION_IMAGE_COUNT; num++) {
             var customerPromotionImage = customerPromotionImageListInDb
                 .Where(e => e.ImageNum == num)
                 .Take(1)
@@ -60,7 +62,7 @@ public class CustomerPromotionImageController : Controller {
 
             customerPromotionImageList.Add(customerPromotionImage);
 
-            if (num == 4) {
+            if (num == (PROMOTION_IMAGE_COUNT / 2)) {
                 // 加一个中间二维码位置的图片
                 customerPromotionImageList.Add(new CustomerPromotionImageInfo { ImageNum = -1 });
             }
@@ -90,10 +92,10 @@ public class CustomerPromotionImageController : Controller {
             });
         }
 
-        if (imageNum < 1 || imageNum > 8) {
+        if (imageNum < 1 || imageNum > PROMOTION_IMAGE_COUNT) {
             return Json(new Dictionary<string, object>() {
                 { "success", false },
-                { "message", "图片序号应为 1-8 的数字！" },
+                { "message", $"图片序号应为 1-{PROMOTION_IMAGE_COUNT} 的数字！" },
             });
         }
 

@@ -12,6 +12,8 @@ namespace shunda.Client.Areas.Customer.Controllers;
 
 [CustomerArea]
 public class CustomerPromotionController : Controller {
+    private static readonly int PROMOTION_IMAGE_COUNT = 2;
+
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
@@ -37,7 +39,7 @@ public class CustomerPromotionController : Controller {
 #if DEBUG
         var promotionImageList = new List<CustomerPromotionImageItem>();
 
-        for (int num = 1; num <= 9; num++) {
+        for (int num = 1; num <= PROMOTION_IMAGE_COUNT + 1; num++) {
             promotionImageList.Add(new CustomerPromotionImageItem {
                 ImageNum = num,
                 ImageUrl = SiteConfig.SiteUrlBase + "/static/client/images/noimg.jpg",
@@ -59,7 +61,7 @@ public class CustomerPromotionController : Controller {
 
         var promotionImageList = new List<CustomerPromotionImageItem>();
 
-        for (int num = 1; num <= 8; num++) {
+        for (int num = 1; num <= PROMOTION_IMAGE_COUNT; num++) {
             var customerPromotionImage = customerPromotionImageListInDb
                 .Where(e => e.ImageNum == num)
                 .Take(1)
@@ -82,7 +84,7 @@ public class CustomerPromotionController : Controller {
 
             promotionImageList.Add(promotionImageItem);
 
-            if (num == 4) {
+            if (num == (PROMOTION_IMAGE_COUNT / 2)) {
                 // 加一个中间二维码位置的图片
                 promotionImageList.Add(new CustomerPromotionImageItem {
                     ImageNum = -1,
