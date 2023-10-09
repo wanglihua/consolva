@@ -96,6 +96,9 @@ public class ClientHomeDataInfo {
     [JsonProperty("orderProcessUrl")]
     public virtual string OrderProcessUrl { get; set; } = string.Empty;
 
+    /// <summary>
+    /// 活动福利
+    /// </summary>
     [JsonProperty("promotionUrl")]
     public virtual string PromotionUrl { get; set; } = string.Empty;
 
@@ -119,6 +122,12 @@ public class ClientHomeDataInfo {
 
     [JsonProperty("scoreRemarkUrl")]
     public virtual string ScoreRemarkUrl { get; set; } = string.Empty;
+
+    /// <summary>
+    /// 推广返利
+    /// </summary>
+    [JsonProperty("customerPromotionUrl")]
+    public virtual string CustomerPromotionUrl { get; set; } = string.Empty;
 
     #region override
 
