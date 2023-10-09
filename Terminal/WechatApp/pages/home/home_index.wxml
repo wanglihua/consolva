@@ -77,10 +77,10 @@
             </van-grid-item>
         </van-grid>
         <van-grid border="{{false}}" column-num="3">
-            <van-grid-item icon-prefix="iconfont" icon="transport-limit" icon-class="home-grid-icon" text-class="grid-text">
+            <van-grid-item icon-prefix="iconfont" icon="customer-promotion" icon-class="home-grid-icon" url="./home_web_view?url={{ homeData.customerPromotionUrl }}&title=推广返利" text-class="grid-text">
                 <view slot="text">
-                    <view class="grid-text-main">时效展示</view>
-                    <view class="grid-text-sub">近期时效 供您参考</view>
+                    <view class="grid-text-main">推广返利</view>
+                    <view class="grid-text-sub">为你省钱 帮你赚钱</view>
                 </view>
             </van-grid-item>
             <van-grid-item icon-prefix="iconfont" icon="insurance-clause" icon-class="home-grid-icon" badge="{{ homeData.insuranceClauseBadge }}" url="/pages/instruction/instruction_insurance_clause?url={{ homeData.insuranceClauseUrl }}" text-class="grid-text">
