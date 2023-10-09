@@ -83,6 +83,11 @@ public class ClientInstructionType : CodeTypeBase {
     public static readonly ClientInstructionType PrivacyStatement = new ClientInstructionType(15000, "隐私说明", "隐私说明");
 
     /// <summary>
+    /// 推广返利
+    /// </summary>
+    public static readonly ClientInstructionType CustomerPromotion = new ClientInstructionType(16000, "推广返利", "推广返利");
+
+    /// <summary>
     /// None
     /// </summary>
     public static readonly ClientInstructionType None = new ClientInstructionType(0, "", "");
@@ -103,6 +108,7 @@ public class ClientInstructionType : CodeTypeBase {
         ScoreRemark,
         ServiceAgreement,
         PrivacyStatement,
+        CustomerPromotion,
     };
 
     private static readonly IDictionary<int, ClientInstructionType> codeTypeMap = codeTypeList.ToDictionary(e => e.Id);

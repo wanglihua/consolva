@@ -145,7 +145,7 @@ public class ClientInstructionController : Controller {
     }
 
     /*
-     预置的，没有删除
+    预置的，没有删除功能
     [HttpPost]
     [Route("/admin/client/instruction/delete")]
     [Transactional]
