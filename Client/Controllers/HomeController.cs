@@ -227,6 +227,7 @@ public class HomeController : Controller {
             BeginnerGuideUrl = homeData.BeginnerGuideUrl,
             FaqUrl = homeData.FaqUrl,
             ScoreRemarkUrl = homeData.ScoreRemarkUrl,
+            CustomerPromotionUrl = homeData.CustomerPromotionUrl,
             HomeNote = homeNote,
         };
 
