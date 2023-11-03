@@ -6,6 +6,7 @@ using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Util;
 using shunda.Core.Web;
+using shunda.Domain.Fee;
 using shunda.Domain.LogisticsOrder;
 using shunda.Domain.Pass.PassRes;
 using shunda.Service.Fee;
@@ -55,10 +56,18 @@ public class PackBoxController : Controller {
         if (packBox == null) {
             throw new ValidationException("箱号格式不对或箱号不存在！");
         }
-
+        
         NHibernateUtil.Initialize(packBox.Order);
         var order = packBox.Order;
         int orderId = order.Id;
+
+        if (order.OrderStatus != LogisticsOrderStatus.Packed && order.OrderStatus != LogisticsOrderStatus.WaitPack) {
+            throw new ValidationException("订单不是已打包状态或待发货状态，不能设置箱号发货！");
+        }
+
+        if (order.PayStatus != PayStatus.Paid) {
+            throw new ValidationException("订单支付状态不是已支付，不能设置箱号发货！");
+        }
 
         // NHibernateUtil.Initialize(order.Customer);
         // CustomerInfo customer = order.Customer;
