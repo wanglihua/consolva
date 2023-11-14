@@ -119,14 +119,13 @@ public class WechatMessageService {
     /// 发送订单通知
     /// </summary>
     /// <param name="customer">customer</param>
-    /// <param name="first">first</param>
     /// <param name="orderCode">orderCode</param>
     /// <param name="customerCode">customerCode</param>
-    /// <param name="remark">remark</param>
+    /// <param name="remark">remark，当前一般消息是置空的，手工和全员消息不是置空的</param>
     /// <param name="sender">sender</param>
     /// <param name="url"></param>
     /// <returns>是否发送成功</returns>
-    public CustomerMessageStatus SendOrderNoticeTemplateMessage(CustomerInfo customer, string first, string orderCode, string customerCode, string remark, string sender, string url = "") {
+    public CustomerMessageStatus SendOrderNoticeTemplateMessage(CustomerInfo customer, string orderCode, string customerCode, string remark, string sender, string url = "") {
         string openId = customer.WechatOfficialAccountOpenId;
         if (string.IsNullOrWhiteSpace(openId) || customer.WechatOfficialAccountFollowStatus != WechatOfficialAccountFollowStatus.Followed) {
             return CustomerMessageStatus.Fail; // 一般这时还没关注公众号，也算发送失败
@@ -135,45 +134,49 @@ public class WechatMessageService {
 #if DEBUG
         log.Trace("SendOrderNoticeTemplateMessage: ");
         log.Trace($"openId: {openId}");
-        log.Trace($"first: {first}");
+        // log.Trace($"first: {first}");
         log.Trace($"orderCode: {orderCode}");
         log.Trace($"customerCode: {customerCode}");
-        log.Trace($"remark: {remark}");
+        // log.Trace($"remark: {remark}");
         log.Trace($"sender: {sender}");
         log.Trace($"url: {url}");
 
         return CustomerMessageStatus.Success;
 #else
         /*
-         
+
             {{ first.DATA }}
             订单号：{{ keyword1.DATA }}
             订单内容：{{ keyword2.DATA }}
             收货人：{{ keyword3.DATA }}
             {{ remark.DATA }}
-         
+
          */
-        var firstTemplateDataItem = new TemplateDataItem(first);
-        var keyword1TemplateDataItem = new TemplateDataItem(orderCode);
 
-        // string keyword2Str = $"操作时间:北京时间{DateTime.Now:yyyy-MM-dd HH:mm}";
-        string keyword2Str = $"北京时间{DateTime.Now:yyyy-MM-dd HH:mm}";
-        if (string.IsNullOrWhiteSpace(sender) == false) {
-            keyword2Str += $", 操作人:{sender}";
-        }
+        /*
 
-        var keyword2TemplateDataItem = new TemplateDataItem(keyword2Str);
+            订单编号 {{ character_string27.DATA }}
+            商品名称 {{ thing32.DATA }}
+            客户代号 {{ character_string14.DATA }}
+            快递状态 {{ phrase6.DATA }}
+            运单号   {{ character_string9.DATA }}
 
-        var keyword3TemplateDataItem = new TemplateDataItem($"专属会员号 {customerCode}");
+         */
+        var orderCodeTemplateDataItem = new TemplateDataItem(orderCode);
+
+        var userTemplateDataItem = new TemplateDataItem($"操作人:{sender}");
+        var timeTemplateDateItem = new TemplateDataItem($"北京时间{DateTime.Now:yyyy-MM-dd HH:mm}");
+
+        var customerCodeTemplateDataItem = new TemplateDataItem($"专属会员号 {customerCode}");
         // var remarkTemplateDataItem = new TemplateDataItem(remark, "#FF0000");
         var remarkTemplateDataItem = new TemplateDataItem(remark);
 
         var data = new {
-            first = firstTemplateDataItem,
-            keyword1 = keyword1TemplateDataItem,
-            keyword2 = keyword2TemplateDataItem,
-            keyword3 = keyword3TemplateDataItem,
-            remark = remarkTemplateDataItem
+            character_string27 = orderCodeTemplateDataItem,
+            thing32 = remarkTemplateDataItem,
+            character_string14 = customerCodeTemplateDataItem,
+            phrase6 = userTemplateDataItem,
+            character_string9 = timeTemplateDateItem,
         };
 
         return SendTemplateMessage(openId, WechatOfficialAccountConfig.OrderNoticeTemplateId, data, url);
