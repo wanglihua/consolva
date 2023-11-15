@@ -82,6 +82,7 @@ public class CustomerMessageManualSendController : Controller {
         IList<string> smsFailCustomerList = new List<string>();
         IList<string> smsSuccessCustomerList = new List<string>();
 
+        // 实际上是 checkin code list
         string customerIds = model.CustomerIds.Replace("\r\n", ",");
 
         string[] customerIdStrArray = customerIds.Split(' ', ',');
@@ -146,7 +147,7 @@ public class CustomerMessageManualSendController : Controller {
                     string url = CustomerMessageClientUrlService.GetMessageDetailUrl(customerMessage.Id);
 
                     string customerCode = customerCodeService.GetCustomerCode(customer.Id);
-                    wechatMessageService.SendOrderNoticeTemplateMessage(customer, "手动推送", customerCode, model.RemarkMessage, loginUserName, url);
+                    wechatMessageService.SendOrderNoticeTemplateMessage(customer, "Manual Send", customerCode, model.RemarkMessage, loginUserName, url);
                 });
 
                 if (customerIdList.Contains(customer.Id) == false) {
@@ -307,7 +308,7 @@ public class CustomerMessageManualSendController : Controller {
                 if (model.SendByWechat && (string.IsNullOrWhiteSpace(customer.WechatOfficialAccountOpenId) == false)) {
                     sent = true;
                     string customerCode = customerCodeService.GetCustomerCode(customer.Id);
-                    wechatMessageService.SendOrderNoticeTemplateMessage(customer, "手动推送", customerCode, model.RemarkMessage, loginUserName);
+                    wechatMessageService.SendOrderNoticeTemplateMessage(customer, "Manual Send", customerCode, model.RemarkMessage, loginUserName);
                 }
 
                 if (model.SendBySms && string.IsNullOrWhiteSpace(customer.Mobile) == false) {

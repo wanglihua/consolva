@@ -164,10 +164,10 @@ public class WechatMessageService {
          */
         var orderCodeTemplateDataItem = new TemplateDataItem(orderCode);
 
-        var userTemplateDataItem = new TemplateDataItem($"操作人:{sender}");
-        var timeTemplateDateItem = new TemplateDataItem($"北京时间{DateTime.Now:yyyy-MM-dd HH:mm}");
+        var userTemplateDataItem = new TemplateDataItem($"人员{sender}");
+        var timeTemplateDateItem = new TemplateDataItem($"BeiJing{DateTime.Now:yyyy-MM-dd HH:mm}");
 
-        var customerCodeTemplateDataItem = new TemplateDataItem($"专属会员号 {customerCode}");
+        var customerCodeTemplateDataItem = new TemplateDataItem($"{customerCode}");
         // var remarkTemplateDataItem = new TemplateDataItem(remark, "#FF0000");
         var remarkTemplateDataItem = new TemplateDataItem(remark);
 
