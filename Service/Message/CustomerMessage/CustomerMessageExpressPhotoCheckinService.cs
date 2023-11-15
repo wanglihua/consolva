@@ -138,22 +138,23 @@ public class CustomerMessageExpressPhotoCheckinService {
 
             if (clientShouldSend) {
                 if (setting.WechatSend) {
+                    string orderCode = "ExpressPhoto";
                     string messageTitle = customerMessageCommonService.GetMessageTitle(messageType, "快递单入库图片推送");
                     string customerCode = customerCodeService.GetCustomerCode(customer.Id);
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
                         string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message1Id);
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageTitle, customerCode, processUser, url);
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, orderCode, customerCode, messageTitle, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message2) == false) {
                         string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message2Id);
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageTitle, customerCode, processUser, url);
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, orderCode, customerCode, messageTitle, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message3) == false) {
                         string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message3Id);
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageTitle, customerCode, processUser, url);
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, orderCode, customerCode, messageTitle, processUser, url);
                     }
                 }
 

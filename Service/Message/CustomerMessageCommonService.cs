@@ -158,11 +158,11 @@ public class CustomerMessageCommonService {
     /// <param name="customer">customer</param>
     /// <param name="orderCode">orderCode</param>
     /// <param name="customerCode">customerCode</param>
+    /// <param name="remark">remark</param>
     /// <param name="sender">sender</param>
     /// <param name="url"></param>
-    public void SendOrderNoticeTemplateMessage(CustomerInfo customer, string orderCode, string customerCode, string sender, string url) {
-        orderCode = orderCode + ",点击查看详情";
-        wechatMessageService.SendOrderNoticeTemplateMessage(customer, orderCode, customerCode, string.Empty, sender, url);
+    public void SendOrderNoticeTemplateMessage(CustomerInfo customer, string orderCode, string customerCode, string remark, string sender, string url) {
+        wechatMessageService.SendOrderNoticeTemplateMessage(customer, orderCode, customerCode, remark, sender, url);
     }
 
     /// <summary>

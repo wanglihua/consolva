@@ -101,21 +101,22 @@ public class CustomerMessageNoOrderService {
 
             if (clientShouldSend) {
                 if (setting.WechatSend) {
+                    string orderCode = "NoOrder";
                     string messageTitle = customerMessageCommonService.GetMessageTitle(messageType, "下单提醒");
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
                         string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message1Id);
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageTitle, customerCode, processUser, url);
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, orderCode, customerCode, messageTitle, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message2) == false) {
                         string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message2Id);
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageTitle, customerCode, processUser, url);
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, orderCode, customerCode, messageTitle, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message3) == false) {
                         string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message3Id);
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageTitle, customerCode, processUser, url);
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, orderCode, customerCode, messageTitle, processUser, url);
                     }
                 }
 

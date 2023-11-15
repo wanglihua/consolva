@@ -116,21 +116,22 @@ public class CustomerMessageExpressExpectEnterService {
 
             if (clientShouldSend) {
                 if (setting.WechatSend) {
-                    string messageTitle = customerMessageCommonService.GetMessageTitle(messageType, "【预报到货】通知");
+                    string orderCode = "ForecastArrival";
+                    string messageTitle = customerMessageCommonService.GetMessageTitle(messageType, "预报到货通知");
 
                     if (string.IsNullOrWhiteSpace(message1) == false) {
                         string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message1Id);
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageTitle, customerCode, processUser, url);
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, orderCode, customerCode, messageTitle, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message2) == false) {
                         string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message2Id);
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageTitle, customerCode, processUser, url);
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, orderCode, customerCode, messageTitle, processUser, url);
                     }
 
                     if (string.IsNullOrWhiteSpace(message3) == false) {
                         string url = CustomerMessageClientUrlService.GetMessageDetailUrl(message3Id);
-                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, messageTitle, customerCode, processUser, url);
+                        customerMessageCommonService.SendOrderNoticeTemplateMessage(customer, orderCode, customerCode, messageTitle, processUser, url);
                     }
                 }
 
