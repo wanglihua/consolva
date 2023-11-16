@@ -164,7 +164,7 @@ public class WechatMessageService {
          */
         var orderCodeTemplateDataItem = new TemplateDataItem(orderCode);
 
-        var userTemplateDataItem = new TemplateDataItem($"人员{sender}");
+        var userTemplateDataItem = new TemplateDataItem($"{sender}");
         var timeTemplateDateItem = new TemplateDataItem($"BeiJing{DateTime.Now:yyyy-MM-dd HH:mm}");
 
         var customerCodeTemplateDataItem = new TemplateDataItem($"{customerCode}");
