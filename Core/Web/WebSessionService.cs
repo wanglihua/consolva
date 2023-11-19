@@ -105,8 +105,8 @@ public class WebSessionService {
             HttpOnly = true,
             IsEssential = true,
             Path = "/",
-            Expires = DateTimeOffset.Now.AddDays(100),
-            MaxAge = TimeSpan.FromDays(100)
+            // Expires = DateTimeOffset.Now.AddDays(100),
+            // MaxAge = TimeSpan.FromDays(100)
         });
 
         // 同时放到 header 中
@@ -116,8 +116,7 @@ public class WebSessionService {
         response.Cookies.Append(WebSessionConfig.SessionIdCookieKey, sessionId, new CookieOptions() {
             HttpOnly = true,
             IsEssential = true,
-            Expires = DateTimeOffset.Now.AddHours(1), // 这个时间应该稍微大于 登陆过期时间，就是登录标志的 redis 过期时间
-            MaxAge = TimeSpan.FromHours(1)
+            Path = "/",
         });
 
         // 同时放到 header 中
