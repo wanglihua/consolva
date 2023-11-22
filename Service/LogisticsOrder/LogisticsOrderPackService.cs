@@ -1,4 +1,5 @@
 using NHibernate;
+using NHibernate.Linq;
 using shunda.Core;
 using shunda.Core.Service;
 using shunda.Domain.Express;
@@ -256,6 +257,22 @@ public class LogisticsOrderPackService {
                 throw new ValidationException($"订单{order.Code}快递单号{express.TrackingNo}的物品列表为空, 订单不能完成打包!");
             }
         }
+
+        // 检查打包物流方式空运海运类别
+        var orderFirstModeList = session.Query<LogisticsOrderFirstModeInfo>()
+            .Fetch(e => e.FirstMode)
+            .Where(e => e.Order.Id == orderId)
+            .ToList();
+
+        var orderCateListInFirstMode = orderFirstModeList.Select(e => e.FirstMode.OrderCate).Distinct().ToList();
+
+        var orderCate = order.OrderCate;
+        if (orderCateListInFirstMode.Count == 1 && orderCateListInFirstMode[0] != orderCate) {
+            orderCate = orderCateListInFirstMode[0];
+        }
+
+        // 可以的更新订单类别
+        order.OrderCate = orderCate;
 
         // 订单状态和时间更新，快递单状态这里不用更新
         var orderStatusBefore = order.OrderStatus;
