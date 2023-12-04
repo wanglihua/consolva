@@ -7,21 +7,18 @@ using ISession = NHibernate.ISession;
 namespace shunda.Service.Express;
 
 [Service(ServiceType.Scoped)]
-public class CheckinTrackingNoService
-{
+public class CheckinTrackingNoService {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private static readonly object LockObject = new object();
 
     private ISessionFactory sessionFactory;
 
-    public CheckinTrackingNoService(ISessionFactory sessionFactory)
-    {
+    public CheckinTrackingNoService(ISessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
 
-    public string GetNextMainTrackinigNo()
-    {
+    public string GetNextMainTrackinigNo() {
         lock (LockObject) // lock() 时，数据库事务应该是在内部，否则 lock() 后有时也没意义
         {
             int seq;
@@ -31,14 +28,12 @@ public class CheckinTrackingNoService
 
             ISession? sessionLocal = null;
             ITransaction? transaction = null;
-            try
-            {
+            try {
                 sessionLocal = HibernateSessionFactory.OpenSession(sessionFactory);
                 transaction = sessionLocal.BeginTransaction();
 
                 object[] seqObjs = sessionLocal.CreateSQLQuery("CALL checkin_tracking_no_next_seq()").UniqueResult<object[]>();
-                if (seqObjs == null || seqObjs.Length != 3)
-                {
+                if (seqObjs == null || seqObjs.Length != 3) {
                     throw new Exception("获取下一个入库跟踪号失败！");
                 }
 
@@ -52,15 +47,13 @@ public class CheckinTrackingNoService
                 sessionLocal.Flush();
                 transaction.Commit();
             }
-            catch (Exception exp)
-            {
+            catch (Exception exp) {
                 log.Error(exp);
                 transaction?.Rollback();
 
                 throw;
             }
-            finally
-            {
+            finally {
                 sessionLocal?.Close();
             }
 
@@ -68,13 +61,11 @@ public class CheckinTrackingNoService
         }
     }
 
-    private string GetYearLetter(int year)
-    {
-        return ((char)((int)'A' + year - 2022)).ToString(); // 2022年 是 A
+    private string GetYearLetter(int year) {
+        return ((char)((int)'A' + year - 2023)).ToString(); // 2023年 是 A
     }
 
-    private string GetMonthLetter(int month)
-    {
+    private string GetMonthLetter(int month) {
         return ((char)((int)'A' + month - 1)).ToString(); // 1月 是A
     }
 }
