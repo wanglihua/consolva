@@ -35,4 +35,13 @@ public class CheckinTrackingNoExpressInfo : Entity {
     public override void Validate() {
         ValidationUtil.ValidateEntity<CheckinTrackingNoExpressInfoValidator, CheckinTrackingNoExpressInfo>(this);
     }
+
+    #region cache
+
+    /// <summary>
+    /// 排序用
+    /// </summary>
+    public int SeqCache { get; set; }
+
+    #endregion
 }

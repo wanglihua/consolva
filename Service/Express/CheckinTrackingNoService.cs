@@ -76,6 +76,8 @@ public class CheckinTrackingNoService {
         return ((char)((int)'A' + month - 1)).ToString(); // 1月 是A
     }
 
+    // todo 1、入库的时候调用 首次入库和入库信息更新 2、新增删除更改尺寸重量的时候调用
+
     /// <summary>
     /// 生成入库跟踪号的具体子单号，如果一个尺寸有多箱的话，就会是多个单号
     /// 如果主单号存在，就用现成的；如果子单号不存在，就生成一个主单号
@@ -153,5 +155,36 @@ public class CheckinTrackingNoService {
         session.Flush();
 
         return mainTrackingNo;
+    }
+
+    /// <summary>
+    /// 获取已生成的子单号列表
+    /// LogisticsExpress 不为空的单号列表，包括 ChildExpress 为空(也可能会有多个)和不为空的数据
+    /// </summary>
+    /// <param name="expressId"></param>
+    /// <returns></returns>
+    public IList<CheckinTrackingNoExpressInfo> ListSubTrackingNo(int expressId) {
+        var trackingNoExressList = session.Query<CheckinTrackingNoExpressInfo>()
+            .Fetch(e => e.Express) // 打印标签是会用到里面单号
+            .Where(e => e.Express.Id == expressId && e.SizeWeight != null)
+            .OrderBy(e => e.SizeWeight!.TrackingNoSub) // 按子单号顺序排序
+            .ToList();
+
+        // 按照子单号的数字顺序排序
+        foreach (var trackingNoExpress in trackingNoExressList) {
+            string childExpressTrackingNo = trackingNoExpress.SizeWeight?.TrackingNo ?? string.Empty;
+            int lastIndexOfMinus = childExpressTrackingNo?.LastIndexOf("-") ?? -1;
+            if (lastIndexOfMinus == -1) {
+                trackingNoExpress.SeqCache = 0;
+            } else {
+                if (int.TryParse(childExpressTrackingNo?.Substring(lastIndexOfMinus + 1) ?? string.Empty, out int childNum)) {
+                    trackingNoExpress.SeqCache = childNum;
+                } else {
+                    trackingNoExpress.SeqCache = 0;
+                }
+            }
+        }
+
+        return trackingNoExressList.OrderBy(e => e.SeqCache).ThenBy(e => e.SizeWeight?.TrackingNo ?? string.Empty).ToList();
     }
 }
