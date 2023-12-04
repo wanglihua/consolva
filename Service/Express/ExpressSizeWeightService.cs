@@ -1,6 +1,5 @@
 using NHibernate;
 using shunda.Core;
-using shunda.Core.Config;
 using shunda.Core.Service;
 using shunda.Domain.Express;
 using shunda.Service.Logistics;
@@ -26,6 +25,16 @@ public class ExpressSizeWeightService {
         return GetSizeWeightList(trackingNoList);
     }
 
+    public IList<ExpressSizeWeightInfo> GetSizeWeightList(string trackingNo) {
+        if (string.IsNullOrWhiteSpace(trackingNo)) {
+            throw new ValidationException("快递单号不能为空！");
+        }
+
+        return GetSizeWeightList(new List<string> {
+            trackingNo
+        });
+    }
+
     public IList<ExpressSizeWeightInfo> GetSizeWeightList(IList<string> trackingNoList) {
         if (trackingNoList == null || trackingNoList.Count == 0) {
             return new List<ExpressSizeWeightInfo>();
@@ -33,7 +42,7 @@ public class ExpressSizeWeightService {
 
         return session.Query<ExpressSizeWeightInfo>()
             .Where(e => trackingNoList.Contains(e.TrackingNo))
-            .OrderBy(e => e.Id)
+            .OrderBy(e => e.Id) // 这个顺序是固定的，后面有逻辑依赖于这个顺序
             .ToList();
     }
 

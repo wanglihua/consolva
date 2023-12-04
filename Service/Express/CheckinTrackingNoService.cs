@@ -1,8 +1,11 @@
 using NHibernate;
 using NLog;
+using shunda.Core;
 using shunda.Core.Hibernate;
 using shunda.Core.Service;
+using shunda.Domain.Express;
 using ISession = NHibernate.ISession;
+using NHibernate.Linq;
 
 namespace shunda.Service.Express;
 
@@ -12,10 +15,14 @@ public class CheckinTrackingNoService {
 
     private static readonly object LockObject = new object();
 
-    private ISessionFactory sessionFactory;
+    private readonly ISessionFactory sessionFactory;
+    private readonly ISession session;
+    private readonly ExpressSizeWeightService expressSizeWeightService;
 
-    public CheckinTrackingNoService(ISessionFactory sessionFactory) {
+    public CheckinTrackingNoService(ISessionFactory sessionFactory, ISession session, ExpressSizeWeightService expressSizeWeightService) {
         this.sessionFactory = sessionFactory;
+        this.session = session;
+        this.expressSizeWeightService = expressSizeWeightService;
     }
 
     public string GetNextMainTrackinigNo() {
@@ -67,5 +74,84 @@ public class CheckinTrackingNoService {
 
     private string GetMonthLetter(int month) {
         return ((char)((int)'A' + month - 1)).ToString(); // 1月 是A
+    }
+
+    /// <summary>
+    /// 生成入库跟踪号的具体子单号，如果一个尺寸有多箱的话，就会是多个单号
+    /// 如果主单号存在，就用现成的；如果子单号不存在，就生成一个主单号
+    /// 【生成或者重新生成】，如果已经有子单号，会删除后再生成
+    /// 返回一个主单号
+    /// </summary>
+    /// <param name="expressId"></param>
+    /// <returns>主单号</returns>
+    public string Generate(int expressId) {
+        var express = session.Get<ExpressInfo>(expressId);
+        if (express == null) {
+            throw new ValidationException($"指定的快递单#{expressId}不存在！");
+        }
+
+        // 主单号不存在就新生成一个，如果主单号存在（重新生成入库跟踪号时），就只是获取
+
+        var checkinTrackingNoExpressMain = session.Query<CheckinTrackingNoExpressInfo>()
+            .Where(e => e.Express.Id == expressId && e.SizeWeight == null)
+            .Take(1)
+            .SingleOrDefault();
+
+        if (checkinTrackingNoExpressMain == null) {
+            checkinTrackingNoExpressMain = new CheckinTrackingNoExpressInfo {
+                CheckinTrackingNo = GetNextMainTrackinigNo(),
+                TrackingNo = express.TrackingNo,
+                Express = express,
+                SizeWeight = null,
+                Status = CheckinTrackingNoExpressStatus.ToOnShelf
+            };
+
+            session.Save(checkinTrackingNoExpressMain);
+            session.Flush();
+        }
+
+        string mainTrackingNo = checkinTrackingNoExpressMain.CheckinTrackingNo;
+
+        if (string.IsNullOrEmpty(mainTrackingNo)) {
+            throw new ValidationException("入库跟踪号主单号不能为空！");
+        }
+
+        string trackingNo = express.TrackingNo;
+        // 这里排序顺序固定
+        var sizeWeightList = expressSizeWeightService.GetSizeWeightList(trackingNo); // 这里的顺序是固定的，这样重新生成的时候，还是会尽量保持原来的入库跟踪号
+        if (sizeWeightList == null || sizeWeightList.Count == 0) {
+            throw new ValidationException($"指定的申领件#{trackingNo}没有尺寸重量记录，无法生成入库号跟踪，不能入库！");
+        }
+
+        // 删除已有的子单号
+        session.Query<CheckinTrackingNoExpressInfo>()
+            .Where(e => e.Express.Id == expressId && e.SizeWeight != null)
+            .Delete();
+
+        int totalPackageCount = sizeWeightList.Sum(e => e.PackageCount);
+        int seq = 1;
+        foreach (var sizeWeight in sizeWeightList) {
+            int packageCount = sizeWeight.PackageCount;
+
+            for (int index = 0; index < packageCount; index++) {
+                string subCheckinTrackingNo = $"{mainTrackingNo}{totalPackageCount:#000}-{seq:#000}";
+
+                var aoPinTrackingNoExpress = new CheckinTrackingNoExpressInfo {
+                    CheckinTrackingNo = subCheckinTrackingNo,
+                    TrackingNo = express.TrackingNo,
+                    Express = express,
+                    SizeWeight = sizeWeight,
+                    Status = CheckinTrackingNoExpressStatus.ToOnShelf
+                };
+
+                session.Save(aoPinTrackingNoExpress);
+
+                seq++;
+            }
+        }
+
+        session.Flush();
+
+        return mainTrackingNo;
     }
 }
