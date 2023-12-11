@@ -102,7 +102,7 @@ public class SeventeenTrackCarrierService {
             return 190303;
         }
 
-        if (trackingNo.StartsWith("3676E")) {
+        if (trackingNo.StartsWith("3676E") || trackingNo.StartsWith("3674")) {
             // Australia Post
             return 1151;
         }

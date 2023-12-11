@@ -41,7 +41,7 @@ public class CheckinTrackingNoExpressInfo : Entity {
     /// <summary>
     /// 排序用
     /// </summary>
-    public int SeqCache { get; set; }
+    public virtual int SeqCache { get; set; }
 
     #endregion
 }
