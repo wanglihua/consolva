@@ -160,6 +160,7 @@ public class SeventeenTrackWebHookController : Controller {
 
             DateTime? firstStatusTime = null;
             DateTime? latestStatusTime = null;
+            bool hasNewLatestStatusTime = false;
 
             // 假设按时间正序循环
             foreach (var evt in eventList) {
@@ -189,10 +190,7 @@ public class SeventeenTrackWebHookController : Controller {
 
                 if (trackNumberEventInDb == null) {
                     var trackNumberEvent = new SeventeenTrackNumberEventInfo {
-                        TrackNumber = trackNumber,
-                        EventTime = eventTime,
-                        EventDesc = eventDesc,
-                        Stage = stage,
+                        TrackNumber = trackNumber, EventTime = eventTime, EventDesc = eventDesc, Stage = stage,
                     };
 
                     session.Save(trackNumberEvent);
@@ -202,8 +200,15 @@ public class SeventeenTrackWebHookController : Controller {
             }
 
             if (trackNumber.FirstStatusTime != firstStatusTime || trackNumber.LatestStatusTime != latestStatusTime) {
-                trackNumber.FirstStatusTime = firstStatusTime;
-                trackNumber.LatestStatusTime = latestStatusTime;
+                if (trackNumber.FirstStatusTime != firstStatusTime) {
+                    trackNumber.FirstStatusTime = firstStatusTime;
+                }
+
+                if (trackNumber.LatestStatusTime != latestStatusTime) {
+                    trackNumber.LatestStatusTime = latestStatusTime;
+                    hasNewLatestStatusTime = true;
+                }
+
                 session.Update(trackNumber);
             }
 
@@ -219,10 +224,14 @@ public class SeventeenTrackWebHookController : Controller {
                 if (orderFirstMode != null) {
                     var customer = orderFirstMode.Order.Customer;
                     var order = orderFirstMode.Order;
-                    string trackingContent = latestNumberEvent.EventDesc;
 
-                    // 快递单动态有更新
-                    customerMessageInternationalExpressStateUpdateService.SendMessage(customer, order, trackingNo, trackingContent);
+                    // 一定要有更新的最近状态时间才发送消息
+                    if (hasNewLatestStatusTime) {
+                        string trackingContent = latestNumberEvent.EventDesc;
+
+                        // 快递单动态有更新
+                        customerMessageInternationalExpressStateUpdateService.SendMessage(customer, order, trackingNo, trackingContent);
+                    }
 
                     // Delivered
                     if (latestNumberEvent.Stage == "Delivered") {
@@ -261,18 +270,14 @@ public class SeventeenTrackWebHookController : Controller {
                             session.Flush();
 
                             // 结束订单
-                            logisticsOrderService.CompleteOrder(new LogisticsOrderCompleteParam {
-                                OrderId = orderId,
-                                UserId = 0,
-                            });
+                            logisticsOrderService.CompleteOrder(new LogisticsOrderCompleteParam { OrderId = orderId, UserId = 0, });
                         }
                     }
                 }
             }
 
             session.Flush();
-        }
-        catch (Exception exp) {
+        } catch (Exception exp) {
             log.Error(exp);
             log.Error(requestBody);
             return StatusCode((int)HttpStatusCode.InternalServerError);
