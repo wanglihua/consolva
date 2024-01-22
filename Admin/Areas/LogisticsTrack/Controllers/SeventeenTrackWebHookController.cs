@@ -142,6 +142,8 @@ public class SeventeenTrackWebHookController : Controller {
             var trackNumberEventList = session.Query<SeventeenTrackNumberEventInfo>()
                 .Where(e => e.TrackNumber.Id == trackNumberId)
                 .ToList();
+            var latestOldNumberEvent = trackNumberEventList.OrderByDescending(e => e.Id).Take(1).SingleOrDefault();
+
             // var trackNumberEventDict = trackNumberEventList.ToDictionary(e => e.EventTime, e => e); 他同一个时间会有多个事件，这里只假设了一个，会报错
 
             var provider = model.Data.TrackInfo.Tracking.ProviderList
@@ -154,13 +156,12 @@ public class SeventeenTrackWebHookController : Controller {
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
 
-            SeventeenTrackNumberEventInfo? latestNumberEvent = null;
+            SeventeenTrackNumberEventInfo? latestNewNumberEvent = null;
 
             var eventList = provider.EventList.Reverse(); // 这里原来是按时间倒序排列的
 
             DateTime? firstStatusTime = null;
             DateTime? latestStatusTime = null;
-            bool hasNewLatestStatusTime = false;
 
             // 假设按时间正序循环
             foreach (var evt in eventList) {
@@ -195,7 +196,7 @@ public class SeventeenTrackWebHookController : Controller {
 
                     session.Save(trackNumberEvent);
 
-                    latestNumberEvent = trackNumberEvent;
+                    latestNewNumberEvent = trackNumberEvent;
                 }
             }
 
@@ -206,7 +207,6 @@ public class SeventeenTrackWebHookController : Controller {
 
                 if (trackNumber.LatestStatusTime != latestStatusTime) {
                     trackNumber.LatestStatusTime = latestStatusTime;
-                    hasNewLatestStatusTime = true;
                 }
 
                 session.Update(trackNumber);
@@ -215,7 +215,7 @@ public class SeventeenTrackWebHookController : Controller {
             session.Flush();
 
             // 可能的发送消息
-            if (latestNumberEvent != null) {
+            if (latestNewNumberEvent != null) {
                 var orderFirstMode = session.Query<LogisticsOrderFirstModeInfo>()
                     .Where(e => e.TrackingNo == trackingNo)
                     .Take(1)
@@ -226,15 +226,17 @@ public class SeventeenTrackWebHookController : Controller {
                     var order = orderFirstMode.Order;
 
                     // 一定要有更新的最近状态时间才发送消息
-                    if (hasNewLatestStatusTime) {
-                        string trackingContent = latestNumberEvent.EventDesc;
+                    // 已经有前提是 latestNewNumberEvent ！= null
+                    if (latestOldNumberEvent == null
+                        || (latestOldNumberEvent.Stage != latestNewNumberEvent.Stage || latestOldNumberEvent.EventDesc != latestNewNumberEvent.EventDesc)) {
+                        string trackingContent = latestNewNumberEvent.EventDesc;
 
                         // 快递单动态有更新
                         customerMessageInternationalExpressStateUpdateService.SendMessage(customer, order, trackingNo, trackingContent);
                     }
 
                     // Delivered
-                    if (latestNumberEvent.Stage == "Delivered") {
+                    if (latestNewNumberEvent.Stage == "Delivered") {
                         int orderId = order.Id;
                         var orderPackBoxList = session.Query<LogisticsOrderPackBoxInfo>()
                             .Fetch(e => e.OrderPack)
@@ -265,7 +267,7 @@ public class SeventeenTrackWebHookController : Controller {
                             customerMessageOrderDeliveredService.SendMessage(customer, order);
 
                             // 设置订单交付时间
-                            order.DeliverTime = latestNumberEvent.EventTime;
+                            order.DeliverTime = latestNewNumberEvent.EventTime;
                             session.Update(order);
                             session.Flush();
 
