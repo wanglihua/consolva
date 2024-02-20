@@ -87,6 +87,13 @@ Page({
                                                     showCancel: false
                                                 });
                                             }
+                                        },
+                                        fail: function (err) {
+                                            wx.showModal({
+                                                title: '提示',
+                                                content: '打开权限设置失败!' + err.errMsg,
+                                                showCancel: false
+                                            });
                                         }
                                     });
                                 } else {
@@ -100,6 +107,11 @@ Page({
                         });
                     },
                     fail: function (err) {
+                        wx.showModal({
+                            title: '提示',
+                            content: '打开图片失败, 或请尝试设置小程序权限!' + err.errMsg,
+                            showCancel: false
+                        });
                     }
                 });
             },

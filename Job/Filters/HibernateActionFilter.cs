@@ -11,26 +11,22 @@ namespace shunda.Job.Filters;
 /// <summary>
 /// "services.AddScoped&lt;HibernateActionFilter&gt;();" // 必须是 AddScoped
 /// </summary>
-public class HibernateActionFilter : IActionFilter
-{
+public class HibernateActionFilter : IActionFilter {
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
     private ITransaction? transaction = null;
     private bool autoTransaction = false;
 
-    public HibernateActionFilter(ISession session)
-    {
+    public HibernateActionFilter(ISession session) {
         this.session = session;
     }
 
-    public void OnActionExecuting(ActionExecutingContext context)
-    {
+    public void OnActionExecuting(ActionExecutingContext context) {
         // log.Trace("HibernateActionFilter OnActionExecuting");
-        
+
         ControllerActionDescriptor? actionDescriptor = context.ActionDescriptor as ControllerActionDescriptor;
-        if (actionDescriptor == null)
-        {
+        if (actionDescriptor == null) {
             return;
         }
 
@@ -38,38 +34,31 @@ public class HibernateActionFilter : IActionFilter
         object[] actionAttributes = actionDescriptor.MethodInfo.GetCustomAttributes(typeof(TransactionalAttribute), true);
 
         autoTransaction = false;
-        if ((controllerAttributes?.Length ?? 0) != 0)
-        {
+        if ((controllerAttributes?.Length ?? 0) != 0) {
             autoTransaction = true;
         }
 
-        if ((actionAttributes?.Length ?? 0) != 0)
-        {
+        if ((actionAttributes?.Length ?? 0) != 0) {
             autoTransaction = true;
         }
 
-        if (autoTransaction)
-        {
+        if (autoTransaction) {
             transaction = session.BeginTransaction();
         }
     }
 
-    public void OnActionExecuted(ActionExecutedContext context)
-    {
+    public void OnActionExecuted(ActionExecutedContext context) {
         // log.Trace("HibernateActionFilter OnActionExecuted");
-        
+
         // 这里是捕捉到非数据库异常的情况
 
-        if (context.Exception != null)
-        {
-            if ((context.Exception is ValidationException == false) && (context.Exception is System.ComponentModel.DataAnnotations.ValidationException == false))
-            {
+        if (context.Exception != null) {
+            if ((context.Exception is ValidationException == false) && (context.Exception is System.ComponentModel.DataAnnotations.ValidationException == false)) {
                 // 这里不记录异常也是可以的，因为异常统一处理程序会记录
                 log.Error(context.Exception);
             }
 
-            if (autoTransaction)
-            {
+            if (autoTransaction && (transaction?.IsActive ?? false)) {
                 transaction?.Rollback();
             }
 
@@ -79,24 +68,20 @@ public class HibernateActionFilter : IActionFilter
         }
 
         // 这里捕捉不到非数据库的异常
-        try
-        {
-            session.Flush();
+        try {
+            if (context.Exception == null) {
+                session.Flush();
+            }
 
-            if (autoTransaction)
-            {
+            if (autoTransaction && (transaction?.IsActive ?? false)) {
                 transaction?.Commit();
             }
-        }
-        catch (Exception exp)
-        {
-            if ((context.Exception is ValidationException == false) || (context.Exception is System.ComponentModel.DataAnnotations.ValidationException == false))
-            {
+        } catch (Exception exp) {
+            if ((context.Exception is ValidationException == false) || (context.Exception is System.ComponentModel.DataAnnotations.ValidationException == false)) {
                 log.Error(exp);
             }
 
-            if (autoTransaction)
-            {
+            if (autoTransaction && (transaction?.IsActive ?? false)) {
                 transaction?.Rollback();
             }
 
