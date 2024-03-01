@@ -47,7 +47,7 @@ public class HomeController : Controller {
         sidebarStateService.SetState(loginUserId, isMin);
 
         return Json(new Dictionary<string, object> {
-            { "success", true },
+            { "success", true }, 
             { "message", "Sidebar状态设置成功！" }
         });
     }

@@ -69,7 +69,7 @@ public class CheckinTrackingNoService {
     }
 
     private string GetYearLetter(int year) {
-        return ((char)((int)'A' + year - 2023)).ToString(); // 2023年 是 A
+        return ((char)((int)'A' + year - 2022)).ToString(); // 2024年3月开始用C, 防止跟前面的冲突
     }
 
     private string GetMonthLetter(int month) {
