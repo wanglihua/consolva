@@ -112,6 +112,11 @@ public class SeventeenTrackCarrierService {
             return 100003;
         }
 
+        if (trackingNo.StartsWith("2716")) {
+            // FedEx
+            return 100003;
+        }
+
         // if (trackingNo.StartsWith("780")) {
         if (trackingNo.StartsWith("78")) {
             // FedEx
