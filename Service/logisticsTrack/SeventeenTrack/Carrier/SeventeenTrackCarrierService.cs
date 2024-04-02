@@ -23,9 +23,7 @@ public class SeventeenTrackCarrierService {
 
     public void SyncData() {
         using var client = new RestClient(
-            new RestClientOptions {
-                BaseUrl = new Uri("https://res.17track.net"),
-            },
+            new RestClientOptions { BaseUrl = new Uri("https://res.17track.net"), },
             configureSerialization: c => c.UseNewtonsoftJson()
         );
 
@@ -37,8 +35,7 @@ public class SeventeenTrackCarrierService {
         IList<SeventeenTrackCarrierItem>? carrierList = null;
         try {
             carrierList = client.Get<IList<SeventeenTrackCarrierItem>>(request);
-        }
-        catch (Exception exp) {
+        } catch (Exception exp) {
             log.Error(exp);
             throw new Exception($"下载17TRACK运输商数据出现异常: {exp.Message}");
         }
@@ -103,6 +100,12 @@ public class SeventeenTrackCarrierService {
         }
 
         if (trackingNo.StartsWith("3676E") || trackingNo.StartsWith("3674")) {
+            // Australia Post
+            return 1151;
+        }
+
+        // 36CCP300125701000935100  36CC开头的运输商帮设置成澳邮
+        if (trackingNo.StartsWith("36CC")) {
             // Australia Post
             return 1151;
         }
