@@ -30,4 +30,6 @@ public class LogisticsOrderExcelExportLine {
     public string Mobile { get; set; } = string.Empty;
 
     public string Company { get; set; } = string.Empty;
+
+    public string PackSizeWeight { get; set; } = string.Empty;
 }

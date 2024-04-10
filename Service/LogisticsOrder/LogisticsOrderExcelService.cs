@@ -189,6 +189,12 @@ public class LogisticsOrderExcelService {
             cell.SetCellType(CellType.String);
             cell.SetCellValue("公司/店铺名");
 
+            sheet.SetColumnWidth(cellIndex, 80 * 128);
+            cell = row.CreateCell(cellIndex++);
+            cell.CellStyle = headerCenterCellStyle;
+            cell.SetCellType(CellType.String);
+            cell.SetCellValue("打包尺寸");
+
             foreach (var order in orderList) {
                 int orderId = order.Id;
                 var orderReceiveAddress = orderReceiveAddressList
@@ -226,6 +232,9 @@ public class LogisticsOrderExcelService {
                     var orderExpressIdList = orderExpressList.Select(e => e.Id).ToList();
                     var orderExpressGoodsList = expressGoodsList.Where(e => orderExpressIdList.Contains(e.Express.Id)).ToList();
 
+                    var thisOrderPackList = orderPackList.Where(e => e.Order.Id == orderId).ToList();
+                    string packSizeWeight = string.Join(", ", thisOrderPackList.Select(e => $"{e.Length}×{e.Width}×{e.Height}cm×{e.PackageCount}箱"));
+
                     LogisticsOrderExcelExportLine line = new LogisticsOrderExcelExportLine {
                         OrderCode = order.Code,
                         CustomerCode = order.CustomerCode,
@@ -242,6 +251,7 @@ public class LogisticsOrderExcelService {
                         Consignee = consignee,
                         Mobile = orderReceiveAddress.Mobile,
                         Company = orderReceiveAddress.Company,
+                        PackSizeWeight = packSizeWeight,
                     };
 
                     lineList.Add(line);
@@ -295,24 +305,26 @@ public class LogisticsOrderExcelService {
                                 .ToList();
                             var modeExpressGoodsList = expressGoodsList.Where(e => modeExpressIdList.Contains(e.Express.Id)).ToList();
 
+                            var thisFirstModePackList = thisOrderPackList.Where(e => e.OrderFirstMode.Id == orderFirstModeId).ToList();
+                            string packSizeWeight = string.Join(", ", thisFirstModePackList.Select(e => $"{e.Length}×{e.Width}×{e.Height}cm×{e.PackageCount}箱"));
+
                             LogisticsOrderExcelExportLine line = new LogisticsOrderExcelExportLine {
                                 OrderCode = order.Code,
                                 CustomerCode = order.CustomerCode,
                                 GoodsTypeName = order.GoodsType.Name,
                                 CountryName = order.Country.Name,
                                 FirstModeName = ofm.FirstMode.Name,
-
                                 OrderAmount = orderAmount,
                                 TotalVolumeWeight = (double)totalVolumeWeight,
                                 TotalActualWeight = (double)totalActualWeight,
                                 TotalPackageCount = (double)totalPackageCount,
                                 MaxSideLength = (double)maxSideLength,
                                 GoodsNames = string.Join(",", modeExpressGoodsList.Select(e => $"{e.Goods.Name}{e.Quantity}{e.Unit}").Distinct()),
-
                                 Address = address,
                                 Consignee = consignee,
                                 Mobile = orderReceiveAddress.Mobile,
                                 Company = orderReceiveAddress.Company,
+                                PackSizeWeight = packSizeWeight,
                             };
 
                             lineList.Add(line);
@@ -341,14 +353,12 @@ public class LogisticsOrderExcelService {
                                         GoodsTypeName = order.GoodsType.Name,
                                         CountryName = order.Country.Name,
                                         FirstModeName = ofm.FirstMode.Name,
-
                                         OrderAmount = orderAmount,
                                         TotalVolumeWeight = (double)((pack.Width * pack.Length * pack.Height) / volumeWeightDenominator),
                                         TotalActualWeight = (double)pack.Weight,
                                         TotalPackageCount = 1d, // 按箱号导出，每次就只有一箱了
                                         MaxSideLength = (double)Math.Max(Math.Max(pack.Width, pack.Length), pack.Height),
                                         GoodsNames = string.Join(",", packExpressGoodsList.Select(e => $"{e.Goods.Name}{e.Quantity}{e.Unit}").Distinct()),
-
                                         Address = address,
                                         Consignee = consignee,
                                         Mobile = orderReceiveAddress.Mobile,
@@ -447,6 +457,11 @@ public class LogisticsOrderExcelService {
                     cell.CellStyle = contentCenterCellStyle;
                     cell.SetCellType(CellType.String);
                     cell.SetCellValue(line.Company);
+
+                    cell = row.CreateCell(cellIndex++);
+                    cell.CellStyle = contentCenterCellStyle;
+                    cell.SetCellType(CellType.String);
+                    cell.SetCellValue(line.PackSizeWeight);
                 }
             }
         }
