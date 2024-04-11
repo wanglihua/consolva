@@ -345,6 +345,8 @@ public class LogisticsOrderExcelService {
                                     .ToList();
                                 var packExpressGoodsList = expressGoodsList.Where(e => packExpressIdList.Contains(e.Express.Id)).ToList();
 
+                                string packSizeWeight = $"{pack.Length}×{pack.Width}×{pack.Height}cm×{pack.PackageCount}箱";
+
                                 // 按箱号循环
                                 for (int boxIndex = 0; boxIndex < pack.PackageCount; boxIndex++) {
                                     LogisticsOrderExcelExportLine line = new LogisticsOrderExcelExportLine {
@@ -363,6 +365,7 @@ public class LogisticsOrderExcelService {
                                         Consignee = consignee,
                                         Mobile = orderReceiveAddress.Mobile,
                                         Company = orderReceiveAddress.Company,
+                                        PackSizeWeight = packSizeWeight,
                                     };
 
                                     lineList.Add(line);
