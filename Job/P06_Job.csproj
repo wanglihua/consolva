@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <AssemblyName>shunda.Job</AssemblyName>
         <RootNamespace>shunda.Job</RootNamespace>
+        <RazorCompileOnBuild>false</RazorCompileOnBuild>
     </PropertyGroup>
 
     <ItemGroup>
