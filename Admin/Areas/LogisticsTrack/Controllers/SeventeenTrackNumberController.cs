@@ -114,6 +114,10 @@ public class SeventeenTrackNumberController : Controller {
                     Number = trackNumber.TrackingNo,
                     Carrier = carrierKey.Value,
                 });
+            } else {
+                registerRequestItemList.Add(new SeventeenTrackRegisterRequestItem {
+                    Number = trackNumber.TrackingNo
+                });
             }
         }
 
