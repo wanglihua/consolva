@@ -15,8 +15,7 @@ if [ "$1" = "" ] || [ "$1" = "admin" ]; then
     echo ${project_file_content} >> ${solution_path}/Admin/P01_Admin_publish.csproj
     dotnet publish ${solution_path}/Admin/P01_Admin_publish.csproj --no-restore -c Release -o ${publish_path}/admin
     rm ${solution_path}/Admin/P01_Admin_publish.csproj
-    
-    publish_admin_path="${publish_path}/admin"
+
     cp -f ${publish_path}/admin/shunda.Core.pdb ${pack_path}/admin/shunda.Core.pdb
     cp -f ${publish_path}/admin/shunda.Core.dll ${pack_path}/admin/shunda.Core.dll
     cp -f ${publish_path}/admin/shunda.Domain.pdb ${pack_path}/admin/shunda.Domain.pdb
@@ -39,8 +38,7 @@ if [ "$1" = "" ] || [ "$1" = "job" ]; then
     echo ${project_file_content} >> ${solution_path}/Job/P06_Job_publish.csproj
     dotnet publish ${solution_path}/Job/P06_Job_publish.csproj --no-restore -c Release -o ${publish_path}/job
     rm ${solution_path}/Job/P06_Job_publish.csproj
-    
-    publish_job_path="${publish_path}/job"
+
     cp -f ${publish_path}/job/shunda.Core.pdb ${pack_path}/job/shunda.Core.pdb
     cp -f ${publish_path}/job/shunda.Core.dll ${pack_path}/job/shunda.Core.dll
     cp -f ${publish_path}/job/shunda.Domain.pdb ${pack_path}/job/shunda.Domain.pdb
@@ -63,7 +61,7 @@ if [ "$1" = "" ] || [ "$1" = "client" ]; then
     echo ${project_file_content} >> ${solution_path}/Client/P04_Client_publish.csproj
     dotnet publish ${solution_path}/Client/P04_Client_publish.csproj --no-restore -c Release -o ${publish_path}/client
     rm ${solution_path}/Client/P04_Client_publish.csproj
-    
+
     cp -f ${publish_path}/client/shunda.Core.pdb ${pack_path}/client/shunda.Core.pdb
     cp -f ${publish_path}/client/shunda.Core.dll ${pack_path}/client/shunda.Core.dll
     cp -f ${publish_path}/client/shunda.Domain.pdb ${pack_path}/client/shunda.Domain.pdb
