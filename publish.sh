@@ -1,7 +1,3 @@
-pack_admin=test [ "$1" = "" ] || [ "$1" = "admin" ]
-pack_job=test [ "$1" = "" ] || [ "$1" = "job" ]
-pack_client=test [ "$1" = "" ] || [ "$1" = "client" ]
-
 solution_path="/Users/wanglihua/projects/shunda"
 publish_path="/Users/wanglihua/files/publish/shunda"
 pack_path="${publish_path}/shunda"
@@ -84,7 +80,11 @@ fi
 rm -f ${publish_path}/shunda.7z
 7z a ${publish_path}/shunda.7z ${pack_path}
 
+suffix="_$1"
+if [ "$1" = "" ]; then
+    suffix=""
+fi
 current_date_time="`date +%Y%m%d%H%M%S`";
-cp -f ${publish_path}/shunda.7z /Users/wanglihua/Downloads/RemoteFolder/shunda_${current_date_time}.7z
+cp -f ${publish_path}/shunda.7z /Users/wanglihua/Downloads/RemoteFolder/shunda${suffix}_${current_date_time}.7z
 
 echo "publish complete!"
