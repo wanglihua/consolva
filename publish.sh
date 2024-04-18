@@ -23,7 +23,7 @@ if [ "$1" = "" ] || [ "$1" = "admin" ]; then
     cp -f ${publish_path}/admin/shunda.Domain.dll ${pack_path}/admin/shunda.Domain.dll
     cp -f ${publish_path}/admin/shunda.Service.pdb ${pack_path}/admin/shunda.Service.pdb
     cp -f ${publish_path}/admin/shunda.Service.dll ${pack_path}/admin/shunda.Service.dll
-    cp -f ${publish_path}/admin/shunda.Admin.dll ${pack_path}/admin/shunda.Admin
+    cp -f ${publish_path}/admin/shunda.Admin ${pack_path}/admin/shunda.Admin
     cp -f ${publish_path}/admin/shunda.Admin.pdb ${pack_path}/admin/shunda.Admin.pdb
     cp -f ${publish_path}/admin/shunda.Admin.dll ${pack_path}/admin/shunda.Admin.dll
     cp -f ${publish_path}/admin/shunda.Admin.deps.json ${pack_path}/admin/shunda.Admin.deps.json
@@ -47,7 +47,7 @@ if [ "$1" = "" ] || [ "$1" = "job" ]; then
     cp -f ${publish_path}/job/shunda.Domain.dll ${pack_path}/job/shunda.Domain.dll
     cp -f ${publish_path}/job/shunda.Service.pdb ${pack_path}/job/shunda.Service.pdb
     cp -f ${publish_path}/job/shunda.Service.dll ${pack_path}/job/shunda.Service.dll
-    cp -f ${publish_path}/job/shunda.Job.dll ${pack_path}/job/shunda.Job
+    cp -f ${publish_path}/job/shunda.Job ${pack_path}/job/shunda.Job
     cp -f ${publish_path}/job/shunda.Job.pdb ${pack_path}/job/shunda.Job.pdb
     cp -f ${publish_path}/job/shunda.Job.dll ${pack_path}/job/shunda.Job.dll
     cp -f ${publish_path}/job/shunda.Job.deps.json ${pack_path}/job/shunda.Job.deps.json
@@ -70,7 +70,7 @@ if [ "$1" = "" ] || [ "$1" = "client" ]; then
     cp -f ${publish_path}/client/shunda.Domain.dll ${pack_path}/client/shunda.Domain.dll
     cp -f ${publish_path}/client/shunda.Service.pdb ${pack_path}/client/shunda.Service.pdb
     cp -f ${publish_path}/client/shunda.Service.dll ${pack_path}/client/shunda.Service.dll
-    cp -f ${publish_path}/client/shunda.Client.dll ${pack_path}/client/shunda.Client
+    cp -f ${publish_path}/client/shunda.Client ${pack_path}/client/shunda.Client
     cp -f ${publish_path}/client/shunda.Client.pdb ${pack_path}/client/shunda.Client.pdb
     cp -f ${publish_path}/client/shunda.Client.dll ${pack_path}/client/shunda.Client.dll
     cp -f ${publish_path}/client/shunda.Client.deps.json ${pack_path}/client/shunda.Client.deps.json
