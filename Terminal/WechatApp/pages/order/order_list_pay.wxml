@@ -24,7 +24,7 @@
                 <van-cell title="欠费总额" value="¥ {{ order.arrearsAmount }}" border="{{ false }}" custom-class="item"/>
                 <van-cell title="打包包裹数" value="{{ order.packedTotalPackageCount }} 个" border="{{ false }}" custom-class="item"/>
                 <van-cell title="打包总体积" value="{{ order.packedTotalVolume }} CBM" border="{{ false }}" custom-class="item"/>
-                <van-cell title="打包总体积重" value="{{ order.packedTotalVolumeWeight }} CBM" border="{{ false }}" custom-class="item"/>
+                <van-cell title="打包总体积重" value="{{ order.packedTotalVolumeWeight }} KG" border="{{ false }}" custom-class="item"/>
                 <van-cell title="打包总实际重" value="{{ order.packedTotalActualWeight }} KG" border="{{ false }}" custom-class="item"/>
                 <view class="item-last-vspace"/>
                 <van-cell title="操作" value="{{order.actions}}" border="{{ false }}" is-link bind:click="onActionCellClick" data-item="{{ order }}" custom-class="item-footer" value-class="item-footer-value"/>
