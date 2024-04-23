@@ -166,7 +166,8 @@
                                     <label for="checkinPackageCount" style="color: red;">入库包裹数量</label>
                                 </td>
                                 <td>
-                                    <input id="checkinPackageCount" asp-for="PackageCount" type="number" autocomplete="off" class="input-sm form-control" readonly="readonly"/>
+                                    @* todo 尺寸重量暂时禁用 <input id="checkinPackageCount" asp-for="PackageCount" type="number" autocomplete="off" class="input-sm form-control" readonly="readonly"/> *@
+                                    <input id="checkinPackageCount" asp-for="PackageCount" type="number" autocomplete="off" class="input-sm form-control"/>
                                 </td>
                                 <td class="lbl">仓位</td>
                                 <td colspan="3" style="vert-align: middle;">

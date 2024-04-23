@@ -447,6 +447,9 @@ public class ExpressCheckinController : Controller {
         }
         */
 
+        /*
+          todo 临时禁用
+        
         // 获取并检查尺寸重量信息是否已经存在
         IList<ExpressSizeWeightInfo> expressSizeWeightList = session.Query<ExpressSizeWeightInfo>()
             .Where(e => e.TrackingNo == expressTrackingNo)
@@ -454,6 +457,7 @@ public class ExpressCheckinController : Controller {
         if (expressSizeWeightList == null || expressSizeWeightList.Count == 0) {
             throw new ValidationException("快递单尺寸重量信息未录入保存！");
         }
+        */
 
         // 检查快递单号图片，如果不符合会抛出异常
         expressCheckinService.CheckPhotoWhenCheckin(expressTrackingNo);
@@ -629,8 +633,11 @@ public class ExpressCheckinController : Controller {
 
                 // 包裹数量
                 int prePackageCount = express.PackageCount; // 如果是新建，不是修改保存的话，这个值就是0
-                int packageCount = expressSizeWeightList.Sum(e => e.PackageCount);
+                
+                // todo 尺寸重量暂时禁用
+                // int packageCount = expressSizeWeightList.Sum(e => e.PackageCount);
 
+                int packageCount = model.PackageCount ?? 1;
                 if (packageCount <= 0) {
                     packageCount = 1;
                 }
