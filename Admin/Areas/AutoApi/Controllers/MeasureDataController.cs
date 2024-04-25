@@ -14,6 +14,7 @@ using ISession = NHibernate.ISession;
 
 namespace shunda.Admin.Areas.AutoApi.Controllers;
 
+[Obsolete("这个好像不用了")]
 [NoLoginRequired]
 [AutoApiArea]
 public class MeasureDataController : Controller {

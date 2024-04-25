@@ -107,7 +107,7 @@ func uploadFolderImage(imageFolder string) {
 
 	for _, file := range files {
 
-		// 忽略子目录
+		// 递归子目录
 		if file.IsDir() {
 			// 递归调用
 			uploadFolderImage(filepath.Join(imageFolder, file.Name()))
