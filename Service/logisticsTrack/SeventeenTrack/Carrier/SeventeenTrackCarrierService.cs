@@ -89,7 +89,7 @@ public class SeventeenTrackCarrierService {
             return 190512;
         }
 
-        if (trackingNo.StartsWith("33X") || trackingNo.StartsWith("3698")) {
+        if (trackingNo.StartsWith("33X") || trackingNo.StartsWith("3698") || trackingNo.StartsWith("36HFR")) {
             //UBI
             return 190112;
         }
