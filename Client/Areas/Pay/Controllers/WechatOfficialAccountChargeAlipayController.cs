@@ -162,6 +162,21 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
             callbackDataDict.Add(item, Request.Query[item]);
         }
 
+        // "trade_status": "TRADE_SUCCESS"
+        // "trade_status": "TRADE_FINISHED"
+        string tradeStatus = callbackDataDict["trade_status"];
+        if (tradeStatus != "TRADE_SUCCESS" && tradeStatus != "TRADE_FINISHED")
+        {
+            log.Error("支付宝支付同步回调 end fail_001");
+
+            var model = new WechatOfficialAccountChargeAlipayReturnModel {
+                Success = false,
+                Message = "支付失败，或未实际支付！",
+            };
+
+            return View("WechatOfficialAccountChargeAlipayReturn", model);
+        }        
+
         try {
             Transactional.Wrap(session, () => { alipayChargeService.Callback(callbackDataDict); }); // 数据库事务
             var model = new WechatOfficialAccountChargeAlipayReturnModel {
