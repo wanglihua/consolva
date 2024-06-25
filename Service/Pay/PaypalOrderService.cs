@@ -276,7 +276,7 @@ public class PaypalOrderService {
 
         // 订单日志
         
-        logisticsOrderActionService.NewActionWithoutUserCustomer(orderId, LogisticsOrderActionType.Pay, orderPayStatusBefore, orderPayStatusAfter, $"PayPal 金额:{orderPay.Amount:#0.00)}, paypal金额 {amount.currency} {amount.total}, 支付单号:{orderPay.OutTradeNo}");
+        logisticsOrderActionService.NewActionWithoutUserCustomer(orderId, LogisticsOrderActionType.Pay, orderPayStatusBefore, orderPayStatusAfter, $"PayPal 金额:{orderPay.Amount:#0.00}, paypal金额 {amount.currency} {amount.total}, 支付单号:{orderPay.OutTradeNo}");
 
         // 会员积分
         customerScoreService.AddScore(orderPay.Id);

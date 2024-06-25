@@ -242,7 +242,7 @@ public class WechatAppOrderPayCustomerAccountController : Controller {
         int orderPayId = orderPay.Id;
         customerScoreService.AddScore(orderPayId);
 
-        logisticsOrderActionService.NewActionCustomer(orderId, LogisticsOrderActionType.Pay, payStatusBefore, payStatusAfter, $"余额支付，金额：{actualPayAmount:#0.00)}", loginCustomerId);
+        logisticsOrderActionService.NewActionCustomer(orderId, LogisticsOrderActionType.Pay, payStatusBefore, payStatusAfter, $"余额支付，金额：{actualPayAmount:#0.00}", loginCustomerId);
 
         return Json(new JsonResultData {
             Success = true,
