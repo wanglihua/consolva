@@ -253,6 +253,8 @@ public class PaypalOrderService {
             throw new Exception($"PayPal支付已执行，舜达回调判断出错，状态判断失败! {executedPayment.ConvertToJson()}");
         }
 
+        Amount amount = executedPayment.transactions[0].amount;
+
         orderPay.Status = PayStatus.Paid;
         session.Update(orderPay);
         session.Flush();
@@ -273,7 +275,8 @@ public class PaypalOrderService {
         PayStatus orderPayStatusAfter = order.PayStatus;
 
         // 订单日志
-        logisticsOrderActionService.NewActionWithoutUserCustomer(orderId, LogisticsOrderActionType.Pay, orderPayStatusBefore, orderPayStatusAfter, $"PayPal 金额:{orderPay.Amount:#0.00)}, 支付单号:{orderPay.OutTradeNo}");
+        
+        logisticsOrderActionService.NewActionWithoutUserCustomer(orderId, LogisticsOrderActionType.Pay, orderPayStatusBefore, orderPayStatusAfter, $"PayPal 金额:{orderPay.Amount:#0.00)}, paypal金额 {amount.currency} {amount.total}, 支付单号:{orderPay.OutTradeNo}");
 
         // 会员积分
         customerScoreService.AddScore(orderPay.Id);
