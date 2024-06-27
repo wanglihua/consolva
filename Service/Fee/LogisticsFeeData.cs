@@ -5,7 +5,8 @@ using shunda.Domain.LogisticsOrder;
 
 namespace shunda.Service.Fee;
 
-public class LogisticsFeeData {
+public class LogisticsFeeData
+{
     public int TotalExpressPackageCount { get; set; }
 
     public IList<LogisticsFeeDataItem> FeeDataItemList { get; set; } = new List<LogisticsFeeDataItem>();
@@ -14,7 +15,8 @@ public class LogisticsFeeData {
 /// <summary>
 /// 运费计算时需要的数据项
 /// </summary>
-public class LogisticsFeeDataItem {
+public class LogisticsFeeDataItem
+{
     /// <summary>
     /// 目的国家
     /// </summary>
@@ -61,9 +63,10 @@ public class LogisticsFeeDataItem {
 /// <summary>
 /// 运费计算中的包裹信息
 /// </summary>
-public class LogisticsFeePack {
+public class LogisticsFeePack
+{
     public int BoxNum { get; set; }
-    
+
     public decimal Length { get; set; }
 
     public decimal Width { get; set; }
@@ -81,8 +84,10 @@ public class LogisticsFeePack {
     public int PackageCount { get; set; } = 1;
 }
 
-public class LogisticsFeePackValidator : AbstractValidator<LogisticsFeePack> {
-    public LogisticsFeePackValidator() {
+public class LogisticsFeePackValidator : AbstractValidator<LogisticsFeePack>
+{
+    public LogisticsFeePackValidator()
+    {
         RuleFor(e => e.Length).Must(p => p > 0).WithMessage("计费包裹长度不能为空！");
         RuleFor(e => e.Width).Must(p => p > 0).WithMessage("计费包裹宽度不能为空！");
         RuleFor(e => e.Height).Must(p => p > 0).WithMessage("计费包裹高度不能为空！");
@@ -95,19 +100,30 @@ public class LogisticsFeePackValidator : AbstractValidator<LogisticsFeePack> {
 /// 一般验证的时候就用这个验证器
 /// 订单计费时还需要验证字段 LogisticsOrderFirstModeInfo OrderFirstMode
 /// </summary>
-public class LogisticsFeeDataValidator : AbstractValidator<LogisticsFeeDataItem> {
-    public LogisticsFeeDataValidator() {
+public class LogisticsFeeDataValidator : AbstractValidator<LogisticsFeeDataItem>
+{
+    public LogisticsFeeDataValidator()
+    {
         // 已经 ValidationUtil 中全局设置
         // ClassLevelCascadeMode = CascadeMode.Stop;
         // RuleLevelCascadeMode = CascadeMode.Stop;
 
-        RuleFor(e => e.Country).NotNull().NotEqual(Country.None).WithMessage("计费目的国家不能为空，或值不合法！");
-        RuleFor(e => e.LogisticsMode).NotNull().Must(p => p.Id > 0).WithMessage("计费物流方式不能为空！");
+        RuleFor(e => e.Country).NotNull().WithMessage("计费目的国家不能为空，或值不合法！");
+        RuleFor(e => e.Country).NotEqual(Country.None).WithMessage("计费目的国家不能为空，或值不合法！");
+
+        RuleFor(e => e.LogisticsMode).NotNull().WithMessage("计费物流方式不能为空！");
+        RuleFor(e => e.LogisticsMode).Must(p => p.Id > 0).WithMessage("计费物流方式不能为空！");
+
         RuleFor(e => e.Address).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("计费收货地址不能为空！");
         RuleFor(e => e.Zipcode).Must(p => string.IsNullOrWhiteSpace(p) == false).WithMessage("计费收货邮编不能为空！");
         RuleFor(e => e.OrderGoodsValue).Must(p => p > 0).WithMessage("计费物品货值不能为空！");
-        RuleFor(e => e.GoodsType).NotNull().NotEqual(LogisticsGoodsType.None).WithMessage("计费物品类型不能为空，或值不合法！");
-        RuleFor(e => e.FeePackList).NotNull().NotEmpty().WithMessage("计费包裹列表不能为空！");
+
+        RuleFor(e => e.GoodsType).NotNull().WithMessage("计费物品类型不能为空，或值不合法！");
+        RuleFor(e => e.GoodsType).NotEqual(LogisticsGoodsType.None).WithMessage("计费物品类型不能为空，或值不合法！");
+
+        RuleFor(e => e.FeePackList).NotNull().WithMessage("计费包裹列表不能为空！");
+        RuleFor(e => e.FeePackList).NotEmpty().WithMessage("计费包裹列表不能为空！");
+
         RuleForEach(e => e.FeePackList).SetValidator(new LogisticsFeePackValidator());
     }
 }
@@ -115,8 +131,11 @@ public class LogisticsFeeDataValidator : AbstractValidator<LogisticsFeeDataItem>
 /// <summary>
 /// 订单计费验证的时候，用这个验证器
 /// </summary>
-public class LogisticsFeeDataOrderFeeValidator : LogisticsFeeDataValidator {
-    public LogisticsFeeDataOrderFeeValidator() {
-        RuleFor(e => e.OrderFirstMode).NotNull().Must(p => p.Id > 0).WithMessage("订单计费订单头程物流方式记录不能为空！");
+public class LogisticsFeeDataOrderFeeValidator : LogisticsFeeDataValidator
+{
+    public LogisticsFeeDataOrderFeeValidator()
+    {
+        RuleFor(e => e.OrderFirstMode).NotNull().WithMessage("订单计费订单头程物流方式记录不能为空！");
+        RuleFor(e => e.OrderFirstMode).Must(p => p.Id > 0).WithMessage("订单计费订单头程物流方式记录不能为空！");
     }
 }
