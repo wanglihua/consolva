@@ -1,5 +1,7 @@
+using Alipay.AopSdk.AspnetCore;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using NLog;
 using shunda.Client.Areas.Pay.Models.WechatOfficialAccountChargeAlipay;
 using shunda.Client.Services;
@@ -15,23 +17,28 @@ using ISession = NHibernate.ISession;
 namespace shunda.Client.Areas.Pay.Controllers;
 
 [PayArea]
-public class WechatOfficialAccountChargeAlipayController : Controller {
+public class WechatOfficialAccountChargeAlipayController : Controller
+{
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     private readonly ISession session;
     private readonly LoginCustomerService loginCustomerService;
     private readonly PayService payService;
+    private readonly AlipayService alipayService;
     private readonly AlipayChargeService alipayChargeService;
 
     public WechatOfficialAccountChargeAlipayController(
         ISession session,
         LoginCustomerService loginCustomerService,
         PayService payService,
+        AlipayService alipayService,
         AlipayChargeService alipayChargeService
-    ) {
+    )
+    {
         this.session = session;
         this.loginCustomerService = loginCustomerService;
         this.payService = payService;
+        this.alipayService = alipayService;
         this.alipayChargeService = alipayChargeService;
     }
 
@@ -39,7 +46,8 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
 
     [HttpPost]
     [Route("/client/charge/alipay/create/url")]
-    public IActionResult CreateUrl([FromBody] WechatOfficialAccountChargeAlipayCreateUrlParam param) {
+    public IActionResult CreateUrl([FromBody] WechatOfficialAccountChargeAlipayCreateUrlParam param)
+    {
         int customerId = loginCustomerService.GetLoginCustomerId();
         decimal amount = param.Amount;
         int amountInt = (int)(amount * 100); // 转成 int 分
@@ -69,21 +77,25 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
     [NoLoginRequired]
     [HttpGet]
     [Route(CHARGE_ALIPAY_URL)]
-    public IActionResult CopyUrl(string customerPayCode, string amountPayCode) {
+    public IActionResult CopyUrl(string customerPayCode, string amountPayCode)
+    {
         // 检查参数正确性
         int customerId = payService.GetIntFromPayCodeInUrl(customerPayCode);
         int amountInt = payService.GetIntFromPayCodeInUrl(amountPayCode);
 
         var customer = session.Get<CustomerInfo>(customerId);
-        if (customer == null) {
+        if (customer == null)
+        {
             throw new ValidationException($"指定的客户#{customerId}不存在！");
         }
 
-        if (amountInt <= 0) {
+        if (amountInt <= 0)
+        {
             throw new ValidationException("充值金额不能为负或0！");
         }
 
-        if (WebUtil.IsWechatRequest(Request)) {
+        if (WebUtil.IsWechatRequest(Request))
+        {
             var model = new WechatOfficialAccountChargeAlipayCopyUrlModel {
                 Url = Request.GetEncodedUrl(),
             };
@@ -97,8 +109,10 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
     [HttpGet]
     [Route("/client/charge/alipay/request/{customerPayCode}/{amountPayCode}")]
     [Transactional]
-    public IActionResult AlipayRequest(string customerPayCode, string amountPayCode) {
-        if (WebUtil.IsWechatRequest(Request)) {
+    public IActionResult AlipayRequest(string customerPayCode, string amountPayCode)
+    {
+        if (WebUtil.IsWechatRequest(Request))
+        {
             return RedirectToAction("CopyUrl", new { customerPayCode = customerPayCode, amountPayCode = amountPayCode });
         }
 
@@ -123,26 +137,31 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
     [HttpPost]
     [Route("/client/charge/alipay/notify")]
     // 里面有事务
-    public IActionResult Notify() {
+    public IActionResult Notify()
+    {
         Dictionary<string, string> callbackDataDict = new Dictionary<string, string>();
 
         ICollection<string> requestItem = Request.Form.Keys;
-        foreach (var item in requestItem) {
+        foreach (var item in requestItem)
+        {
             callbackDataDict.Add(item, Request.Form[item]);
         }
 
         // "trade_status": "TRADE_SUCCESS"
         // "trade_status": "TRADE_FINISHED"
         string tradeStatus = callbackDataDict["trade_status"];
-        if (tradeStatus != "TRADE_SUCCESS" && tradeStatus != "TRADE_FINISHED") {
+        if (tradeStatus != "TRADE_SUCCESS" && tradeStatus != "TRADE_FINISHED")
+        {
             return Content("success");
         }
 
-        try {
-            Transactional.Wrap(session, () => { alipayChargeService.Callback(callbackDataDict); }); // 数据库事务
+        try
+        {
+            Transactional.Wrap(session, () => { alipayChargeService.Notify(callbackDataDict); }); // 数据库事务
             return Content("success");
         }
-        catch (Exception exp) {
+        catch (Exception exp)
+        {
             log.Error(exp);
             log.Error("支付宝支付异步回调 end fail_004");
 
@@ -154,46 +173,71 @@ public class WechatOfficialAccountChargeAlipayController : Controller {
     [HttpGet]
     [Route("/client/charge/alipay/return")]
     // 里面有事务
-    public IActionResult Return() {
+    public IActionResult Return()
+    {
         Dictionary<string, string> callbackDataDict = new Dictionary<string, string>();
 
         ICollection<string> requestItem = Request.Query.Keys;
-        foreach (var item in requestItem) {
+        foreach (var item in requestItem)
+        {
             callbackDataDict.Add(item, Request.Query[item]);
         }
 
-        // "trade_status": "TRADE_SUCCESS"
-        // "trade_status": "TRADE_FINISHED"
-        string tradeStatus = callbackDataDict["trade_status"];
-        if (tradeStatus != "TRADE_SUCCESS" && tradeStatus != "TRADE_FINISHED")
+        try
         {
-            log.Error("支付宝支付同步回调 end fail_001");
-
-            var model = new WechatOfficialAccountChargeAlipayReturnModel {
-                Success = false,
-                Message = "支付失败，或未实际支付！",
-            };
-
-            return View("WechatOfficialAccountChargeAlipayReturn", model);
-        }        
-
-        try {
-            Transactional.Wrap(session, () => { alipayChargeService.Callback(callbackDataDict); }); // 数据库事务
-            var model = new WechatOfficialAccountChargeAlipayReturnModel {
-                Success = true,
-                Message = "支付成功！",
-            };
-            return View("WechatOfficialAccountChargeAlipayReturn", model);
+            log.Error("支付宝支付同步回调 数据: " + JsonConvert.SerializeObject(callbackDataDict));
         }
-        catch (Exception exp) {
+        catch (Exception exp)
+        {
             log.Error(exp);
-            log.Error("支付宝支付同步回调 end fail_004");
-
-            var model = new WechatOfficialAccountChargeAlipayReturnModel {
-                Success = false,
-                Message = "支付失败！",
-            };
-            return View("WechatOfficialAccountChargeAlipayReturn", model);
         }
+
+        if (callbackDataDict.Count == 0)
+        {
+            throw new Exception("支付宝支付回调 end fail_001");
+        }
+
+        bool checkSuccess = alipayService.RSACheckV1(callbackDataDict);
+        if (checkSuccess == false)
+        {
+            throw new Exception("支付宝支付回调 end fail_003");
+        }
+
+        string outTradeNo = callbackDataDict["out_trade_no"];
+        if (string.IsNullOrWhiteSpace(outTradeNo))
+        {
+            throw new Exception("支付宝支付回调 out_trade_no 为空！");
+        }
+
+        var customerCharge = session.Query<CustomerChargeInfo>()
+            .Where(e => e.OutTradeNo == outTradeNo)
+            .Take(1)
+            .SingleOrDefault();
+        if (customerCharge == null)
+        {
+            throw new Exception($"out_trade_no 本地系统客户充值支付记录中不存在。out_trade_no：{outTradeNo}");
+        }
+
+        if (callbackDataDict.ContainsKey("total_amount") == false)
+        {
+            throw new Exception($"total_amount 参数未提供，out_trade_no: {outTradeNo}");
+        }
+
+        if (decimal.TryParse(callbackDataDict["total_amount"], out decimal payAmount) == false)
+        {
+            throw new Exception($"total_amount 参数格式错误，out_trade_no: {outTradeNo}");
+        }
+
+        var model = new WechatOfficialAccountChargeAlipayReturnModel {
+            Success = true,
+            Message = "支付完成，等待支付宝通知，可在我的余额中查看结果！",
+        };
+
+        if (customerCharge.Status == CustomerChargeStatus.Complete)
+        {
+            model.Message = "充值已成功！";
+        }
+
+        return View("WechatOfficialAccountChargeAlipayReturn", model);
     }
 }

@@ -127,24 +127,24 @@ public class AlipayChargeService {
         }
     }
 
-    public void Callback(Dictionary<string, string> callbackDataDict) {
+    public void Notify(Dictionary<string, string> noitfyDataDict) {
         try {
-            log.Error("支付宝支付回调 数据: " + JsonConvert.SerializeObject(callbackDataDict));
+            log.Error("支付宝支付回调 数据: " + JsonConvert.SerializeObject(noitfyDataDict));
         }
         catch (Exception exp) {
             log.Error(exp);
         }
 
-        if (callbackDataDict.Count == 0) {
+        if (noitfyDataDict.Count == 0) {
             throw new Exception("支付宝支付回调 end fail_001");
         }
 
-        bool checkSuccess = alipayService.RSACheckV1(callbackDataDict);
+        bool checkSuccess = alipayService.RSACheckV1(noitfyDataDict);
         if (checkSuccess == false) {
             throw new Exception("支付宝支付回调 end fail_003");
         }
 
-        string outTradeNo = callbackDataDict["out_trade_no"];
+        string outTradeNo = noitfyDataDict["out_trade_no"];
         if (string.IsNullOrWhiteSpace(outTradeNo)) {
             throw new Exception("支付宝支付回调 out_trade_no 为空！");
         }
@@ -157,11 +157,11 @@ public class AlipayChargeService {
             throw new Exception($"out_trade_no 本地系统客户充值支付记录中不存在。out_trade_no：{outTradeNo}");
         }
 
-        if (callbackDataDict.ContainsKey("total_amount") == false) {
+        if (noitfyDataDict.ContainsKey("total_amount") == false) {
             throw new Exception($"total_amount 参数未提供，out_trade_no: {outTradeNo}");
         }
 
-        if (decimal.TryParse(callbackDataDict["total_amount"], out decimal payAmount) == false) {
+        if (decimal.TryParse(noitfyDataDict["total_amount"], out decimal payAmount) == false) {
             throw new Exception($"total_amount 参数格式错误，out_trade_no: {outTradeNo}");
         }
 
