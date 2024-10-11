@@ -133,7 +133,7 @@ public class SeventeenTrackCarrierService
             36HKW300701301000935100 ----  36H
          */
 
-        if (trackingNo.StartsWith("3676") || trackingNo.StartsWith("36H"))
+        if (trackingNo.StartsWith("3676") || trackingNo.StartsWith("36H") || trackingNo.StartsWith("36N"))
         {
             // Australia Post
             return 1151;
@@ -147,6 +147,12 @@ public class SeventeenTrackCarrierService
         }
 
         if (trackingNo.StartsWith("778"))
+        {
+            // FedEx
+            return 100003;
+        }
+
+        if (trackingNo.StartsWith("779"))
         {
             // FedEx
             return 100003;
