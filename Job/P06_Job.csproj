@@ -9,6 +9,14 @@
         <RazorCompileOnBuild>false</RazorCompileOnBuild>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <NoWarn>1701;1702;NU1902</NoWarn>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <NoWarn>1701;1702;NU1902</NoWarn>
+    </PropertyGroup>
+
     <ItemGroup>
       <ProjectReference Include="..\Core\P07_Core.csproj" />
       <ProjectReference Include="..\Domain\P03_Domain.csproj" />

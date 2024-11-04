@@ -7,6 +7,14 @@
         <RootNamespace>Terminal</RootNamespace>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <NoWarn>1701;1702;NU1902</NoWarn>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+      <NoWarn>1701;1702;NU1902</NoWarn>
+    </PropertyGroup>
+
     <ItemGroup>
       <Folder Include="WechatApp\pages\instruction" />
     </ItemGroup>
