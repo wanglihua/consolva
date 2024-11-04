@@ -168,11 +168,11 @@
                                             @foreach (var feeRate in Model.LogisticsFeeRateList) {
                                                 if (feeRateId == feeRate.Id) {
                                                     <option value="@feeRate.Id" selected="selected">
-                                                        @feeRate.Name<span>(@(feeRate.Status.Name))</span>
+                                                        @(feeRate.Name)<span>(@(feeRate.Status.Name))</span>
                                                     </option>
                                                 } else {
                                                     <option value="@feeRate.Id">
-                                                        @feeRate.Name<span>(@(feeRate.Status.Name))</span>
+                                                        @(feeRate.Name)<span>(@(feeRate.Status.Name))</span>
                                                     </option>
                                                 }
                                             }
