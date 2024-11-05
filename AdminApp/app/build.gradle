@@ -82,6 +82,8 @@ android {
 }
 
 dependencies {
+    implementation project(':matisse')
+
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
@@ -99,15 +101,15 @@ dependencies {
     implementation 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
     implementation 'com.squareup.okhttp3:okhttp:4.0.0'
     implementation 'com.squareup.okio:okio:2.2.2'
-    implementation 'com.zhihu.android:matisse:0.5.3-beta3'
+    // implementation 'com.zhihu.android:matisse:0.5.3-beta3'
     implementation files('libs/ScannerAPI.jar')
     implementation files('libs/scans.jar')
     implementation files('libs/rskscan.jar')
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation "org.permissionsdispatcher:permissionsdispatcher:4.7.0"
-    annotationProcessor "org.permissionsdispatcher:permissionsdispatcher-processor:4.7.0"
+    implementation "com.github.permissions-dispatcher:permissionsdispatcher:4.9.2"
+    annotationProcessor "com.github.permissions-dispatcher:permissionsdispatcher-processor:4.9.2"
     implementation 'com.github.bumptech.glide:glide:4.10.0'
     implementation 'com.aliyun.dpa:oss-android-sdk:2.9.4'
 }
