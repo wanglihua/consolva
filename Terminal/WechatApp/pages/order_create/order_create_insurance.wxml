@@ -18,8 +18,10 @@
                         <van-button slot="right-icon" type="default" size="small" plain block custom-class="item-button" bind:click="onInsuranceButtonClick" data-item="{{ insurance }}">选择</van-button>
                     </van-cell>
                 </block>
+				<!--
                 <van-cell label="{{ insurance.content }}" border="{{ false }}" custom-class="item">
                 </van-cell>
+				-->
                 <view class="item-last-vspace"/>
             </van-cell-group>
         </block>
