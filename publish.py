@@ -17,33 +17,33 @@ argv = sys.argv
 argv_len = len(sys.argv)
 
 if argv_len == 1 or argv[1] == "admin":
-    os.system('mkdir "{pack_path}\admin"'.format(pack_path=pack_path))
+    os.system('mkdir "{pack_path}\\admin"'.format(pack_path=pack_path))
     
-    admin_proj_file_full_name = "{solution_path}\Admin\Admin.csproj".format(solution_path=solution_path)
+    admin_proj_file_full_name = "{solution_path}\Admin\P01_Admin.csproj".format(solution_path=solution_path)
     with open(admin_proj_file_full_name, "r", encoding="utf-8") as f:
         admin_proj_file_content = f.read()
     admin_publish_proj_file_full_name = "{solution_path}\Admin\Admin_publish.csproj".format(solution_path=solution_path)
     with open(admin_publish_proj_file_full_name, "w", encoding="utf-8") as f:
         f.write(admin_proj_file_content.replace("<RazorCompileOnBuild>false</RazorCompileOnBuild>", "<RazorCompileOnBuild>true</RazorCompileOnBuild><MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>"))
-    os.system('dotnet publish "{solution_path}\Admin\Admin_publish.csproj" --no-restore -c Release -o "{publish_path}\admin"'.format(solution_path=solution_path, publish_path=publish_path))
+    os.system('dotnet publish "{solution_path}\Admin\Admin_publish.csproj" --no-restore -c Release -o "{publish_path}\\admin"'.format(solution_path=solution_path, publish_path=publish_path))
     os.system('del "{solution_path}\Admin\Admin_publish.csproj"'.format(solution_path=solution_path))
     
-    os.system('copy "{publish_path}\admin\shunda.Core.pdb" "{pack_path}\admin\shunda.Core.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\admin\shunda.Core.dll" "{pack_path}\admin\shunda.Core.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\admin\shunda.Domain.pdb" "{pack_path}\admin\shunda.Domain.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\admin\shunda.Domain.dll" "{pack_path}\admin\shunda.Domain.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\admin\shunda.Service.pdb" "{pack_path}\admin\shunda.Service.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\admin\shunda.Service.dll" "{pack_path}\admin\shunda.Service.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\admin\shunda.Admin.exe" "{pack_path}\admin\shunda.Admin.exe" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\admin\shunda.Admin.pdb" "{pack_path}\admin\shunda.Admin.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\admin\shunda.Admin.dll" "{pack_path}\admin\shunda.Admin.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\admin\shunda.Admin.deps.json" "{pack_path}\admin\shunda.Admin.deps.json" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\admin\shunda.Admin.runtimeconfig.json" "{pack_path}/admin/shunda.Admin.runtimeconfig.json" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\\admin\shunda.Core.pdb" "{pack_path}\\admin\shunda.Core.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\\admin\shunda.Core.dll" "{pack_path}\\admin\shunda.Core.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\\admin\shunda.Domain.pdb" "{pack_path}\\admin\shunda.Domain.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\\admin\shunda.Domain.dll" "{pack_path}\\admin\shunda.Domain.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\\admin\shunda.Service.pdb" "{pack_path}\\admin\shunda.Service.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\\admin\shunda.Service.dll" "{pack_path}\\admin\shunda.Service.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\\admin\shunda.Admin.exe" "{pack_path}\\admin\shunda.Admin.exe" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\\admin\shunda.Admin.pdb" "{pack_path}\\admin\shunda.Admin.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\\admin\shunda.Admin.dll" "{pack_path}\\admin\shunda.Admin.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\\admin\shunda.Admin.deps.json" "{pack_path}\\admin\shunda.Admin.deps.json" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\\admin\shunda.Admin.runtimeconfig.json" "{pack_path}/admin/shunda.Admin.runtimeconfig.json" /V'.format(publish_path=publish_path, pack_path=pack_path))
     
 if argv_len == 1 or argv[1] == "job":
     os.system('mkdir "{pack_path}\job"'.format(pack_path=pack_path))
     
-    job_proj_file_full_name = "{solution_path}\Job\Job.csproj".format(solution_path=solution_path)
+    job_proj_file_full_name = "{solution_path}\Job\P06_Job.csproj".format(solution_path=solution_path)
     with open(job_proj_file_full_name, "r", encoding="utf-8") as f:
         job_proj_file_content = f.read()
     job_publish_proj_file_full_name = "{solution_path}\Job\Job_publish.csproj".format(solution_path=solution_path)
@@ -67,7 +67,7 @@ if argv_len == 1 or argv[1] == "job":
 if argv_len == 1 or argv[1] == "client":
     os.system('mkdir "{pack_path}\client"'.format(pack_path=pack_path))
     
-    client_proj_file_full_name = "{solution_path}\Client\Client.csproj".format(solution_path=solution_path)
+    client_proj_file_full_name = "{solution_path}\Client\P04_Client.csproj".format(solution_path=solution_path)
     with open(client_proj_file_full_name, "r", encoding="utf-8") as f:
         client_proj_file_content = f.read()
     client_publish_proj_file_full_name = "{solution_path}\Client\Client_publish.csproj".format(solution_path=solution_path)
