@@ -2,9 +2,9 @@ import os
 import sys
 from datetime import datetime
 
-solution_path = "d:\Projects\iepoch\csharp"
-publish_path = "d:\Downloads\RemoteFolder\publish\iepoch"
-pack_path = publish_path + "\iepoch"
+solution_path = "d:\Projects\shunda"
+publish_path = "d:\Downloads\RemoteFolder\publish\shunda"
+pack_path = publish_path + "\shunda"
 
 # import shutil
 # shutil.rmtree(pack_path)
@@ -13,46 +13,32 @@ os.system('mkdir "{pack_path}"'.format(pack_path=pack_path))
 
 current_date_time = datetime.now().strftime("%Y%m%d%H%M")
 
-# Core\SiteVersion.cs
-site_version_content = '''namespace Core;
-
-public class SiteVersion
-{
-    public static string Version = "GENERATE_AT_PUBLISH";
-}
-'''
-
-site_versoin_file_full_name = "{solution_path}\Core\SiteVersion.cs".format(solution_path=solution_path)
-
-with open(site_versoin_file_full_name, "w", encoding="utf-8") as f:
-    f.write(site_version_content.replace("GENERATE_AT_PUBLISH", current_date_time))
-
 argv = sys.argv
 argv_len = len(sys.argv)
 
-if argv_len == 1 or argv[1] == "web":
-    os.system('mkdir "{pack_path}\web"'.format(pack_path=pack_path))
+if argv_len == 1 or argv[1] == "admin":
+    os.system('mkdir "{pack_path}\admin"'.format(pack_path=pack_path))
     
-    web_proj_file_full_name = "{solution_path}\Web\Web.csproj".format(solution_path=solution_path)
-    with open(web_proj_file_full_name, "r", encoding="utf-8") as f:
-        web_proj_file_content = f.read()
-    web_publish_proj_file_full_name = "{solution_path}\Web\Web_publish.csproj".format(solution_path=solution_path)
-    with open(web_publish_proj_file_full_name, "w", encoding="utf-8") as f:
-        f.write(web_proj_file_content.replace("<RazorCompileOnBuild>false</RazorCompileOnBuild>", "<RazorCompileOnBuild>true</RazorCompileOnBuild><MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>"))
-    os.system('dotnet publish "{solution_path}\Web\Web_publish.csproj" --no-restore -c Release -o "{publish_path}\web"'.format(solution_path=solution_path, publish_path=publish_path))
-    os.system('del "{solution_path}\Web\Web_publish.csproj"'.format(solution_path=solution_path))
+    admin_proj_file_full_name = "{solution_path}\Admin\Admin.csproj".format(solution_path=solution_path)
+    with open(admin_proj_file_full_name, "r", encoding="utf-8") as f:
+        admin_proj_file_content = f.read()
+    admin_publish_proj_file_full_name = "{solution_path}\Admin\Admin_publish.csproj".format(solution_path=solution_path)
+    with open(admin_publish_proj_file_full_name, "w", encoding="utf-8") as f:
+        f.write(admin_proj_file_content.replace("<RazorCompileOnBuild>false</RazorCompileOnBuild>", "<RazorCompileOnBuild>true</RazorCompileOnBuild><MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>"))
+    os.system('dotnet publish "{solution_path}\Admin\Admin_publish.csproj" --no-restore -c Release -o "{publish_path}\admin"'.format(solution_path=solution_path, publish_path=publish_path))
+    os.system('del "{solution_path}\Admin\Admin_publish.csproj"'.format(solution_path=solution_path))
     
-    os.system('copy "{publish_path}\web\iepoch.Core.pdb" "{pack_path}\web\iepoch.Core.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\web\iepoch.Core.dll" "{pack_path}\web\iepoch.Core.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\web\iepoch.Domain.pdb" "{pack_path}\web\iepoch.Domain.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\web\iepoch.Domain.dll" "{pack_path}\web\iepoch.Domain.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\web\iepoch.Service.pdb" "{pack_path}\web\iepoch.Service.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\web\iepoch.Service.dll" "{pack_path}\web\iepoch.Service.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\web\iepoch.Web.exe" "{pack_path}\web\iepoch.Web.exe" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\web\iepoch.Web.pdb" "{pack_path}\web\iepoch.Web.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\web\iepoch.Web.dll" "{pack_path}\web\iepoch.Web.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\web\iepoch.Web.deps.json" "{pack_path}\web\iepoch.Web.deps.json" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\web\iepoch.Web.runtimeconfig.json" "{pack_path}/web/iepoch.Web.runtimeconfig.json" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\admin\shunda.Core.pdb" "{pack_path}\admin\shunda.Core.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\admin\shunda.Core.dll" "{pack_path}\admin\shunda.Core.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\admin\shunda.Domain.pdb" "{pack_path}\admin\shunda.Domain.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\admin\shunda.Domain.dll" "{pack_path}\admin\shunda.Domain.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\admin\shunda.Service.pdb" "{pack_path}\admin\shunda.Service.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\admin\shunda.Service.dll" "{pack_path}\admin\shunda.Service.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\admin\shunda.Admin.exe" "{pack_path}\admin\shunda.Admin.exe" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\admin\shunda.Admin.pdb" "{pack_path}\admin\shunda.Admin.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\admin\shunda.Admin.dll" "{pack_path}\admin\shunda.Admin.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\admin\shunda.Admin.deps.json" "{pack_path}\admin\shunda.Admin.deps.json" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\admin\shunda.Admin.runtimeconfig.json" "{pack_path}/admin/shunda.Admin.runtimeconfig.json" /V'.format(publish_path=publish_path, pack_path=pack_path))
     
 if argv_len == 1 or argv[1] == "job":
     os.system('mkdir "{pack_path}\job"'.format(pack_path=pack_path))
@@ -66,53 +52,49 @@ if argv_len == 1 or argv[1] == "job":
     os.system('dotnet publish "{solution_path}\Job\Job_publish.csproj" --no-restore -c Release -o "{publish_path}\job"'.format(solution_path=solution_path, publish_path=publish_path))
     os.system('del "{solution_path}\Job\Job_publish.csproj"'.format(solution_path=solution_path))
     
-    os.system('copy "{publish_path}\job\iepoch.Core.pdb" "{pack_path}\job\iepoch.Core.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\job\iepoch.Core.dll" "{pack_path}\job\iepoch.Core.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\job\iepoch.Domain.pdb" "{pack_path}\job\iepoch.Domain.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\job\iepoch.Domain.dll" "{pack_path}\job\iepoch.Domain.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\job\iepoch.Service.pdb" "{pack_path}\job\iepoch.Service.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\job\iepoch.Service.dll" "{pack_path}\job\iepoch.Service.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\job\iepoch.Job.exe" "{pack_path}\job\iepoch.Job.exe" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\job\iepoch.Job.pdb" "{pack_path}\job\iepoch.Job.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\job\iepoch.Job.dll" "{pack_path}\job\iepoch.Job.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\job\iepoch.Job.deps.json" "{pack_path}\job\iepoch.Job.deps.json" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\job\iepoch.Job.runtimeconfig.json" "{pack_path}\job\iepoch.Job.runtimeconfig.json" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\job\shunda.Core.pdb" "{pack_path}\job\shunda.Core.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\job\shunda.Core.dll" "{pack_path}\job\shunda.Core.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\job\shunda.Domain.pdb" "{pack_path}\job\shunda.Domain.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\job\shunda.Domain.dll" "{pack_path}\job\shunda.Domain.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\job\shunda.Service.pdb" "{pack_path}\job\shunda.Service.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\job\shunda.Service.dll" "{pack_path}\job\shunda.Service.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\job\shunda.Job.exe" "{pack_path}\job\shunda.Job.exe" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\job\shunda.Job.pdb" "{pack_path}\job\shunda.Job.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\job\shunda.Job.dll" "{pack_path}\job\shunda.Job.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\job\shunda.Job.deps.json" "{pack_path}\job\shunda.Job.deps.json" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\job\shunda.Job.runtimeconfig.json" "{pack_path}\job\shunda.Job.runtimeconfig.json" /V'.format(publish_path=publish_path, pack_path=pack_path))
     
-if argv_len == 1 or argv[1] == "chat":
-    os.system('mkdir "{pack_path}\chat"'.format(pack_path=pack_path))
+if argv_len == 1 or argv[1] == "client":
+    os.system('mkdir "{pack_path}\client"'.format(pack_path=pack_path))
     
-    chat_proj_file_full_name = "{solution_path}\Chat\Chat.csproj".format(solution_path=solution_path)
-    with open(chat_proj_file_full_name, "r", encoding="utf-8") as f:
-        chat_proj_file_content = f.read()
-    chat_publish_proj_file_full_name = "{solution_path}\Chat\Chat_publish.csproj".format(solution_path=solution_path)
-    with open(chat_publish_proj_file_full_name, "w", encoding="utf-8") as f:
-        f.write(chat_proj_file_content.replace("<RazorCompileOnBuild>false</RazorCompileOnBuild>", "<RazorCompileOnBuild>true</RazorCompileOnBuild><MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>"))
-    os.system('dotnet publish "{solution_path}\Chat\Chat_publish.csproj" --no-restore -c Release -o "{publish_path}\chat"'.format(solution_path=solution_path, publish_path=publish_path))
-    os.system('del "{solution_path}\Chat\Chat_publish.csproj"'.format(solution_path=solution_path))
+    client_proj_file_full_name = "{solution_path}\Client\Client.csproj".format(solution_path=solution_path)
+    with open(client_proj_file_full_name, "r", encoding="utf-8") as f:
+        client_proj_file_content = f.read()
+    client_publish_proj_file_full_name = "{solution_path}\Client\Client_publish.csproj".format(solution_path=solution_path)
+    with open(client_publish_proj_file_full_name, "w", encoding="utf-8") as f:
+        f.write(client_proj_file_content.replace("<RazorCompileOnBuild>false</RazorCompileOnBuild>", "<RazorCompileOnBuild>true</RazorCompileOnBuild><MvcRazorCompileOnPublish>true</MvcRazorCompileOnPublish>"))
+    os.system('dotnet publish "{solution_path}\Client\Client_publish.csproj" --no-restore -c Release -o "{publish_path}\client"'.format(solution_path=solution_path, publish_path=publish_path))
+    os.system('del "{solution_path}\Client\Client_publish.csproj"'.format(solution_path=solution_path))
     
-    os.system('copy "{publish_path}\chat\iepoch.Core.pdb" "{pack_path}\chat\iepoch.Core.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\chat\iepoch.Core.dll" "{pack_path}\chat\iepoch.Core.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\chat\iepoch.Domain.pdb" "{pack_path}\chat\iepoch.Domain.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\chat\iepoch.Domain.dll" "{pack_path}\chat\iepoch.Domain.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\chat\iepoch.Service.pdb" "{pack_path}\chat\iepoch.Service.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\chat\iepoch.Service.dll" "{pack_path}\chat\iepoch.Service.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\chat\iepoch.Chat.exe" "{pack_path}\chat\iepoch.Chat.exe" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\chat\iepoch.Chat.pdb" "{pack_path}\chat\iepoch.Chat.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\chat\iepoch.Chat.dll" "{pack_path}\chat\iepoch.Chat.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\chat\iepoch.Chat.deps.json" "{pack_path}\chat\iepoch.Chat.deps.json" /V'.format(publish_path=publish_path, pack_path=pack_path))
-    os.system('copy "{publish_path}\chat\iepoch.Chat.runtimeconfig.json" "{pack_path}\chat\iepoch.Chat.runtimeconfig.json" /V'.format(publish_path=publish_path, pack_path=pack_path))
-
-# 恢复 Core\SiteVersion.cs 原内容
-with open(site_versoin_file_full_name, "w", encoding="utf-8") as f:
-    f.write(site_version_content)
+    os.system('copy "{publish_path}\client\shunda.Core.pdb" "{pack_path}\client\shunda.Core.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\client\shunda.Core.dll" "{pack_path}\client\shunda.Core.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\client\shunda.Domain.pdb" "{pack_path}\client\shunda.Domain.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\client\shunda.Domain.dll" "{pack_path}\client\shunda.Domain.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\client\shunda.Service.pdb" "{pack_path}\client\shunda.Service.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\client\shunda.Service.dll" "{pack_path}\client\shunda.Service.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\client\shunda.Client.exe" "{pack_path}\client\shunda.Client.exe" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\client\shunda.Client.pdb" "{pack_path}\client\shunda.Client.pdb" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\client\shunda.Client.dll" "{pack_path}\client\shunda.Client.dll" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\client\shunda.Client.deps.json" "{pack_path}\client\shunda.Client.deps.json" /V'.format(publish_path=publish_path, pack_path=pack_path))
+    os.system('copy "{publish_path}\client\shunda.Client.runtimeconfig.json" "{pack_path}\client\shunda.Client.runtimeconfig.json" /V'.format(publish_path=publish_path, pack_path=pack_path))
     
-os.system('del "{publish_path}\iepoch.7z"'.format(publish_path=publish_path))
-os.system('7z a "{publish_path}\iepoch.7z" "{pack_path}"'.format(publish_path=publish_path, pack_path=pack_path))
+os.system('del "{publish_path}\shunda.7z"'.format(publish_path=publish_path))
+os.system('7z a "{publish_path}\shunda.7z" "{pack_path}"'.format(publish_path=publish_path, pack_path=pack_path))
 
 suffix = ""
 if argv_len > 1:
     suffix = "_" + argv[1]
 
-os.system('copy "{publish_path}\iepoch.7z" "d:\Downloads\RemoteFolder\iepoch{suffix}_{current_date_time}.7z"'.format(publish_path=publish_path, suffix=suffix, current_date_time=current_date_time))
+os.system('copy "{publish_path}\shunda.7z" "d:\Downloads\RemoteFolder\shunda{suffix}_{current_date_time}.7z"'.format(publish_path=publish_path, suffix=suffix, current_date_time=current_date_time))
 
 print("publish complete!")
