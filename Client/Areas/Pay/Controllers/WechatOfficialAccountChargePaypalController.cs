@@ -159,7 +159,7 @@ public class WechatOfficialAccountChargePaypalController : Controller {
     }
 
     [NoLoginRequired]
-    [Route("/client/order/paypal/cancel")]
+    [Route("/client/charge/paypal/cancel")]
     public IActionResult Cancel() {
         var model = new WechatOfficialAccountChargePaypalCancelModel();
         return View("WechatOfficialAccountChargePaypalCancel", model);
