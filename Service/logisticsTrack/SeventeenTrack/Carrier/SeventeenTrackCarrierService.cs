@@ -103,7 +103,10 @@ public class SeventeenTrackCarrierService
             return 190512;
         }
 
-        if (trackingNo.StartsWith("33X") || trackingNo.StartsWith("3698") || trackingNo.StartsWith("36HFR"))
+        if (trackingNo.StartsWith("33X")
+            || trackingNo.StartsWith("3698")
+            || trackingNo.StartsWith("36HFR")
+            || trackingNo.StartsWith("36QJ7"))
         {
             //UBI
             return 190112;
@@ -187,6 +190,11 @@ public class SeventeenTrackCarrierService
         {
             // Lenton Group (DPD)
             return 100886;
+        }
+
+        if (trackingNo.StartsWith("QNHZ") || trackingNo.StartsWith("KZS0"))
+        {
+            return 190626;
         }
 
         return null;
