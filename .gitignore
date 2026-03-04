@@ -2,6 +2,7 @@
 .vs
 .vscode
 *.DotSettings.user
+*.csproj.user
 /_ReSharper.Caches
 /shunda.sublime-workspace
 
