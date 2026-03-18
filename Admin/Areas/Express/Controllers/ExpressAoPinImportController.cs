@@ -71,8 +71,8 @@ public class ExpressAoPinImportController : Controller {
         int storageLocId = 5;
         int shelfId = 3;
 #else
-        int storageLocId = 457;
-        int shelfId = 6;
+        int storageLocId = 458;
+        int shelfId = 7;
 #endif
 
         int warehouseId = 1;
@@ -269,7 +269,7 @@ public class ExpressAoPinImportController : Controller {
     [HttpPost]
     [Route("/admin/express/ao/pin/import/match/customer")]
     public IActionResult MatchCustomer() {
-        var expressList = session.Query<ExpressInfo>().Where(e => e.Id >= 1496 && e.Id <= 2787 && e.Customer == null).ToList();
+        var expressList = session.Query<ExpressInfo>().Where(e => e.Id > 81025 && e.Customer == null).ToList();
 
         StringBuilder sb = new StringBuilder();
 
