@@ -23,7 +23,8 @@ namespace shunda.Admin.Areas.Customer.Controllers;
 
 [CustomerArea]
 [AdminAuth(PassRes.Customer.CustomerList)]
-public class CustomerController : Controller {
+public class CustomerController : Controller
+{
     private static readonly Logger log = LogManager.GetCurrentClassLogger();
 
     public static readonly int NoVipRankId = -100;
@@ -45,7 +46,8 @@ public class CustomerController : Controller {
         PasswordService passwordService,
         PassResService passResService,
         CustomerVipDiscountService customerVipDiscountService,
-        CustomerAoPinIdExcelService customerAoPinIdExcelService) {
+        CustomerAoPinIdExcelService customerAoPinIdExcelService)
+    {
         this.session = session;
         this.customerCodeService = customerCodeService;
         this.customerCheckinCodeService = customerCheckinCodeService;
@@ -59,7 +61,8 @@ public class CustomerController : Controller {
 
     [HttpGet]
     [Route("/admin/customer")]
-    public IActionResult Index() {
+    public IActionResult Index()
+    {
         var model = new CustomerIndexModel();
 
         IList<Tuple<int, string>> vipLevelList = new List<Tuple<int, string>>();
@@ -82,7 +85,8 @@ public class CustomerController : Controller {
 
     [HttpPost]
     [Route("/admin/customer/list")]
-    public IActionResult List(CustomerListQueryParam queryParam) {
+    public IActionResult List(CustomerListQueryParam queryParam)
+    {
         var totalCount = GetListCriteria(queryParam)
             .SetProjection(Projections.RowCount())
             .UniqueResult<int>();
@@ -105,24 +109,32 @@ public class CustomerController : Controller {
     }
 
     [NonAction]
-    private ICriteria GetListCriteria(CustomerListQueryParam queryParam) {
+    private ICriteria GetListCriteria(CustomerListQueryParam queryParam)
+    {
         var criteria = session.CreateCriteria<CustomerInfo>();
 
         criteria = criteria.SetReadOnly(true);
 
-        if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false) {
+        if (string.IsNullOrWhiteSpace(queryParam.CustomerCodeQuery) == false)
+        {
             var customerId = customerCodeService.GetCustomerIdFromCustomerCode(queryParam.CustomerCodeQuery);
             criteria = criteria.Add(Restrictions.Where<CustomerInfo>(e => e.Id == customerId));
         }
 
-        if ((queryParam.VipLevelQuery ?? 0) != 0) {
+        if ((queryParam.VipLevelQuery ?? 0) != 0)
+        {
             var vipLevelQuery = queryParam.VipLevelQuery ?? 0;
 
-            if (vipLevelQuery == NoVipRankId) {
+            if (vipLevelQuery == NoVipRankId)
+            {
                 criteria = criteria.Add(Restrictions.Where<CustomerInfo>(e => e.Level == CustomerLevel.Common));
-            } else if (vipLevelQuery == SuperVipRankId) {
+            }
+            else if (vipLevelQuery == SuperVipRankId)
+            {
                 criteria = criteria.Add(Restrictions.Where<CustomerInfo>(e => e.Level == CustomerLevel.SuperVip));
-            } else {
+            }
+            else
+            {
                 var vipRank = CustomerVipRank.GetById(vipLevelQuery);
                 criteria = criteria.Add(Restrictions.Where<CustomerInfo>(e => e.Level == CustomerLevel.Vip && e.VipRank == vipRank));
             }
@@ -131,17 +143,20 @@ public class CustomerController : Controller {
         var statusQuery = queryParam.StatusQuery ?? CustomerStatus.None;
         if (statusQuery != CustomerStatus.None) criteria = criteria.Add(Restrictions.Where<CustomerInfo>(e => e.Status == statusQuery));
 
-        if (queryParam.BeginDateQuery != null) {
+        if (queryParam.BeginDateQuery != null)
+        {
             var beginDateQueryValue = queryParam.BeginDateQuery.Value;
             criteria = criteria.Add(Restrictions.Where<CustomerInfo>(e => e.RegTime >= beginDateQueryValue));
         }
 
-        if (queryParam.EndDateQuery != null) {
+        if (queryParam.EndDateQuery != null)
+        {
             var endDateQueryValue = queryParam.EndDateQuery.Value.AddDays(1);
             criteria = criteria.Add(Restrictions.Where<CustomerInfo>(e => e.RegTime < endDateQueryValue));
         }
 
-        if (string.IsNullOrWhiteSpace(queryParam.CharacterQuery) == false) {
+        if (string.IsNullOrWhiteSpace(queryParam.CharacterQuery) == false)
+        {
             var characterQuery = queryParam.CharacterQuery.Trim();
             criteria = criteria.Add(Restrictions.Where<CustomerInfo>(e => e.CustomerCharacter == characterQuery));
         }
@@ -152,7 +167,8 @@ public class CustomerController : Controller {
     [HttpGet]
     [Route("/admin/customer/detail/{id:int}")]
     [AdminAuth(PassRes.Customer.CustomerList)]
-    public IActionResult Detail(int id) {
+    public IActionResult Detail(int id)
+    {
         var customerId = id;
 
         CustomerInfo? customer = session.Get<CustomerInfo>(customerId);
@@ -308,7 +324,8 @@ public class CustomerController : Controller {
                 .SetMaxResults(10)
                 .List<CustomerAccountEntryInfo>();
 
-            foreach (CustomerAccountEntryInfo accountEntry in customerAccountEntryList) {
+            foreach (CustomerAccountEntryInfo accountEntry in customerAccountEntryList)
+            {
                 accountEntry.CustomerCodeCache = customerCodeService.GetCustomerCode(accountEntry.Customer.Id);
             }
 
@@ -326,7 +343,8 @@ public class CustomerController : Controller {
                 .SetMaxResults(10)
                 .List<LogisticsOrderPayInfo>();
 
-            foreach (LogisticsOrderPayInfo orderPay in orderPayList) {
+            foreach (LogisticsOrderPayInfo orderPay in orderPayList)
+            {
                 orderPay.CustomerCodeCache = customerCodeService.GetCustomerCode(orderPay.Customer.Id);
             }
 
@@ -341,7 +359,8 @@ public class CustomerController : Controller {
                 .SetMaxResults(10)
                 .List<CustomerScoreLogInfo>();
 
-            foreach (CustomerScoreLogInfo scoreLog in scoreLogList) {
+            foreach (CustomerScoreLogInfo scoreLog in scoreLogList)
+            {
                 scoreLog.CustomerCodeCache = customerCodeService.GetCustomerCode(scoreLog.Customer?.Id ?? 0);
                 scoreLog.LogisticsOrderCustomerCodeCache = customerCodeService.GetCustomerCode(scoreLog.LogisticsOrderCustomer?.Id ?? 0);
             }
@@ -350,7 +369,7 @@ public class CustomerController : Controller {
         }
 
         /*
-         
+
         //客户地址列表
         {
             IList<CustomerAddressInfo> customerAddressList = session.CreateCriteria<CustomerAddressInfo>()
@@ -370,7 +389,8 @@ public class CustomerController : Controller {
         model.CanCustomerCharacter = passResService.UserHasPassRes(loginUserId, PassRes.Customer.CustomerCharacter);
 
         IList<CustomerCharacterInfo> customerCharacterList = session.Query<CustomerCharacterInfo>().ToList();
-        if (customerCharacterList.Where(e => e.Content == customer.CustomerCharacter).Count() == 0) {
+        if (customerCharacterList.Where(e => e.Content == customer.CustomerCharacter).Count() == 0)
+        {
             // 就是保证已经删除掉的 CustomerCharacterInfo，但客户中还在使用的，也能有一个选项。
             customerCharacterList.Insert(0, new CustomerCharacterInfo { Content = customer.CustomerCharacter });
         }
@@ -385,7 +405,8 @@ public class CustomerController : Controller {
     [Route("/admin/customer/unfreeze")]
     [AdminAuth(PassRes.Customer.CustomerFreeze)]
     [Transactional]
-    public IActionResult Unfreeze(int id) {
+    public IActionResult Unfreeze(int id)
+    {
         var customerId = id;
 
         var customer = session.Get<CustomerInfo>(customerId);
@@ -407,7 +428,8 @@ public class CustomerController : Controller {
     [Route("/admin/customer/freeze")]
     [AdminAuth(PassRes.Customer.CustomerFreeze)]
     [Transactional]
-    public IActionResult Freeze(int id) {
+    public IActionResult Freeze(int id)
+    {
         var customerId = id;
 
         var customer = session.Get<CustomerInfo>(customerId);
@@ -429,7 +451,8 @@ public class CustomerController : Controller {
     [Route("/admin/customer/reset/password")]
     [AdminAuth(PassRes.Customer.CustomerResetPassword)]
     [Transactional]
-    public IActionResult ResetPassword(int id) {
+    public IActionResult ResetPassword(int id)
+    {
         var customerId = id;
 
         var customer = session.Get<CustomerInfo>(customerId);
@@ -452,7 +475,8 @@ public class CustomerController : Controller {
     [Route("/admin/customer/edit/character")]
     [AdminAuth(PassRes.Customer.CustomerCharacter)]
     [Transactional]
-    public IActionResult EditCharacter(int customerId, string character) {
+    public IActionResult EditCharacter(int customerId, string character)
+    {
         var customer = session.Get<CustomerInfo>(customerId);
         if (customer == null) throw new ValidationException("指定的客户不存在！");
 
@@ -476,7 +500,8 @@ public class CustomerController : Controller {
     [Route("/admin/customer/update/vip")]
     [AdminAuth(PassRes.Customer.CustomerList)]
     [Transactional]
-    public IActionResult UpdateVip() {
+    public IActionResult UpdateVip()
+    {
         customerVipDiscountService.UpdateAllCustomerVip();
 
         return Json(new Dictionary<string, object> {
@@ -488,7 +513,8 @@ public class CustomerController : Controller {
     [AdminAuth(AdminOnly = true)]
     [HttpPost]
     [Route("/admin/customer/all/set/agree")]
-    public IActionResult AllSetAgree() {
+    public IActionResult AllSetAgree()
+    {
         session.Query<CustomerInfo>()
             .UpdateBuilder()
             .Set(e => e.Agreed, true)
@@ -503,7 +529,8 @@ public class CustomerController : Controller {
     [AdminAuth(AdminOnly = true)]
     [HttpPost]
     [Route("/admin/customer/all/set/disagree")]
-    public IActionResult AllSetDisagree() {
+    public IActionResult AllSetDisagree()
+    {
         session.Query<CustomerInfo>()
             .UpdateBuilder()
             .Set(e => e.Agreed, false)
@@ -517,7 +544,8 @@ public class CustomerController : Controller {
 
     [HttpPost]
     [Route("/admin/customer/import/ao/pin/id")]
-    public IActionResult ImportAoPinId(IFormFile excelFile) {
+    public IActionResult ImportAoPinId(IFormFile excelFile)
+    {
         customerAoPinIdExcelService.Import(excelFile);
 
         return Json(new JsonResultData {
@@ -527,10 +555,34 @@ public class CustomerController : Controller {
     }
 
     [HttpPost]
+    [Route("/admin/customer/set/ao/pin/id")]
+    public IActionResult SetAoPinId(string checkinCode, int aopinId)
+    {
+        var customer = session.Query<CustomerInfo>()
+            .FirstOrDefault(e => e.CheckinCode == checkinCode);
+
+        if (customer == null)
+        {
+            throw new ValidationException($"指定的客户入库号{checkinCode}，不存在");
+        }
+
+        customer.AoPinId = aopinId;
+
+        session.Update(customer);
+        session.Flush();
+
+        return Json(new JsonResultData {
+            Success = true,
+            Message = $"设置成功，入库编号：{checkinCode}, {aopinId}！",
+        });
+    }
+
+    [HttpPost]
     [Route("/admin/customer/import/test/cutomer")]
     [AdminAuth(PassRes.Customer.ImportTestCustomer)] // todo 这个还会有可能的修改
     // 内部有数据库事务
-    public IActionResult ImportTestCustomer(IFormFile excelFile) {
+    public IActionResult ImportTestCustomer(IFormFile excelFile)
+    {
         if (excelFile == null) throw new ValidationException("导入失败，文件未上传！");
 
         IWorkbook workbook = new XSSFWorkbook(excelFile.OpenReadStream());
@@ -541,7 +593,8 @@ public class CustomerController : Controller {
 
         // 略过标题行，所以 rowIndex = 1 开始
         var lastRowNum = sheet.LastRowNum;
-        for (var rowIndex = 1; rowIndex <= lastRowNum; rowIndex++) {
+        for (var rowIndex = 1; rowIndex <= lastRowNum; rowIndex++)
+        {
             var row = sheet.GetRow(rowIndex);
 
             if (row == null) break;
@@ -576,10 +629,14 @@ public class CustomerController : Controller {
             IDictionary<string, int> dictImportMobile = new Dictionary<string, int>();
 
             var customerIndex = 0;
-            foreach (var customer in customerList) {
-                if (dictImportMobile.ContainsKey(customer.Mobile) == false) {
+            foreach (var customer in customerList)
+            {
+                if (dictImportMobile.ContainsKey(customer.Mobile) == false)
+                {
                     dictImportMobile[customer.Mobile] = customerIndex;
-                } else {
+                }
+                else
+                {
                     var preMobileIndex = dictImportMobile[customer.Mobile];
                     throw new ValidationException($"Excel中 第 {customerIndex + 1} 行手机号码 {customer.Mobile} 与 第 {preMobileIndex + 1} 行手机号码 重复！");
                 }
@@ -597,7 +654,8 @@ public class CustomerController : Controller {
         }
 
         Transactional.Wrap(session, () => {
-            foreach (var customer in customerList) {
+            foreach (var customer in customerList)
+            {
                 string checkinCode = customerCheckinCodeService.GenerateNewCheckinCode();
 
                 customer.CheckinCode = checkinCode;
